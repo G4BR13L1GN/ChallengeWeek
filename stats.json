@@ -24,6 +24,7 @@
                 }
             }
         },
+
         "Bard": {
             "Health": 95,
             "Strength": 10,
@@ -44,6 +45,7 @@
                 }
             }
         },
+
         "Cleric": {
             "Health": 100,
             "Strength": 10,
@@ -64,6 +66,7 @@
                 }
             }
         },
+
         "Druid": {
             "Health": 105,
             "Strength": 10,
@@ -84,6 +87,7 @@
                 }
             }
         },
+
         "Fighter": {
             "Health": 130,
             "Strength": 25,
@@ -104,6 +108,7 @@
                 }
             }
         },
+
         "Monk": {
             "Health": 100,
             "Strength": 20,
@@ -124,6 +129,7 @@
                 }
             }
         },
+
         "Paladin": {
             "Health": 120,
             "Strength": 15,
@@ -144,6 +150,7 @@
                 }
             }
         },
+
         "Ranger": {
             "Health": 110,
             "Strength": 15,
@@ -164,6 +171,7 @@
                 }
             }
         },
+
         "Rogue": {
             "Health": 90,
             "Strength": 10,
@@ -184,6 +192,7 @@
                 }
             }
         },
+
         "Sorcerer": {
             "Health": 80,
             "Strength": 5,
@@ -204,6 +213,7 @@
                 }
             }
         },
+
         "Warlock": {
             "Health": 85,
             "Strength": 5,
@@ -224,6 +234,7 @@
                 }
             }
         },
+
         "Wizard": {
             "Health": 85,
             "Strength": 5,
