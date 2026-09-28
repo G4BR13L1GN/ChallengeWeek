@@ -1,1 +1,7 @@
-# hij werkt holy peak y
+# Definitions
+
+# Input
+
+# Processing
+
+# Output
