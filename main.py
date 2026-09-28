@@ -108,6 +108,7 @@ def Adventure():
 
 
 def Aquire(itemName, spawnChance, maxSpawnAmount):
+    # Aquire item with arguments name, spawn chance (from 1 to x), and max spawn amount
     with open("data.json", "r", encoding = "utf-8") as f:
         gameData = json.load(f)
 
@@ -125,7 +126,6 @@ def Aquire(itemName, spawnChance, maxSpawnAmount):
 
 
 def Mine():
-    # Give player random amount of ores based on chance
     Aquire("coal", 1, 4)
     Aquire("iron", 2, 4)
     Aquire("silver", 3, 3)
@@ -134,7 +134,6 @@ def Mine():
 
 
 def Gather():
-    # Give player random amount of materials based on chance
     Aquire("wood", 1, 4)
     Aquire("berries", 1, 3)
     Aquire("fruit", 2, 3)
@@ -172,7 +171,6 @@ def Rest():
         json.dump(gameData, f, indent = 4, ensure_ascii = False)
 
 def Shop():
-    # Gabriël
     pass
 
 
