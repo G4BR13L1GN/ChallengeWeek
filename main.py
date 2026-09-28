@@ -3,6 +3,7 @@ import json
 
 def Setup():
     global gameData
+    global playerData
 
     # Open json file and define gameData from json data
     with open("stats.json", "r", encoding = "utf-8") as f:
@@ -16,15 +17,21 @@ def Setup():
         json.dump(gameData, f, indent = 4, ensure_ascii=False)
 
 
-def Adventure():
-    if random.randint(10) == 1:
+def DiceRoll():
+    return random.randint(1, 20)
+
+
+def Combat():
+    pass
+
+
+def Adventure(skill):
+    if DiceRoll() < playerData.get(skill):
         print("You encountered a monster")
+        Combat("Mystery Monster 🧌")
     else:
-        print(":)")
+        print("No monster")
 
-
-def DiceRoll(sides = int(20):
-    return random.randint(1, sides)
 
 def Main():
     Setup()
@@ -34,7 +41,9 @@ def Main():
             case "quit":
                 break
             case "adventure":
-                Adventure()
+                Adventure("Strength")
             case _:
                 print("Invalid action")
                 continue
+
+Main()
