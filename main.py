@@ -1,146 +1,175 @@
 import random
 import json
 
-def Setup():
-    global gameData
-    global playerData
 
-    # Open json file and define gameData from json data
-    with open("data.json", "r", encoding = "utf-8") as f:
-        gameData = json.load(f)
-
-    # define playerData
-    playerData = gameData.get("PlayerData")
+def DiceRoll(rollAmount = 20):
+    return random.randint(1, rollAmount)
 
 
-def DiceRoll():
-    return random.randint(1, 20)
+def Restart():
+    if str(input(f"Do you really want to restart? (Y/N)\n> ").upper()) == "Y" and str(input(f"Are you sure? (Y/N)\n> ").upper()) == "Y":
+        with open("data.json", "r", encoding = "utf-8") as f:
+            gameData = json.load(f)
 
-#region Combat
+        playerInventory = gameData.get("PlayerInventory")
+
+        playerInventory.clear()
+
+        with open("data.json", "w", encoding = "utf-8") as f:
+            json.dump(gameData, f, indent = 4, ensure_ascii = False)
+
+        # Reset inventory, levels, xp, with dict.clear()
+
 
 def Combat(monsterName, enemyClass):
-    # Open json file and define gameData from json data
+    # Define enemy statistics
     with open("data.json", "r", encoding = "utf-8") as f:
         gameData = json.load(f)
 
     enemyData = gameData.get("MonsterData")[enemyClass][monsterName]
+
     monsterHealth = enemyData.get("Health")
     monsterDamage = enemyData.get("Damage")
 
-    # define playerData
+    # Define player statistics
+    with open("data.json", "r", encoding = "utf-8") as f:
+        gameData = json.load(f)
+
     playerData = gameData.get("PlayerData")
-    currentHealth = playerData.get("Health")
-    maxHealth = playerData.get("MaxHealth")
+    playerCondition = playerData.get("PlayerCondition")
+    playerAttributes = playerData.get("PlayerAttributes")
 
+    currentHealth = playerCondition.get("Health")
+    maxHealth = playerCondition.get("MaxHealth")
 
+    # Loop combat until either player or enemy dies
     while currentHealth > 0 or monsterHealth > 0:
-        match str(input(f"How would you like to attack?\n{playerData.get("Skills")}\n> ")).lower():
+        action = str(input(f"How would you like to attack?\n{playerData.get("PlayerSkills")}\n> ")).lower()
+        print()
+
+        match action:
             case "attack":
-                monsterHealth -= playerData.get("Strength")
-                print(f"\nYou did {playerData.get("Strength")} damage!\nThe {monsterName} has {monsterHealth} HP left!\n")
+                playerDamage = playerAttributes.get("Strength") + DiceRoll(2)
+                monsterHealth -= playerDamage
+
+                # Limit monsterHealth to 0, not -4
+                if monsterHealth < 0:
+                    monsterHealth = 0
+
+                print(f"You did {playerDamage} damage!\nThe {monsterName} has {monsterHealth} HP left.")
             case "heal":
                 healAmount = 20
 
-                if currentHealth + healAmount > playerData.get("MaxHealth"):
+                # Limit healAmount if currentHealth will exceed maxHealth with healAmount
+                if currentHealth + healAmount > playerCondition.get("MaxHealth"):
                     healAmount = maxHealth - currentHealth
                 
                 currentHealth += healAmount
                 
-                print(f"\nYou healed {healAmount} HP!\nYou have {currentHealth} HP left!\n")
+                print(f"You healed {healAmount} HP!\nYou have {currentHealth} HP left.")
+            case "buff":
+                pass
+            case _:
+                print("Invalid action")
+
+        print()
 
         if monsterHealth > 0:
             currentHealth -= monsterDamage
-            print(f"The {monsterName} did {monsterDamage} damage!\nYou have {currentHealth} HP left!\n")
+            print(f"The {monsterName} did {monsterDamage} damage!\nYou have {currentHealth} HP left.")
         else:
-            print(f"You defeated the {monsterName}!\nYou gained x XP!\n")
+            print(f"You defeated the {monsterName}!\nYou gained {enemyData.get("Experience")} XP!")
             break
 
-    playerData["Health"] = currentHealth
+    # Save player health after battle
+    playerCondition["Health"] = currentHealth
 
     with open("data.json", "w", encoding="utf-8") as f:
-        json.dump(gameData, f, indent=4, ensure_ascii=False)
+        json.dump(gameData, f, indent = 4, ensure_ascii = False)
 
 
 def Adventure():
-    # Gabriël
-    monsterData = gameData.get("MonsterData")
+    # Define player data and monster data if necessary
+    with open("data.json", "r", encoding = "utf-8") as f:
+        gameData = json.load(f)
 
-    if playerData.get("Intelligence") > 0:
+    playerData = gameData.get("PlayerData")
+    playerAttributes = playerData.get("PlayerAttributes")
+
+    # Encounter if player intelligence passes sight check
+    if playerAttributes.get("Intelligence") > DiceRoll(1):
+        monsterData = gameData.get("MonsterData")
+
         monsterName = random.choice(list(monsterData["Monsters"].keys()))
-        print(f"\nYou encountered a {monsterName}")
+        print(f"You encountered a {monsterName}")
         Combat(monsterName, "Monsters")
     else:
-        print("You encountered nothing\n")
+        print("You encountered nothing")
 
-#endregion
 
-#region Gathering
+def Aquire(itemName, spawnChance, maxSpawnAmount):
+    with open("data.json", "r", encoding = "utf-8") as f:
+        gameData = json.load(f)
+
+    playerInventory = gameData.get("PlayerInventory")
+
+    if random.randint(1, spawnChance) == 1:
+        spawnAmount = random.randint(1, maxSpawnAmount)
+        print(f"You got {spawnAmount} {itemName}")
+
+        # .get() can give existing amount, or 0 if it doesn't exist yet
+        playerInventory[itemName] = playerInventory.get(itemName, 0) + spawnAmount
+
+    with open("data.json", "w", encoding = "utf-8") as f:
+        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+
 
 def Mine():
-    #When mining give the player a random ore based on rarity and random amount from 1 to 4 
-    coal = random.randint(1, 4)
-    print(f"You got {coal} coal(s)")
-    silver = random.randint(1, 3)
-    if silver >= 2:
-        silveramount = random.randint(1, 3)
-        print(f"You got {silveramount} silver(s)")
-    gold = random.randint(1, 2)
-    if gold == 2:
-        goldamount = random.randint(1, 2)
-        print(f"You got {goldamount} gold(s)")
-    iron = random.randint(1, 4)
-    if iron >= 2:
-        ironamount = random.randint(1, 4)
-        print(f"You got {ironamount} iron(s)")
-    diamond = random.randint(1, 5)
-    if diamond == 5:
-        diamondamount = random.randint(1, 2)
-        print(f"You got {diamondamount} diamond(s)")
+    # Give player random amount of ores based on chance
+    Aquire("coal", 1, 4)
+    Aquire("iron", 2, 4)
+    Aquire("silver", 3, 3)
+    Aquire("gold", 4, 3)
+    Aquire("diamond", 10, 2)
+
 
 def Gather():
-    #When gathering give the player a random item from a list of items based on rarity and random amount from 1 to 4
-    item = random.choice(["Wood", "Berries", "Fruit", "Random blade", "Mysteryious potion"])
-    wood = random.randint(1, 4)
-    print(f"You got {wood} wood(s)")
-    berries = random.randint(1, 3)
-    if berries >= 2:
-        berriesamount = random.randint(1, 2)
-        print(f"You got {berriesamount} berries(s)")
-    fruit = random.randint(1, 2)
-    if fruit == 2:
-        fruitamount = random.randint(1, 2)
-        print(f"You got {fruitamount} fruit(s)")
-    mysterious_potion = random.randint(1, 5)
-    if mysterious_potion == 5:
-        mysterious_potionamount = random.randint(1, 2)
-        print(f"You got {mysterious_potionamount} mysterious potion(s)")
-    mystery_blade_chance = random.randint(1, 100)
-    if mystery_blade_chance == 100:
-        mystery_blade = 1
-        print(f"You got the mysterious blade! (1/100 chance)")
+    # Give player random amount of materials based on chance
+    Aquire("wood", 1, 4)
+    Aquire("berries", 1, 3)
+    Aquire("fruit", 2, 3)
+    Aquire("mysterious potion", 5, 2)
+    Aquire("mysterious blade", 100, 1)
 
-#endregion
 
 def Rest():
-    #when resting regenarate 15% of max health and dont let them go above their max hp
-    currentHealth = playerData.get("Health")
-    maxHealth = playerData.get("MaxHealth")
-    regeneratedHealth = int(maxHealth * 0.15) # +15%
+    # Define player statistics
+    with open("data.json", "r", encoding = "utf-8") as f:
+        gameData = json.load(f)
 
-    # if current + regenerated > max -> 
-    if currentHealth + regeneratedHealth > maxHealth:
-        regeneratedHealth = maxHealth - currentHealth
+    playerData = gameData.get("PlayerData")
+    playerCondition = playerData.get("PlayerCondition")
 
-    currentHealth += regeneratedHealth
+    currentHealth = playerCondition.get("Health")
+    maxHealth = playerCondition.get("MaxHealth")
+    healAmount = int(maxHealth * 0.15) # +15% health
+
+    # Limit healAmount if currentHealth will exceed maxHealth with healAmount
+    if currentHealth + healAmount > maxHealth:
+        healAmount = maxHealth - currentHealth
+
+    # Heal player
+    currentHealth += healAmount
     if currentHealth > maxHealth:
         currentHealth = maxHealth
 
-    print(f"You regenerated {regeneratedHealth} health.\nYou now have {currentHealth} HP.")
+    print(f"You regenerated {healAmount} health.\nYou now have {currentHealth} HP.")
 
-    playerData["Health"] = currentHealth
+    # Save player health
+    playerCondition["Health"] = currentHealth
 
     with open("data.json", "w", encoding="utf-8") as f:
-        json.dump(gameData, f, indent=4, ensure_ascii=False)
+        json.dump(gameData, f, indent = 4, ensure_ascii = False)
 
 def Shop():
     # Gabriël
@@ -148,10 +177,11 @@ def Shop():
 
 
 def Main():
-    Setup()
-
     while True:
-        match str(input("What would you like to do?\n> ")).lower():
+        action = str(input("\nWhat would you like to do?\n> ")).lower()
+        print()
+
+        match action:
             case "quit":
                 break
             case "adventure":
@@ -164,8 +194,12 @@ def Main():
                 Rest()
             case "shop":
                 Shop()
+            case "restart":
+                Restart()
             case _:
                 print("Invalid action")
                 continue
 
-Main()
+
+if __name__ == "__main__":
+    Main()

@@ -1,19 +1,32 @@
 {
     "PlayerData": {
-        "Health": 70,
-        "MaxHealth": 100,
-        "Stamina": 100,
-        "MaxStamina": 100,
-        "Strength": 10,
-        "Dexterity": 15,
-        "Intelligence": 10,
-        "Skills": [
+        "PlayerAttributes": {
+            "Strength": 10,
+            "Dexterity": 15,
+            "Intelligence": 10
+        },
+        "PlayerCondition": {
+            "Health": 60,
+            "MaxHealth": 100,
+            "Stamina": 100,
+            "MaxStamina": 100
+        },
+        "PlayerSkills": [
             "Attack",
             "Heal",
             "Buff"
         ]
     },
-    "PlayerInventory": {},
+    "PlayerInventory": {
+        "coal": 16,
+        "iron": 6,
+        "gold": 6,
+        "wood": 94,
+        "berries": 90,
+        "fruit": 43,
+        "mysterious potion": 24,
+        "silver": 7
+    },
     "ClassData": {
         "Barbarian": {
             "Health": 140,
@@ -104,21 +117,25 @@
         "Monsters": {
             "Goblin": {
                 "Health": 50,
-                "Damage": 10
+                "Damage": 10,
+                "Experience": 20
             },
             "Troll": {
                 "Health": 60,
-                "Damage": 5
+                "Damage": 5,
+                "Experience": 20
             },
             "Spider": {
                 "Health": 30,
-                "Damage": 10
+                "Damage": 10,
+                "Experience": 20
             }
         },
         "Bosses": {
             "Minotaur": {
                 "Health": 100,
-                "Damage": 40
+                "Damage": 40,
+                "Experience": 100
             }
         }
     }
