@@ -7,6 +7,9 @@
         "Intelligence": 10,
         "Skills": ["Attack", "Heal", "Buff"]
     },
+    "PlayerInventory": {
+
+    },
     "ClassData": {
         "Barbarian": {
             "Health": 140,
@@ -102,6 +105,10 @@
             "Troll": {
                 "Health": 60,
                 "Damage": 5
+            },
+            "Spider": {
+                "Health": 30,
+                "Damage": 10
             }
         },
         "Bosses": {

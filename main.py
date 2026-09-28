@@ -16,13 +16,19 @@ def Setup():
 def DiceRoll():
     return random.randint(1, 20)
 
+#region Combat
 
-def Combat(monsterName, enemyType):
-    enemyData = gameData.get("MonsterData")[enemyType][monsterName]
+def Combat(monsterName, enemyClass):
+    enemyData = gameData.get("MonsterData")[enemyClass][monsterName]
     monsterHealth = enemyData.get("Health")
     monsterDamage = enemyData.get("Damage")
 
-    playerHealth = playerData.get("Health")
+    # Open json file and define gameData from json data
+    with open("data.json", "r", encoding = "utf-8") as f:
+        gameData = json.load(f)
+
+    # define playerData
+    playerData = gameData.get("PlayerData")
 
     while playerHealth > 0 or monsterHealth > 0:
         match str(input(f"How would you like to attack?\n{playerData.get("Skills")}\n> ")).lower():
@@ -44,7 +50,6 @@ def Combat(monsterName, enemyType):
         json.dump(gameData, f, indent=4, ensure_ascii=False)
 
 
-
 def Adventure():
     # Gabriël
     monsterData = gameData.get("MonsterData")
@@ -55,6 +60,10 @@ def Adventure():
         Combat(monsterName, "Monsters")
     else:
         print("You encountered nothing\n")
+
+#endregion
+
+#region Gathering
 
 def Mine():
     #When mining give the player a random ore based on rarity and random amount from 1 to 4 
@@ -98,6 +107,8 @@ def Gather():
     if mystery_blade_chance == 100:
         mystery_blade = 1
         print(f"You got the mysterious blade! (1/100 chance)")
+
+#endregion
 
 def Rest():
     #when resting regenarate 15% of max health and dont let them go above their max hp
