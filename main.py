@@ -17,7 +17,11 @@ def Setup():
 
 
 def Adventure():
-    pass
+    if random.randint(10) == 1:
+        print("You encountered a monster")
+    else:
+        print(":)")
+
 
 
 def Main():
