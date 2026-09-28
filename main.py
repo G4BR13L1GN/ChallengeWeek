@@ -19,34 +19,45 @@ def DiceRoll():
 #region Combat
 
 def Combat(monsterName, enemyClass):
-    enemyData = gameData.get("MonsterData")[enemyClass][monsterName]
-    monsterHealth = enemyData.get("Health")
-    monsterDamage = enemyData.get("Damage")
-
     # Open json file and define gameData from json data
     with open("data.json", "r", encoding = "utf-8") as f:
         gameData = json.load(f)
 
+    enemyData = gameData.get("MonsterData")[enemyClass][monsterName]
+    monsterHealth = enemyData.get("Health")
+    monsterDamage = enemyData.get("Damage")
+
     # define playerData
     playerData = gameData.get("PlayerData")
+    currentHealth = playerData.get("Health")
+    maxHealth = playerData.get("MaxHealth")
 
-    while playerHealth > 0 or monsterHealth > 0:
+
+    while currentHealth > 0 or monsterHealth > 0:
         match str(input(f"How would you like to attack?\n{playerData.get("Skills")}\n> ")).lower():
             case "attack":
                 monsterHealth -= playerData.get("Strength")
                 print(f"\nYou did {playerData.get("Strength")} damage!\nThe {monsterName} has {monsterHealth} HP left!\n")
             case "heal":
-                playerHealth += 20
-                print(f"\nYou healed 20 HP!\nYou have {playerHealth} HP left!\n")
+                healAmount = 20
+
+                if currentHealth + healAmount > playerData.get("MaxHealth"):
+                    healAmount = maxHealth - currentHealth
+                
+                currentHealth += healAmount
+                
+                print(f"\nYou healed {healAmount} HP!\nYou have {currentHealth} HP left!\n")
 
         if monsterHealth > 0:
-            playerHealth -= monsterDamage
-            print(f"The {monsterName} did {monsterDamage} damage!\nYou have {playerHealth} HP left!\n")
+            currentHealth -= monsterDamage
+            print(f"The {monsterName} did {monsterDamage} damage!\nYou have {currentHealth} HP left!\n")
         else:
             print(f"You defeated the {monsterName}!\nYou gained x XP!\n")
             break
 
-    with open("FantasyGame.json", "w", encoding="utf-8") as f:
+    playerData["Health"] = currentHealth
+
+    with open("data.json", "w", encoding="utf-8") as f:
         json.dump(gameData, f, indent=4, ensure_ascii=False)
 
 
@@ -114,19 +125,21 @@ def Rest():
     #when resting regenarate 15% of max health and dont let them go above their max hp
     currentHealth = playerData.get("Health")
     maxHealth = playerData.get("MaxHealth")
-    regeneratedHealth = int(maxHealth * 0.15)
+    regeneratedHealth = int(maxHealth * 0.15) # +15%
+
+    # if current + regenerated > max -> 
+    if currentHealth + regeneratedHealth > maxHealth:
+        regeneratedHealth = maxHealth - currentHealth
 
     currentHealth += regeneratedHealth
     if currentHealth > maxHealth:
         currentHealth = maxHealth
 
-    if currentHealth + regeneratedHealth > maxHealth:
-        regeneratedHealth = maxHealth - currentHealth
-
-    currentHealth += regeneratedHealth
     print(f"You regenerated {regeneratedHealth} health.\nYou now have {currentHealth} HP.")
 
-    with open("FantasyGame.json", "w", encoding="utf-8") as f:
+    playerData["Health"] = currentHealth
+
+    with open("data.json", "w", encoding="utf-8") as f:
         json.dump(gameData, f, indent=4, ensure_ascii=False)
 
 def Shop():

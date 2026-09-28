@@ -1,15 +1,19 @@
 {
     "PlayerData": {
-        "Health": 40,
+        "Health": 70,
         "MaxHealth": 100,
+        "Stamina": 100,
+        "MaxStamina": 100,
         "Strength": 10,
         "Dexterity": 15,
         "Intelligence": 10,
-        "Skills": ["Attack", "Heal", "Buff"]
+        "Skills": [
+            "Attack",
+            "Heal",
+            "Buff"
+        ]
     },
-    "PlayerInventory": {
-
-    },
+    "PlayerInventory": {},
     "ClassData": {
         "Barbarian": {
             "Health": 140,
