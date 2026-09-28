@@ -23,9 +23,8 @@ def Adventure():
         print(":)")
 
 
-def DiceRoll():
-    pass
-
+def DiceRoll(sides = int(20):
+    return random.randint(1, sides)
 
 def Main():
     Setup()
