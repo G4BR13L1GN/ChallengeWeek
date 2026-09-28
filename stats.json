@@ -1,5 +1,9 @@
 {
-    "PlayerStats": {
+    "PlayerData": {
+        "Strength": 10
+    },
+    
+    "ClassData": {
         "Barbarian": {
             "Health": 140,
             "Strength": 25,
