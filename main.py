@@ -23,6 +23,9 @@ def Adventure():
         print(":)")
 
 
+def DiceRoll():
+    pass
+
 
 def Main():
     Setup()
