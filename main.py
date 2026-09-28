@@ -33,6 +33,22 @@ def Adventure(skill):
         print("No monster")
 
 
+def Mine():
+    pass
+
+
+def Gather():
+    pass
+
+
+def Rest():
+    pass
+
+
+def Shop():
+    pass
+
+
 def Main():
     Setup()
 
@@ -42,6 +58,14 @@ def Main():
                 break
             case "adventure":
                 Adventure("Strength")
+            case "mine":
+                Mine()
+            case "gather":
+                Gather()
+            case "rest":
+                Rest()
+            case "shop":
+                Shop()
             case _:
                 print("Invalid action")
                 continue
