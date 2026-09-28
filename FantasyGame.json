@@ -1,7 +1,15 @@
 {
     "PlayerData": {
-        "Strength": 10
-    }, 
+        "Health": 100,
+        "Strength": 10,
+        "Dexterity": 15,
+        "Intelligence": 10,
+        "Skills": [
+            "Attack",
+            "Heal",
+            "Buff"
+        ]
+    },
     "ClassData": {
         "Barbarian": {
             "Health": 140,
@@ -89,9 +97,15 @@
         }
     },
     "MonsterData": {
-        "Goblin": {
-            "Health": 50,
-            "Damage": 20
+        "Bosses": {
+            "Goblin": {
+                "Health": 50,
+                "Damage": 20
+            },
+            "Troll": {
+                "Health": 50,
+                "Damage": 20
+            }
         }
     }
 }

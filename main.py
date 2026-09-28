@@ -6,34 +6,55 @@ def Setup():
     global playerData
 
     # Open json file and define gameData from json data
-    with open("stats.json", "r", encoding = "utf-8") as f:
+    with open("data.json", "r", encoding = "utf-8") as f:
         gameData = json.load(f)
 
     # define playerData
     playerData = gameData.get("PlayerData")
-
-    # Open json file and dump gameData into json file
-    with open("stats.json", "w", encoding = "utf-8") as f:
-        json.dump(gameData, f, indent = 4, ensure_ascii=False)
 
 
 def DiceRoll():
     return random.randint(1, 20)
 
 
-def Combat():
-    # Gabriël
-    pass
+def Combat(monsterName, enemyType):
+    enemyData = gameData.get("MonsterData")[enemyType][monsterName]
+    monsterHealth = enemyData.get("Health")
+    monsterDamage = enemyData.get("Damage")
+
+    playerHealth = playerData.get("Health")
+
+    while playerHealth > 0 or monsterHealth > 0:
+        match str(input(f"How would you like to attack?\n{playerData.get("Skills")}\n> ")).lower():
+            case "attack":
+                monsterHealth -= playerData.get("Strength")
+                print(f"\nYou did {playerData.get("Strength")} damage!\nThe {monsterName} has {monsterHealth} HP left!\n")
+            case "heal":
+                playerHealth += 20
+                print(f"\nYou healed 20 HP!\nYou have {playerHealth} HP left!\n")
+
+        if monsterHealth > 0:
+            playerHealth -= monsterDamage
+            print(f"The {monsterName} did {monsterDamage} damage!\nYou have {playerHealth} HP left!\n")
+        else:
+            print(f"You defeated the {monsterName}!\nYou gained x XP!")
+            break
+
+    with open("FantasyGame.json", "w", encoding="utf-8") as f:
+        json.dump(gameData, f, indent=4, ensure_ascii=False)
 
 
-def Adventure(skill):
+
+def Adventure():
     # Gabriël
-    if DiceRoll() < playerData.get(skill):
-        print("You encountered a monster")
-        Combat()
+    monsterData = gameData.get("MonsterData")
+
+    if playerData.get("Intelligence") > 0:
+        monsterName = random.choice(list(monsterData["Bosses"].keys()))
+        print(f"\nYou encountered a {monsterName}")
+        Combat(monsterName, "Bosses")
     else:
-        print("No monster")
-
+        print("You encountered nothing\n")
 
 def Mine():
     # Stojan
@@ -63,7 +84,7 @@ def Main():
             case "quit":
                 break
             case "adventure":
-                Adventure("Strength")
+                Adventure()
             case "mine":
                 Mine()
             case "gather":
