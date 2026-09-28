@@ -1,0 +1,114 @@
+{
+    "PlayerData": {
+        "Health": 100,
+        "MaxHealth": 100,
+        "Strength": 10,
+        "Dexterity": 15,
+        "Intelligence": 10,
+        "Skills": ["Attack", "Heal", "Buff"]
+    },
+    "ClassData": {
+        "Barbarian": {
+            "Health": 140,
+            "Strength": 25,
+            "Dexterity": 10,
+            "Intelligence": 5,
+            "Skills": {}
+        },
+        "Bard": {
+            "Health": 95,
+            "Strength": 10,
+            "Dexterity": 15,
+            "Intelligence": 20,
+            "Skills": {}
+        },
+        "Cleric": {
+            "Health": 100,
+            "Strength": 10,
+            "Dexterity": 10,
+            "Intelligence": 20,
+            "Skills": {}
+        },
+        "Druid": {
+            "Health": 105,
+            "Strength": 10,
+            "Dexterity": 15,
+            "Intelligence": 25,
+            "Skills": {}
+        },
+        "Fighter": {
+            "Health": 130,
+            "Strength": 25,
+            "Dexterity": 15,
+            "Intelligence": 5,
+            "Skills": {}
+        },
+        "Monk": {
+            "Health": 100,
+            "Strength": 20,
+            "Dexterity": 25,
+            "Intelligence": 10,
+            "Skills": {}
+        },
+        "Paladin": {
+            "Health": 120,
+            "Strength": 15,
+            "Dexterity": 10,
+            "Intelligence": 15,
+            "Skills": {}
+        },
+        "Ranger": {
+            "Health": 110,
+            "Strength": 15,
+            "Dexterity": 20,
+            "Intelligence": 10,
+            "Skills": {}
+        },
+        "Rogue": {
+            "Health": 90,
+            "Strength": 10,
+            "Dexterity": 25,
+            "Intelligence": 15,
+            "Skills": {}
+        },
+        "Sorcerer": {
+            "Health": 80,
+            "Strength": 5,
+            "Dexterity": 10,
+            "Intelligence": 25,
+            "Skills": {}
+        },
+        "Warlock": {
+            "Health": 85,
+            "Strength": 5,
+            "Dexterity": 10,
+            "Intelligence": 25,
+            "Skills": {}
+        },
+        "Wizard": {
+            "Health": 85,
+            "Strength": 5,
+            "Dexterity": 10,
+            "Intelligence": 30,
+            "Skills": {}
+        }
+    },
+    "MonsterData": {
+        "Monsters": {
+            "Goblin": {
+                "Health": 50,
+                "Damage": 10
+            },
+            "Troll": {
+                "Health": 60,
+                "Damage": 5
+            }
+        },
+        "Bosses": {
+            "Minotaur": {
+                "Health": 100,
+                "Damage": 40
+            }
+        }
+    }
+}
