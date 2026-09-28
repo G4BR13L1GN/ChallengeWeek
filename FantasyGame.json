@@ -1,9 +1,7 @@
 {
     "PlayerData": {
-<<<<<<< HEAD:stats.json
-        "Strength": 10
-=======
-        "Health": 100,
+        "Health": 40,
+        "MaxHealth": 100,
         "Strength": 10,
         "Dexterity": 15,
         "Intelligence": 10,
@@ -12,7 +10,6 @@
             "Heal",
             "Buff"
         ]
->>>>>>> 1ee1e62d7e7432d880547fe8b84c3f7c89877182:FantasyGame.json
     },
     "ClassData": {
         "Barbarian": {
@@ -101,14 +98,20 @@
         }
     },
     "MonsterData": {
-        "Bosses": {
+        "Monsters": {
             "Goblin": {
                 "Health": 50,
-                "Damage": 20
+                "Damage": 10
             },
             "Troll": {
-                "Health": 50,
-                "Damage": 20
+                "Health": 60,
+                "Damage": 5
+            }
+        },
+        "Bosses": {
+            "Minotaur": {
+                "Health": 100,
+                "Damage": 40
             }
         }
     }

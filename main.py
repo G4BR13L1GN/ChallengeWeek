@@ -101,11 +101,22 @@ def Gather():
 
 def Rest():
     #when resting regenarate 15% of max health and dont let them go above their max hp
-    max_health = playerData.get("MaxHealth")
-    current_health = playerData.get("Health")
-    regened_health = float(max_health * 0.15)
-    playerData["Health"] = min(current_health + regened_health)
-    print(f"You regenerated {regened_health} health.")
+    currentHealth = playerData.get("Health")
+    maxHealth = playerData.get("MaxHealth")
+    regeneratedHealth = int(maxHealth * 0.15)
+
+    currentHealth += regeneratedHealth
+    if currentHealth > maxHealth:
+        currentHealth = maxHealth
+
+    if currentHealth + regeneratedHealth > maxHealth:
+        regeneratedHealth = maxHealth - currentHealth
+
+    currentHealth += regeneratedHealth
+    print(f"You regenerated {regeneratedHealth} health.\nYou now have {currentHealth} HP.")
+
+    with open("FantasyGame.json", "w", encoding="utf-8") as f:
+        json.dump(gameData, f, indent=4, ensure_ascii=False)
 
 def Shop():
     # Gabriël
