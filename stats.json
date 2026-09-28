@@ -1,259 +1,97 @@
 {
     "PlayerData": {
         "Strength": 10
-    },
-    
+    }, 
     "ClassData": {
         "Barbarian": {
             "Health": 140,
             "Strength": 25,
-            "Agility": 10,
+            "Dexterity": 10,
             "Intelligence": 5,
-            "Skills": {
-                "Rage": {
-                    "Type": "Buff",
-                    "Effect": "Increases Strength"
-                },
-                "Reckless Attack": {
-                    "Type": "Damage",
-                    "Effect": "Heavy melee attack"
-                },
-                "Whirlwind": {
-                    "Type": "Damage",
-                    "Effect": "Damages multiple enemies"
-                }
-            }
+            "Skills": {}
         },
-
         "Bard": {
             "Health": 95,
             "Strength": 10,
-            "Agility": 15,
+            "Dexterity": 15,
             "Intelligence": 20,
-            "Skills": {
-                "Inspiration": {
-                    "Type": "Buff",
-                    "Effect": "Increases an ally's stats"
-                },
-                "Vicious Mockery": {
-                    "Type": "Damage",
-                    "Effect": "Damages and weakens an enemy"
-                },
-                "Dissonant Song": {
-                    "Type": "Damage",
-                    "Effect": "Magical sound attack"
-                }
-            }
+            "Skills": {}
         },
-
         "Cleric": {
             "Health": 100,
             "Strength": 10,
-            "Agility": 10,
+            "Dexterity": 10,
             "Intelligence": 20,
-            "Skills": {
-                "Bless": {
-                    "Type": "Buff",
-                    "Effect": "Increases ally stats"
-                },
-                "Smite": {
-                    "Type": "Damage",
-                    "Effect": "Holy attack"
-                },
-                "Sacred Flame": {
-                    "Type": "Damage",
-                    "Effect": "Holy ranged attack"
-                }
-            }
+            "Skills": {}
         },
-
         "Druid": {
             "Health": 105,
             "Strength": 10,
-            "Agility": 15,
+            "Dexterity": 15,
             "Intelligence": 25,
-            "Skills": {
-                "Barkskin": {
-                    "Type": "Buff",
-                    "Effect": "Increases defense"
-                },
-                "Moonbeam": {
-                    "Type": "Damage",
-                    "Effect": "Deals magical nature damage"
-                },
-                "Thorn Whip": {
-                    "Type": "Damage",
-                    "Effect": "Damages and pulls an enemy"
-                }
-            }
+            "Skills": {}
         },
-
         "Fighter": {
             "Health": 130,
             "Strength": 25,
-            "Agility": 15,
+            "Dexterity": 15,
             "Intelligence": 5,
-            "Skills": {
-                "Second Wind": {
-                    "Type": "Buff",
-                    "Effect": "Temporarily increases survivability"
-                },
-                "Power Strike": {
-                    "Type": "Damage",
-                    "Effect": "Powerful melee attack"
-                },
-                "Cleave": {
-                    "Type": "Damage",
-                    "Effect": "Attacks multiple enemies"
-                }
-            }
+            "Skills": {}
         },
-
         "Monk": {
             "Health": 100,
             "Strength": 20,
-            "Agility": 25,
+            "Dexterity": 25,
             "Intelligence": 10,
-            "Skills": {
-                "Patient Defense": {
-                    "Type": "Buff",
-                    "Effect": "Increases evasion"
-                },
-                "Flurry of Blows": {
-                    "Type": "Damage",
-                    "Effect": "Multiple rapid attacks"
-                },
-                "Stunning Strike": {
-                    "Type": "Damage",
-                    "Effect": "Damages and stuns an enemy"
-                }
-            }
+            "Skills": {}
         },
-
         "Paladin": {
             "Health": 120,
             "Strength": 15,
-            "Agility": 10,
+            "Dexterity": 10,
             "Intelligence": 15,
-            "Skills": {
-                "Divine Shield": {
-                    "Type": "Buff",
-                    "Effect": "Increases defense"
-                },
-                "Holy Strike": {
-                    "Type": "Damage",
-                    "Effect": "Powerful holy attack"
-                },
-                "Divine Smite": {
-                    "Type": "Damage",
-                    "Effect": "Deals heavy holy damage"
-                }
-            }
+            "Skills": {}
         },
-
         "Ranger": {
             "Health": 110,
             "Strength": 15,
-            "Agility": 20,
+            "Dexterity": 20,
             "Intelligence": 10,
-            "Skills": {
-                "Hunter's Mark": {
-                    "Type": "Buff",
-                    "Effect": "Increases damage against a target"
-                },
-                "Arrow Shot": {
-                    "Type": "Damage",
-                    "Effect": "Ranged attack"
-                },
-                "Multi Shot": {
-                    "Type": "Damage",
-                    "Effect": "Fires at multiple enemies"
-                }
-            }
+            "Skills": {}
         },
-
         "Rogue": {
             "Health": 90,
             "Strength": 10,
-            "Agility": 25,
+            "Dexterity": 25,
             "Intelligence": 15,
-            "Skills": {
-                "Stealth": {
-                    "Type": "Buff",
-                    "Effect": "Increases evasion and attack damage"
-                },
-                "Backstab": {
-                    "Type": "Damage",
-                    "Effect": "Heavy attack from stealth"
-                },
-                "Poison Strike": {
-                    "Type": "Damage",
-                    "Effect": "Damages and poisons an enemy"
-                }
-            }
+            "Skills": {}
         },
-
         "Sorcerer": {
             "Health": 80,
             "Strength": 5,
-            "Agility": 10,
+            "Dexterity": 10,
             "Intelligence": 25,
-            "Skills": {
-                "Empower Spell": {
-                    "Type": "Buff",
-                    "Effect": "Increases spell damage"
-                },
-                "Fireball": {
-                    "Type": "Damage",
-                    "Effect": "Deals fire damage"
-                },
-                "Chain Lightning": {
-                    "Type": "Damage",
-                    "Effect": "Lightning jumps between enemies"
-                }
-            }
+            "Skills": {}
         },
-
         "Warlock": {
             "Health": 85,
             "Strength": 5,
-            "Agility": 10,
+            "Dexterity": 10,
             "Intelligence": 25,
-            "Skills": {
-                "Dark Pact": {
-                    "Type": "Buff",
-                    "Effect": "Increases magical power"
-                },
-                "Eldritch Blast": {
-                    "Type": "Damage",
-                    "Effect": "Powerful ranged magic attack"
-                },
-                "Life Drain": {
-                    "Type": "Damage",
-                    "Effect": "Damages an enemy and restores health"
-                }
-            }
+            "Skills": {}
         },
-
         "Wizard": {
             "Health": 85,
             "Strength": 5,
-            "Agility": 10,
+            "Dexterity": 10,
             "Intelligence": 30,
-            "Skills": {
-                "Arcane Intellect": {
-                    "Type": "Buff",
-                    "Effect": "Increases Intelligence"
-                },
-                "Lightning Bolt": {
-                    "Type": "Damage",
-                    "Effect": "Powerful lightning attack"
-                },
-                "Frost Nova": {
-                    "Type": "Damage",
-                    "Effect": "Deals ice damage to nearby enemies"
-                }
-            }
+            "Skills": {}
+        }
+    },
+    "MonsterData": {
+        "Goblin": {
+            "Health": 50,
+            "Damage": 20
         }
     }
 }
