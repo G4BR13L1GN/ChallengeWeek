@@ -37,7 +37,7 @@ def Combat(monsterName, enemyType):
             playerHealth -= monsterDamage
             print(f"The {monsterName} did {monsterDamage} damage!\nYou have {playerHealth} HP left!\n")
         else:
-            print(f"You defeated the {monsterName}!\nYou gained x XP!")
+            print(f"You defeated the {monsterName}!\nYou gained x XP!\n")
             break
 
     with open("FantasyGame.json", "w", encoding="utf-8") as f:
@@ -50,9 +50,9 @@ def Adventure():
     monsterData = gameData.get("MonsterData")
 
     if playerData.get("Intelligence") > 0:
-        monsterName = random.choice(list(monsterData["Bosses"].keys()))
+        monsterName = random.choice(list(monsterData["Monsters"].keys()))
         print(f"\nYou encountered a {monsterName}")
-        Combat(monsterName, "Bosses")
+        Combat(monsterName, "Monsters")
     else:
         print("You encountered nothing\n")
 
