@@ -22,30 +22,36 @@ def DiceRoll():
 
 
 def Combat():
+    # Gabriël
     pass
 
 
 def Adventure(skill):
+    # Gabriël
     if DiceRoll() < playerData.get(skill):
         print("You encountered a monster")
-        Combat("Mystery Monster 🧌")
+        Combat()
     else:
         print("No monster")
 
 
 def Mine():
+    # Stojan
     pass
 
 
 def Gather():
+    # Stojan
     pass
 
 
 def Rest():
+    # Stojan
     pass
 
 
 def Shop():
+    # Gabriël
     pass
 
 
