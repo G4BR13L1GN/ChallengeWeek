@@ -1,7 +1,0 @@
-# Definitions
-
-# Input
-
-# Processing
-
-# Output
