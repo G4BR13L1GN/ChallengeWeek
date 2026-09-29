@@ -69,6 +69,7 @@ def CharacterSetup(gameData):
     playerCondition["Stamina"] = classData[playerClass].get("Stamina")
     playerCondition["MaxStamina"] = playerCondition.get("Stamina")
 
+    # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
         json.dump(gameData, f, indent = 4, ensure_ascii = False)
 
@@ -164,6 +165,7 @@ def Combat(gameData, monsterName, enemyClass):
     # Save player health after battle
     playerCondition["Health"] = currentHealth
 
+    # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
         json.dump(gameData, f, indent = 4, ensure_ascii = False)
 
@@ -202,6 +204,7 @@ def Aquire(gameData, itemName, spawnChance, maxSpawnAmount, itemPrice):
             "Price": itemPrice
         }
 
+    # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
         json.dump(gameData, f, indent = 4, ensure_ascii = False)
 
@@ -257,6 +260,7 @@ def Rest(gameData):
     playerCondition["Health"] = currentHealth
     playerCondition["Stamina"] = currentStamina
 
+    # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
         json.dump(gameData, f, indent = 4, ensure_ascii = False)
 
@@ -301,6 +305,7 @@ def Buy(gameData):
             print()
             continue
 
+    # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
         json.dump(gameData, f, indent = 4, ensure_ascii = False)
 
@@ -346,6 +351,7 @@ def Sell(gameData):
             print()
             continue
 
+    # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
         json.dump(gameData, f, indent = 4, ensure_ascii = False)
 
@@ -361,6 +367,7 @@ def Shop(gameData):
             Sell(gameData)
         case _:
             print("Invalid action")
+            Shop()
 
 
 def Main():
