@@ -217,7 +217,7 @@ def Adventure(gameData):
         monsterData = gameData.get("MonsterData")
 
         monsterName = random.choice(list(monsterData["Monsters"].keys()))
-        print(f"{playerData.get("PlayerProfile").get("Name")} encountered a {monsterName}")
+        PrintRed(f"{playerData.get("PlayerProfile").get("Name")} encountered a {monsterName}")
 
         Combat(gameData, monsterName, "Monsters")
     else:
