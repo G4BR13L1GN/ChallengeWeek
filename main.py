@@ -41,7 +41,7 @@ def CharacterSetup(gameData):
 
     classData = gameData.get("ClassData")
 
-    # Idea: change playerSkills based on class
+    # have to change playerSkills based on class
 
     # Assign name
     playerProfile["Name"] = str(input("\nWhat is your characters name?\n> "))
