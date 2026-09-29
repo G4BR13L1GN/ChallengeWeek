@@ -10,15 +10,16 @@
             "Intelligence": 6
         },
         "PlayerCondition": {
-            "Health": 125,
+            "Health": 140,
             "MaxHealth": 140,
-            "Stamina": 110,
+            "Stamina": 10,
             "MaxStamina": 120
         },
         "PlayerExperience": {
             "Experience": 0
         },
         "PlayerInventory": {},
+        "PlayerEquipment": {},
         "PlayerSkills": [
             "Attack",
             "Heal",

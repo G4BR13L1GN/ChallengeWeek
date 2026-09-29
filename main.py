@@ -6,11 +6,13 @@ def ResetData(gameData):
     # Assign player data
     playerData = gameData.get("PlayerData")
     playerInventory = playerData.get("PlayerInventory")
+    playerEquipment = playerData.get("PlayerEquipment")
     playerExperience = playerData.get("PlayerExperience")
     playerProfile = playerData.get("PlayerProfile")
 
     # Reset player data
     playerInventory.clear()
+    playerEquipment.clear()
     playerExperience["Experience"] = 0
     for part in playerProfile.keys():
         playerProfile[part] = ""
@@ -56,7 +58,7 @@ def CharacterSetup(gameData):
             print("Class not available (yet)")
             print()
 
-    # Assign class once    
+    # Assign class once
     playerProfile["Class"] = playerClass
 
     # Assign each attribute based on class
@@ -98,6 +100,7 @@ def Combat(gameData, monsterName, enemyClass):
     playerData = gameData.get("PlayerData")
     playerCondition = playerData.get("PlayerCondition")
     playerAttributes = playerData.get("PlayerAttributes")
+    playerEquipment = playerData.get("PlayerEquipment")
 
     currentHealth = playerCondition.get("Health")
     maxHealth = playerCondition.get("MaxHealth")
@@ -122,6 +125,15 @@ def Combat(gameData, monsterName, enemyClass):
 
         # Apply / remove buff
         attackMultiplier = 1.2 if buffTurns > 0 else 1
+        defenceMultiplier = 1
+
+        for key in playerEquipment.keys():
+            equipment = playerEquipment.get(key)
+
+            if equipment.get("Type") == "Weapon":
+                attackMultiplier *= equipment.get("DamageIncrease")
+            elif equipment.get("Type") == "Armour":
+                defenceMultiplier *= equipment.get("DamageNegation")
 
         if buffTurns > 0:
             buffTurns -= 1
@@ -130,14 +142,14 @@ def Combat(gameData, monsterName, enemyClass):
         match action:
             case "Attack":
                 # Deal strength + 1 or 2 extra damage, multiplied by attackMultiplier to enemy
-                playerDamage = (playerAttributes.get("Strength") + DiceRoll(2)) * attackMultiplier
+                playerDamage = int((playerAttributes.get("Strength") + DiceRoll(2)) * attackMultiplier)
                 enemyHealth -= playerDamage
 
                 # Limit enemyHealth to 0, not -4
                 if enemyHealth < 0:
                     enemyHealth = 0
 
-                print(f"{playerName} did {playerDamage} damage!\nThe {monsterName} has {enemyHealth} HP left.")
+                print(f"{playerName} did {playerDamage:00} damage!\nThe {monsterName} has {enemyHealth:00} HP left.")
             case "Heal":
                 # Heal 20 HP
                 healAmount = 20
@@ -148,7 +160,7 @@ def Combat(gameData, monsterName, enemyClass):
 
                 # Apply healing
                 currentHealth += healAmount
-                
+
                 print(f"{playerName} healed {healAmount} HP!\n{playerName} has {currentHealth} HP left.")
             case "Buff":
                 # 4 not 3 since buffTurns removes 1 before attack is possible
@@ -159,8 +171,8 @@ def Combat(gameData, monsterName, enemyClass):
 
         # Continue fight if enemy still alive
         if enemyHealth > 0:
-            currentHealth -= enemyDamage
-            print(f"The {monsterName} did {enemyDamage} damage!\n{playerName} has {currentHealth} HP left.")
+            currentHealth -= int(enemyDamage / defenceMultiplier)
+            print(f"The {monsterName} did {int(enemyDamage / defenceMultiplier)} damage!\n{playerName} has {currentHealth} HP left.")
         else:
             # Reward player with experience and coins with maximum of monster XP
             experienceGained = enemyData.get("Experience", 0)
@@ -195,7 +207,7 @@ def Adventure(gameData):
     if (playerCondition["Stamina"] - staminaCost) < 0:
         print(f"{playerData.get("PlayerProfile").get("Name")} doesn't have enough stamina to adventure, {playerData.get("PlayerProfile").get("Name")} should rest!")
         return
-    
+
     playerCondition["Stamina"] -= staminaCost
 
     print(f"{playerData.get("PlayerProfile").get("Name")} has used {staminaCost} stamina points to adventure.")
@@ -213,9 +225,9 @@ def Adventure(gameData):
 
 
 def Aquire(gameData, itemName, spawnChance, maxSpawnAmount, itemPrice):
-    # Aquire item with arguments gameData which it adds items ontop of, 
-    #                            name of the item, 
-    #                            spawn chance (from 1 to x), 
+    # Aquire item with arguments gameData which it adds items ontop of,
+    #                            name of the item,
+    #                            spawn chance (from 1 to x),
     #                            max spawn amount,
     #                            and price of the item
     playerData = gameData.get("PlayerData")
@@ -249,7 +261,7 @@ def Mine(gameData):
     if (playerCondition["Stamina"] - staminaCost) < 0:
         print(f"{playerData.get("PlayerProfile").get("Name")} doesn't have enough stamina to mine, {playerData.get("PlayerProfile").get("Name")} should rest!")
         return
-    
+
     playerCondition["Stamina"] -= staminaCost
 
     print(f"{playerData.get("PlayerProfile").get("Name")} has used {staminaCost} stamina points to mine, and now has {playerCondition.get("Stamina")} stamina left.")
@@ -276,12 +288,12 @@ def Gather(gameData):
 
     # Stamina cost for gathering
     staminaCost = 10
-    
+
     # Prevent stamina going below 0
     if (playerCondition["Stamina"] - staminaCost) < 0:
         print(f"{playerData.get("PlayerProfile").get("Name")} doesn't have enough stamina to adventure, {playerData.get("PlayerProfile").get("Name")} should rest!")
         return
-    
+
     playerCondition["Stamina"] -= staminaCost
 
     print(f"{playerData.get("PlayerProfile").get("Name")} has used {staminaCost} stamina points to gather, and now has {playerCondition.get("Stamina")} stamina left.")
@@ -346,6 +358,7 @@ def Buy(gameData):
     # Define player data
     playerData = gameData.get("PlayerData")
     playerInventory = playerData.get("PlayerInventory")
+    playerEquipment = playerData.get("PlayerEquipment")
 
     # Define shop items
     shopData = gameData.get("ShopData")
@@ -374,6 +387,18 @@ def Buy(gameData):
             if playerInventory.get("Coins", {}).get("Amount") >= itemPrice:
                 Aquire(gameData, item, 1, 1, itemPrice)
                 playerInventory["Coins"]["Amount"] -= itemPrice
+
+                # Add item to PlayerEquipment for specific types
+                if shopData.get(item).get("Type") in ["Weapon", "Armour"]:
+                    playerEquipment[item] = {
+                        "Type": shopData.get(item).get("Type")
+                    }
+
+                    if shopData.get(item).get("Type") == "Weapon":
+                        playerEquipment[item]["DamageIncrease"] = shopData.get(item).get("DamageIncrease")
+                    elif shopData.get(item).get("Type") == "Armour":
+                        playerEquipment[item]["DamageNegation"] = shopData.get(item).get("DamageNegation")
+
             else:
                 print(f"{playerData.get("PlayerProfile").get("Name")} doesn't have enough coin.")
         elif buyConfirmation == "N":
