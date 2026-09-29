@@ -1,15 +1,40 @@
 {
     "PlayerData": {
+        "PlayerProfile": {
+            "Name": "Thodir",
+            "Class": "Barbarian"
+        },
         "PlayerAttributes": {
-            "Strength": 10,
-            "Dexterity": 15,
-            "Intelligence": 10
+            "Strength": 25,
+            "Dexterity": 10,
+            "Intelligence": 5
         },
         "PlayerCondition": {
-            "Health": 60,
-            "MaxHealth": 100,
-            "Stamina": 100,
-            "MaxStamina": 100
+            "Health": 130,
+            "MaxHealth": 140,
+            "Stamina": 120,
+            "MaxStamina": 120
+        },
+        "PlayerExperience": {
+            "Experience": 20
+        },
+        "PlayerInventory": {
+            "Coins": {
+                "Amount": 88,
+                "Price": 1
+            },
+            "Wood": {
+                "Amount": 27,
+                "Price": 2
+            },
+            "Berries": {
+                "Amount": 19,
+                "Price": 2
+            },
+            "Fruit": {
+                "Amount": 10,
+                "Price": 3
+            }
         },
         "PlayerSkills": [
             "Attack",
@@ -17,19 +42,14 @@
             "Buff"
         ]
     },
-    "PlayerInventory": {
-        "coal": 16,
-        "iron": 6,
-        "gold": 6,
-        "wood": 94,
-        "berries": 90,
-        "fruit": 43,
-        "mysterious potion": 24,
-        "silver": 7
+    "ShopData": {
+        "Chestplate": 10,
+        "Sword": 4
     },
     "ClassData": {
         "Barbarian": {
             "Health": 140,
+            "Stamina": 120,
             "Strength": 25,
             "Dexterity": 10,
             "Intelligence": 5,
@@ -37,6 +57,7 @@
         },
         "Bard": {
             "Health": 95,
+            "Stamina": 105,
             "Strength": 10,
             "Dexterity": 15,
             "Intelligence": 20,
@@ -44,6 +65,7 @@
         },
         "Cleric": {
             "Health": 100,
+            "Stamina": 100,
             "Strength": 10,
             "Dexterity": 10,
             "Intelligence": 20,
@@ -51,6 +73,7 @@
         },
         "Druid": {
             "Health": 105,
+            "Stamina": 105,
             "Strength": 10,
             "Dexterity": 15,
             "Intelligence": 25,
@@ -58,6 +81,7 @@
         },
         "Fighter": {
             "Health": 130,
+            "Stamina": 115,
             "Strength": 25,
             "Dexterity": 15,
             "Intelligence": 5,
@@ -65,6 +89,7 @@
         },
         "Monk": {
             "Health": 100,
+            "Stamina": 130,
             "Strength": 20,
             "Dexterity": 25,
             "Intelligence": 10,
@@ -72,6 +97,7 @@
         },
         "Paladin": {
             "Health": 120,
+            "Stamina": 105,
             "Strength": 15,
             "Dexterity": 10,
             "Intelligence": 15,
@@ -79,6 +105,7 @@
         },
         "Ranger": {
             "Health": 110,
+            "Stamina": 120,
             "Strength": 15,
             "Dexterity": 20,
             "Intelligence": 10,
@@ -86,6 +113,7 @@
         },
         "Rogue": {
             "Health": 90,
+            "Stamina": 125,
             "Strength": 10,
             "Dexterity": 25,
             "Intelligence": 15,
@@ -93,6 +121,7 @@
         },
         "Sorcerer": {
             "Health": 80,
+            "Stamina": 85,
             "Strength": 5,
             "Dexterity": 10,
             "Intelligence": 25,
@@ -100,6 +129,7 @@
         },
         "Warlock": {
             "Health": 85,
+            "Stamina": 90,
             "Strength": 5,
             "Dexterity": 10,
             "Intelligence": 25,
@@ -107,6 +137,7 @@
         },
         "Wizard": {
             "Health": 85,
+            "Stamina": 80,
             "Strength": 5,
             "Dexterity": 10,
             "Intelligence": 30,
