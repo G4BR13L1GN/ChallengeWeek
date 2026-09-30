@@ -53,7 +53,7 @@ def CharacterSetup(gameData):
 
     # Loop until valid player class is chosen
     while playerClass not in list(classData.keys()):
-        playerClass = str(input(f"What is your characters class?\n{", ".join(list(classData.keys()))}\n> "))
+        playerClass = str(input(f"What is your characters class?\n{list(classData.keys())}\n> "))
 
         if playerClass not in list(classData.keys()):
             print("Class not available (yet)")
@@ -199,6 +199,9 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
     # Increase player zone
     playerProgress["MapZone"] += 1
 
+    zones = ["Overworld", "Caverns", "Sift"]
+    playerProgress["MapDimension"] = zones[(playerProgress.get("MapZone") - 1) // 6]
+    
     # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
         json.dump(gameData, f, indent = 4, ensure_ascii = False)
@@ -377,7 +380,7 @@ def Buy(gameData):
     # Get input for which item player wants to buy
     item = ""
     while item not in list(shopData.keys()):
-        item = str(input(f"What item would {playerData.get("PlayerProfile").get("Name")} like to browse?\nThe shop currently has: {", ".join(list(shopData.keys()))}\n> ").lower())
+        item = str(input(f"What item would {playerData.get("PlayerProfile").get("Name")} like to browse?\nThe shop currently has: {list(shopData.keys())}\n> ").lower())
 
         if item not in list(shopData.keys()):
             print("Invalid item")
@@ -433,7 +436,7 @@ def Sell(gameData):
     # Get input for which item player wants to buy
     item = ""
     while item not in list(playerInventory.keys()):
-        item = str(input(f"What item would {playerData.get("PlayerProfile").get("Name")} like to sell?\n{playerData.get("PlayerProfile").get("Name")} currently has: {", ".join(list(playerInventory.keys()))}\n> ").capitalize())
+        item = str(input(f"What item would {playerData.get("PlayerProfile").get("Name")} like to sell?\n{playerData.get("PlayerProfile").get("Name")} currently has: {list(playerInventory.keys())}\n> ").capitalize())
 
         if item not in list(playerInventory.keys()):
             print("Invalid item")
@@ -500,11 +503,8 @@ def Main():
         gameData = json.load(f)
 
     while True:
-        action = str(input(f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} like to do?\n> ")).capitalize()
-        print()
-
         # Possible actions with gameData as argument
-        possibleAction = {
+        possibleActions = {
             "Quit": Quit,
             "Adventure": Adventure,
             "Mine": Mine,
@@ -514,8 +514,11 @@ def Main():
             "Restart": Restart
         }
 
-        if action in possibleAction:
-            possibleAction[action](gameData)
+        action = str(input(f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} like to do?\n{list(possibleActions)}\n> ")).capitalize()
+        print()
+
+        if action in possibleActions:
+            possibleActions[action](gameData)
         else:
             print("Invalid action")
 

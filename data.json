@@ -1,53 +1,45 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-            "Name": "Sto",
-            "Class": "Warlock"
+            "Name": "perl",
+            "Class": "Barbarian"
         },
         "PlayerAttributes": {
-            "Strength": 6,
+            "Strength": 18,
             "Dexterity": 12,
-            "Intelligence": 18
+            "Intelligence": 6
         },
         "PlayerCondition": {
             "Health": 140,
             "MaxHealth": 140,
-            "Stamina": 100,
+            "Stamina": 110,
             "MaxStamina": 120
         },
         "PlayerProgress": {
-            "Experience": 20,
-            "MapZone": 2,
-            "MapDimension": "Overworld"
+            "Experience": 0,
+            "MapZone": 7,
+            "MapDimension": "Caverns",
+            "MapLevel": 1
         },
         "PlayerInventory": {
-            "Coins": {
-                "Amount": 44,
-                "Price": 1
-            },
-            "Wood": {
+            "Coal": {
                 "Amount": 2,
                 "Price": 2
             },
-            "Berries": {
-                "Amount": 1,
-                "Price": 2
-            },
-            "Coal": {
-                "Amount": 4,
-                "Price": 2
-            },
             "Iron": {
-                "Amount": 4,
+                "Amount": 1,
                 "Price": 4
+            },
+            "Silver": {
+                "Amount": 3,
+                "Price": 6
+            },
+            "Diamond": {
+                "Amount": 2,
+                "Price": 20
             }
         },
-        "PlayerEquipment": {
-            "Sword": {
-                "Type": "Weapon",
-                "DamageIncrease": 2
-            }
-        },
+        "PlayerEquipment": {},
         "PlayerSkills": [
             "Attack",
             "Heal",
@@ -334,20 +326,12 @@
             }
         },
         "Caverns": {
-            "Monsters": {
-
-            },
-            "Bosses": {
-                
-            }
+            "Monsters": {},
+            "Bosses": {}
         },
         "Sift": {
-            "Monsters": {
-
-            },
-            "Bosses": {
-
-            }
+            "Monsters": {},
+            "Bosses": {}
         }
     }
 }
