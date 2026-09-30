@@ -53,7 +53,7 @@ def CharacterSetup(gameData):
 
     # Loop until valid player class is chosen
     while playerClass not in list(classData.keys()):
-        playerClass = str(input(f"What is your characters class?\n{", ".join(list(classData.keys()))}\n> "))
+        playerClass = str(input(f"What is your characters class?\n{", ".join(list(classData.keys()))}\n> ").lower())
 
         if playerClass not in list(classData.keys()):
             print("Class not available (yet)")
