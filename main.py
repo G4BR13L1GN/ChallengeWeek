@@ -3,7 +3,7 @@ import json
 
 
 def ResetData(gameData):
-    # Assign player data
+    # Assign player data variables
     playerData = gameData.get("PlayerData")
     playerInventory = playerData.get("PlayerInventory")
     playerEquipment = playerData.get("PlayerEquipment")
@@ -35,7 +35,8 @@ def ResetData(gameData):
 
 def Restart(gameData):
     # Only continue if player has agreed twice
-    if str(input("Do you really want to restart? (Y/N)\n> ").upper()) == "Y" and str(input("\nAre you sure? (Y/N)\n> ").upper()) == "Y":
+    if str(input("Do you really want to restart? (Y/N)\n> ").upper()) == "Y" and \
+       str(input("\nAre you sure? (Y/N)\n> ").upper()) == "Y":
         # Set up new character
         CharacterSetup(gameData)
 
@@ -63,7 +64,8 @@ def CharacterSetup(gameData):
 
     # Loop until valid player class is chosen
     while playerClass not in list(classData.keys()):
-        playerClass = str(input(f"What is your characters class?\n{", ".join(list(classData.keys()))}\n> ").lower())
+        playerClass = str(input(f"What is your characters class?\n \
+            {", ".join(list(classData.keys()))}\n> ").lower())
 
         if playerClass not in list(classData.keys()):
             print("Class not available (yet)")
@@ -126,7 +128,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
     # Loop combat until either player or enemy dies
     while currentHealth > 0 and enemyHealth > 0:
         # Repeat loop if action is not in playerSkills
-        action = str(input(f"How would {playerName} like to attack?\n{playerData.get("PlayerSkills")}\n> ")).lower()
+        action = str(input(f"How would {playerName} like to attack?\n {playerData.get("PlayerSkills")}\n> ")).lower()
 
         if action not in playerData.get("PlayerSkills"):
             print("Invalid action\n")
@@ -188,8 +190,9 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
 
         # Continue fight if enemy still alive
         if enemyHealth > 0:
-            currentHealth -= int(enemyDamage / defenceMultiplier)
-            print(f"The {monsterName} did {int(enemyDamage / defenceMultiplier)} damage!\n{playerName} has {currentHealth} HP left.")
+            damageDealt  = int(enemyDamage / defenceMultiplier)
+            currentHealth -= damageDealt
+            print(f"The {monsterName} did {damageDealt} damage!\n{playerName} has {currentHealth} HP left.")
         else:
             # Reward player with experience and coins with maximum of monster XP
             experienceGained = enemyData.get("Experience", 0)
@@ -233,28 +236,30 @@ def Adventure(gameData):
     playerCondition = playerData.get("PlayerCondition")
     playerProgress = playerData.get("PlayerProgress")
 
+    playerName = playerData.get("PlayerProfile").get("Name")
+
     # Stamina cost for adventuring
     staminaCost = 10
 
     # Prevent stamina going below 0
     if (playerCondition["Stamina"] - staminaCost) < 0:
-        print(f"{playerData.get("PlayerProfile").get("Name")} doesn't have enough stamina to adventure, {playerData.get("PlayerProfile").get("Name")} should rest!")
+        print(f"{playerName} doesn't have enough stamina to adventure, {playerName} should rest!")
         return
 
     playerCondition["Stamina"] -= staminaCost
 
-    print(f"{playerData.get("PlayerProfile").get("Name")} has used {staminaCost} stamina points to adventure.")
+    print(f"{playerName} has used {staminaCost} stamina points to adventure.")
 
     # Encounter if player intelligence passes sight check
     if playerAttributes.get("Intelligence") > DiceRoll(20):
         monsterData = gameData.get("MonsterData")
 
         monsterName = random.choice(list(monsterData[playerProgress.get("MapDimension")]["Monsters"].keys()))
-        print(f"{playerData.get("PlayerProfile").get("Name")} encountered a {monsterName}")
+        print(f"{playerName} encountered a {monsterName}")
 
         Combat(gameData, "Monsters", playerProgress.get("MapDimension"), monsterName)
     else:
-        print(f"{playerData.get("PlayerProfile").get("Name")} encountered nothing.")
+        print(f"{playerName} encountered nothing.")
 
 
 def Aquire(gameData, itemName, spawnChance = 5, maxSpawnAmount = 5, itemPrice = 10):
@@ -287,17 +292,20 @@ def Mine(gameData):
     playerAttributes = playerData.get("PlayerAttributes")
     playerCondition = playerData.get("PlayerCondition")
 
+    playerName = playerData.get("PlayerProfile").get("Name")
+
     # Stamina cost for mining
     staminaCost = 10
 
     # Prevent stamina going below 0
     if (playerCondition["Stamina"] - staminaCost) < 0:
-        print(f"{playerData.get("PlayerProfile").get("Name")} doesn't have enough stamina to mine, {playerData.get("PlayerProfile").get("Name")} should rest!")
+        print(f"{playerName} doesn't have enough stamina to mine, {playerName} should rest!")
         return
 
     playerCondition["Stamina"] -= staminaCost
 
-    print(f"{playerData.get("PlayerProfile").get("Name")} has used {staminaCost} stamina points to mine, and now has {playerCondition.get("Stamina")} stamina left.")
+    print(f"{playerName} has used {staminaCost} stamina points to mine, \
+          and now has {playerCondition.get("Stamina")} stamina left.")
 
     # Higher chance on materials if strength is high
     mineFactor = playerAttributes.get("Strength") / 10
@@ -319,17 +327,20 @@ def Gather(gameData):
     playerAttributes = playerData.get("PlayerAttributes")
     playerCondition = playerData.get("PlayerCondition")
 
+    playerName = playerName
+
     # Stamina cost for gathering
     staminaCost = 10
 
     # Prevent stamina going below 0
     if (playerCondition["Stamina"] - staminaCost) < 0:
-        print(f"{playerData.get("PlayerProfile").get("Name")} doesn't have enough stamina to adventure, {playerData.get("PlayerProfile").get("Name")} should rest!")
+        print(f"{playerName} doesn't have enough stamina to adventure, {playerName} should rest!")
         return
 
     playerCondition["Stamina"] -= staminaCost
 
-    print(f"{playerData.get("PlayerProfile").get("Name")} has used {staminaCost} stamina points to gather, and now has {playerCondition.get("Stamina")} stamina left.")
+    print(f"{playerName} has used {staminaCost} stamina points to gather, \
+           and now has {playerCondition.get("Stamina")} stamina left.")
 
     # Higher chance on materials if dexterity is high
     gatherFactor = playerAttributes.get("Dexterity") / 10
@@ -393,13 +404,16 @@ def Buy(gameData):
     playerInventory = playerData.get("PlayerInventory")
     playerEquipment = playerData.get("PlayerEquipment")
 
+    playerName = playerData.get("PlayerProfile").get("Name")
+
     # Define shop items
     shopData = gameData.get("ShopData")
 
     # Get input for which item player wants to buy
     item = ""
     while item not in list(shopData.keys()):
-        item = str(input(f"What item would {playerData.get("PlayerProfile").get("Name")} like to browse?\nThe shop currently has: {list(shopData.keys())}\n> ").lower())
+        item = str(input(f"What item would {playerName} like to browse?\nThe shop currently has: \
+                         {list(shopData.keys())}\n> ").lower())
 
         if item not in list(shopData.keys()):
             print("Invalid item")
@@ -414,7 +428,7 @@ def Buy(gameData):
     buyConfirmation = ""
     while buyConfirmation not in ["Y", "N"]:
         # Ask for confirmation to buy item
-        buyConfirmation = str(input(f"Would {playerData.get("PlayerProfile").get("Name")} like to buy the {item}? (Y/N)\n> ")).capitalize()
+        buyConfirmation = str(input(f"Would {playerName} like to buy the {item}? (Y/N)\n> ")).capitalize()
 
         if buyConfirmation == "Y":
             if playerInventory.get("coins", {}).get("Amount") >= itemPrice:
@@ -433,7 +447,7 @@ def Buy(gameData):
                         playerEquipment[item]["DamageNegation"] = shopData.get(item).get("DamageNegation")
 
             else:
-                print(f"{playerData.get("PlayerProfile").get("Name")} doesn't have enough coin.")
+                print(f"{playerName} doesn't have enough coin.")
         elif buyConfirmation == "N":
             print()
             Shop(gameData)
@@ -452,10 +466,13 @@ def Sell(gameData):
     playerData = gameData.get("PlayerData")
     playerInventory = playerData.get("PlayerInventory")
 
+    playerName = playerData.get("PlayerProfile").get("Name")
+
     # Get input for which item player wants to buy
     item = ""
     while item not in list(playerInventory.keys()):
-        item = str(input(f"What item would {playerData.get("PlayerProfile").get("Name")} like to sell?\n{playerData.get("PlayerProfile").get("Name")} currently has: {list(playerInventory.keys())}\n> ").lower())
+        item = str(input(f"What item would {playerName} like to sell?\n \
+                         {playerName} currently has: {list(playerInventory.keys())}\n> ").lower())
 
         if item not in list(playerInventory.keys()):
             print("Invalid item")
@@ -468,7 +485,7 @@ def Sell(gameData):
     sellConfirmation = ""
     while sellConfirmation not in ["Y", "N"]:
         # Ask for confirmation to sell item
-        sellConfirmation = str(input(f"Would {playerData.get("PlayerProfile").get("Name")} like to sell the {item}? (Y/N)\n> ")).capitalize()
+        sellConfirmation = str(input(f"Would {playerName} like to sell the {item}? (Y/N)\n> ")).capitalize()
 
         if sellConfirmation == "Y":
             if playerInventory.get(item).get("Amount") > 0:
@@ -479,7 +496,7 @@ def Sell(gameData):
                 if playerInventory[item].get("Amount") <= 0:
                     playerInventory.pop(item)
             else:
-                print(f"{playerData.get("PlayerProfile").get("Name")} doesn't have enough {item}.")
+                print(f"{playerName} doesn't have enough {item}.")
         elif sellConfirmation == "N":
             print()
             Shop(gameData)
@@ -494,7 +511,8 @@ def Sell(gameData):
 
 
 def Shop(gameData):
-    action = str(input(f"What would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} like to do in the shop? (Buy / Sell / Leave)\n> ")).lower()
+    action = str(input(f"What would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} \
+                       like to do in the shop? (Buy / Sell / Leave)\n> ")).lower()
     print()
 
     match action:
@@ -535,7 +553,8 @@ def Main():
             "restart": Restart
         }
 
-        action = str(input(f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} like to do?\n{list(possibleActions)}\n> ")).lower()
+        action = str(input(f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} \
+                            like to do?\n{list(possibleActions)}\n> ")).lower()
         print()
 
         if action in possibleActions:
