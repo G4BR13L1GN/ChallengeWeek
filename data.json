@@ -1,13 +1,8 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-<<<<<<< HEAD
-            "Name": "bob",
-            "Class": "Barbarian"
-=======
             "Name": "Sto",
             "Class": "Warlock"
->>>>>>> 5a6658f273ef3148225856293e86369e4bd42c09
         },
         "PlayerAttributes": {
             "Strength": 6,
@@ -15,26 +10,19 @@
             "Intelligence": 18
         },
         "PlayerCondition": {
-<<<<<<< HEAD
-            "Health": 140,
-            "MaxHealth": 140,
-            "Stamina": 100,
-            "MaxStamina": 120
-=======
-            "Health": 100,
+            "Health": 90,
             "MaxHealth": 100,
-            "Stamina": 110,
+            "Stamina": 100,
             "MaxStamina": 110
->>>>>>> 5a6658f273ef3148225856293e86369e4bd42c09
         },
         "PlayerProgress": {
-            "Experience": 0,
-            "MapZone": 1,
-            "MapLevel": 1
+            "Experience": 20,
+            "MapZone": 2,
+            "MapDimension": "Overworld"
         },
         "PlayerInventory": {
             "Coins": {
-                "Amount": 30,
+                "Amount": 44,
                 "Price": 1
             },
             "Wood": {
@@ -238,87 +226,90 @@
     },
     "MonsterData": {
         "Monsters": {
-            "Goblin": {
-                "Health": 50,
-                "Damage": 10,
-                "Experience": 20,
-                "SpecialEffect": "Stealing"
-            },
-            "Troll": {
-                "Health": 60,
-                "Damage": 5,
-                "Experience": 20,
-                "SpecialEffect": "Stun"
-            },
-            "Spider": {
-                "Health": 30,
-                "Damage": 10,
-                "Experience": 20,
-                "SpecialEffect": "Poison"
-            },
-            "Bandit": {
-                "Health": 40,
-                "Damage": 15,
-                "Experience": 20,
-                "SpecialEffect": "Bleed"
-            },
-            "Orc": {
-                "Health": 80,
-                "Damage": 20,
-                "Experience": 50,
-                "SpecialEffect": "Rage Increases the damage dealt."
-            },
-            "Ghost": {
-                "Health": 30,
-                "Damage": 10,
-                "Experience": 20,
-                "SpecialEffect": "Invisibility dodges the next 1-2 attacks"
-            },
-            "Skeleton": {
-                "Health": 40,
-                "Damage": 15,
-                "Experience": 20,
-                "SpecialEffect": "Resurrects after death with 50% health"
-            },
-            "Castle Guard": {
-                "Health": 100,
-                "Damage": 20,
-                "Experience": 50,
-                "SpecialEffect": "Shield reduces damage by 30% for the next 2 turns"
+            "Overworld": {
+                "Goblin": {
+                    "Health": 50,
+                    "Damage": 10,
+                    "Experience": 20,
+                    "SpecialEffect": "Stealing"
+                },
+                "Troll": {
+                    "Health": 60,
+                    "Damage": 5,
+                    "Experience": 20,
+                    "SpecialEffect": "Stun"
+                },
+                "Spider": {
+                    "Health": 30,
+                    "Damage": 10,
+                    "Experience": 20,
+                    "SpecialEffect": "Poison"
+                },
+                "Bandit": {
+                    "Health": 40,
+                    "Damage": 15,
+                    "Experience": 20,
+                    "SpecialEffect": "Bleed"
+                },
+                "Orc": {
+                    "Health": 80,
+                    "Damage": 20,
+                    "Experience": 50,
+                    "SpecialEffect": "Rage Increases the damage dealt."
+                },
+                "Ghost": {
+                    "Health": 30,
+                    "Damage": 10,
+                    "Experience": 20,
+                    "SpecialEffect": "Invisibility dodges the next 1-2 attacks"
+                },
+                "Skeleton": {
+                    "Health": 40,
+                    "Damage": 15,
+                    "Experience": 20,
+                    "SpecialEffect": "Resurrects after death with 50% health"
+                },
+                "Castle Guard": {
+                    "Health": 100,
+                    "Damage": 20,
+                    "Experience": 50,
+                    "SpecialEffect": "Shield reduces damage by 30% for the next 2 turns"
+                }
             }
         },
         "Bosses": {
-            "Minotaur": {
-                "Health": 100,
-                "Damage": 40,
-                "Experience": 100,
-                "SpecialEffect": "Charge attack for a turn that deals double damage"
-            },
-            "Dragon": {
-                "Health": 200,
-                "Damage": 50,
-                "Experience": 200,
-                "SpecialEffect": "Breathes fire that deals 30 damage to all players and applies burn that does 2 damage every turn"
-            },
-            "King": {
-                "Health": 300,
-                "Damage": 70,
-                "Experience": 300,
-                "SpecialEffect": "Summons castle guards and becomes invulnerable until castle guards are defeated after which he returns to the field and does a big aoe attack"
-            },
-            "Lich": {
-                "Health": 150,
-                "Damage": 30,
-                "Experience": 150,
-                "SpecialEffect": "Casts a spell that reduces the player's health by 20% and applies a curse that reduces the player's damage by 10% for the next 3 turns"
-            },
-            "Warden": {
-                "Health": 250,
-                "Damage": 60,
-                "Experience": 300,
-                "SpecialEffect": "Summons a mini warden that has 30 health and 10 damage and attacks the player until it also applies darkness which reduces the players accuracy by 40% for the next 2 turns"
-            },
-            ""
+            "Overworld": {
+                "Minotaur": {
+                    "Health": 100,
+                    "Damage": 40,
+                    "Experience": 100,
+                    "SpecialEffect": "Charge attack for a turn that deals double damage"
+                },
+                "Dragon": {
+                    "Health": 200,
+                    "Damage": 50,
+                    "Experience": 200,
+                    "SpecialEffect": "Breathes fire that deals 30 damage to all players and applies burn that does 2 damage every turn"
+                },
+                "King": {
+                    "Health": 300,
+                    "Damage": 70,
+                    "Experience": 300,
+                    "SpecialEffect": "Summons castle guards and becomes invulnerable until castle guards are defeated after which he returns to the field and does a big aoe attack"
+                },
+                "Lich": {
+                    "Health": 150,
+                    "Damage": 30,
+                    "Experience": 150,
+                    "SpecialEffect": "Casts a spell that reduces the player's health by 20% and applies a curse that reduces the player's damage by 10% for the next 3 turns"
+                },
+                "Warden": {
+                    "Health": 250,
+                    "Damage": 60,
+                    "Experience": 300,
+                    "SpecialEffect": "Summons a mini warden that has 30 health and 10 damage and attacks the player until it also applies darkness which reduces the players accuracy by 40% for the next 2 turns"
+                }
+            }
         }
     }
 }
