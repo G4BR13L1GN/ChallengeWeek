@@ -25,7 +25,7 @@ def ResetData(gameData):
 
 def Restart(gameData):
     # Only continue if player has agreed twice
-    if str(input(f"Do you really want to restart? (Y/N)\n> ").upper()) == "Y" and str(input(f"\nAre you sure? (Y/N)\n> ").upper()) == "Y":
+    if str(input("Do you really want to restart? (Y/N)\n> ").upper()) == "Y" and str(input("\nAre you sure? (Y/N)\n> ").upper()) == "Y":
         # Set up new character
         CharacterSetup(gameData)
 
