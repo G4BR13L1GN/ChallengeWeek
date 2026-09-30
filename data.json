@@ -1,19 +1,31 @@
 {
     "PlayerData": {
         "PlayerProfile": {
+<<<<<<< HEAD
             "Name": "bob",
             "Class": "Barbarian"
+=======
+            "Name": "Sto",
+            "Class": "Warlock"
+>>>>>>> 5a6658f273ef3148225856293e86369e4bd42c09
         },
         "PlayerAttributes": {
-            "Strength": 18,
+            "Strength": 6,
             "Dexterity": 12,
-            "Intelligence": 6
+            "Intelligence": 18
         },
         "PlayerCondition": {
+<<<<<<< HEAD
             "Health": 140,
             "MaxHealth": 140,
             "Stamina": 100,
             "MaxStamina": 120
+=======
+            "Health": 100,
+            "MaxHealth": 100,
+            "Stamina": 110,
+            "MaxStamina": 110
+>>>>>>> 5a6658f273ef3148225856293e86369e4bd42c09
         },
         "PlayerProgress": {
             "Experience": 0,
@@ -56,14 +68,35 @@
     },
     "ShopData": {
         "Chestplate": {
-            "Price": 10,
-            "Type": "Armour",
+            "Price": 30,
+            "Type": "Armor",
             "DamageNegation": 2
         },
         "Sword": {
             "Price": 5,
             "Type": "Weapon",
             "DamageIncrease": 2
+        },
+        "Enchanted Blade": {
+            "Price": 100,
+            "Type": "Weapon",
+            "DamageIncrease": 2.5
+        },
+        "Void chestplate": {
+            "Price": 250,
+            "Type": "Armor",
+            "DamageNegation": 3
+        },
+        "Reaper Scythe": {
+            "Price": 300,
+            "Type": "Weapon",
+            "DamageIncrease": 2.5,
+            "SpecialEffect": "Life Steal"
+        },
+        "Linked Sword": {
+            "Price": 500,
+            "Type": "Weapon",
+            "DamageIncrease": 5
         }
     },
     "ClassData": {
