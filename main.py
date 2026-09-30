@@ -195,7 +195,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
             experienceGained = enemyData.get("Experience", 0)
 
             print(f"{playerName} defeated the {monsterName}!\n{playerName} gained {experienceGained} XP!")
-            Aquire(gameData, "Coins", 1, experienceGained, 1)
+            Aquire(gameData, "coins", 1, experienceGained, 1)
 
             playerProgress = playerData.get("PlayerProgress")
             playerProgress["Experience"] += experienceGained
@@ -417,9 +417,9 @@ def Buy(gameData):
         buyConfirmation = str(input(f"Would {playerData.get("PlayerProfile").get("Name")} like to buy the {item}? (Y/N)\n> ")).capitalize()
 
         if buyConfirmation == "Y":
-            if playerInventory.get("Coins", {}).get("Amount") >= itemPrice:
+            if playerInventory.get("coins", {}).get("Amount") >= itemPrice:
                 Aquire(gameData, item, 1, 1, itemPrice)
-                playerInventory["Coins"]["Amount"] -= itemPrice
+                playerInventory["coins"]["Amount"] -= itemPrice
 
                 # Add item to PlayerEquipment for specific types
                 if shopData.get(item).get("Type") in ["Weapon", "Armour"]:
@@ -472,7 +472,7 @@ def Sell(gameData):
 
         if sellConfirmation == "Y":
             if playerInventory.get(item).get("Amount") > 0:
-                playerInventory["Coins"]["Amount"] += playerInventory.get(item).get("Price")
+                playerInventory["coins"]["Amount"] += playerInventory.get(item).get("Price")
                 playerInventory[item]["Amount"] -= 1
 
                 # Remove item from inventory if 0 left
