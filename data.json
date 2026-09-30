@@ -332,6 +332,22 @@
                     "SpecialEffect": "Casts a spell that that applies a curse that will do 50% of the players health in 10 turns."
                 }
             }
+        },
+        "Caverns": {
+            "Monsters": {
+
+            },
+            "Bosses": {
+                
+            }
+        },
+        "Sift": {
+            "Monsters": {
+
+            },
+            "Bosses": {
+
+            }
         }
     }
 }
