@@ -1,8 +1,8 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-            "Name": "",
-            "Class": ""
+            "Name": "Sto",
+            "Class": "Warlock"
         },
         "PlayerAttributes": {
             "Strength": 6,
@@ -10,9 +10,9 @@
             "Intelligence": 18
         },
         "PlayerCondition": {
-            "Health": 50,
+            "Health": 100,
             "MaxHealth": 100,
-            "Stamina": 100,
+            "Stamina": 110,
             "MaxStamina": 110
         },
         "PlayerExperience": {
@@ -28,14 +28,35 @@
     },
     "ShopData": {
         "Chestplate": {
-            "Price": 10,
-            "Type": "Armour",
+            "Price": 30,
+            "Type": "Armor",
             "DamageNegation": 2
         },
         "Sword": {
             "Price": 5,
             "Type": "Weapon",
             "DamageIncrease": 2
+        },
+        "Enchanted Blade": {
+            "Price": 100,
+            "Type": "Weapon",
+            "DamageIncrease": 2.5
+        },
+        "Void chestplate": {
+            "Price": 250,
+            "Type": "Armor",
+            "DamageNegation": 3
+        },
+        "Reaper Scythe": {
+            "Price": 300,
+            "Type": "Weapon",
+            "DamageIncrease": 2.5,
+            "SpecialEffect": "Life Steal"
+        },
+        "Linked Sword": {
+            "Price": 500,
+            "Type": "Weapon",
+            "DamageIncrease": 5
         }
     },
     "ClassData": {
