@@ -307,7 +307,7 @@ def Mine(gameData):
     Aquire(gameData, "iron", 2 / mineFactor, 4, 4)
     Aquire(gameData, "silver", 3 / mineFactor, 3, 6)
     Aquire(gameData, "gold", 4 / mineFactor, 3, 10)
-    Aquire(gameData, "diamond", 10 / mineFactor, 2, 20)
+    Aquire(gameData, "diamond", 20 / mineFactor, 2, 20)
 
     # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
