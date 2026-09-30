@@ -1,8 +1,8 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-            "Name": "",
-            "Class": ""
+            "Name": "bob",
+            "Class": "Barbarian"
         },
         "PlayerAttributes": {
             "Strength": 18,
@@ -12,14 +12,42 @@
         "PlayerCondition": {
             "Health": 140,
             "MaxHealth": 140,
-            "Stamina": 10,
+            "Stamina": 100,
             "MaxStamina": 120
         },
-        "PlayerExperience": {
-            "Experience": 0
+        "PlayerProgress": {
+            "Experience": 0,
+            "MapZone": 1,
+            "MapLevel": 1
         },
-        "PlayerInventory": {},
-        "PlayerEquipment": {},
+        "PlayerInventory": {
+            "Coins": {
+                "Amount": 30,
+                "Price": 1
+            },
+            "Wood": {
+                "Amount": 2,
+                "Price": 2
+            },
+            "Berries": {
+                "Amount": 1,
+                "Price": 2
+            },
+            "Coal": {
+                "Amount": 4,
+                "Price": 2
+            },
+            "Iron": {
+                "Amount": 4,
+                "Price": 4
+            }
+        },
+        "PlayerEquipment": {
+            "Sword": {
+                "Type": "Weapon",
+                "DamageIncrease": 2
+            }
+        },
         "PlayerSkills": [
             "Attack",
             "Heal",

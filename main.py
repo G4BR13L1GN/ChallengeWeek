@@ -7,13 +7,14 @@ def ResetData(gameData):
     playerData = gameData.get("PlayerData")
     playerInventory = playerData.get("PlayerInventory")
     playerEquipment = playerData.get("PlayerEquipment")
-    playerExperience = playerData.get("PlayerExperience")
+    playerProgress = playerData.get("PlayerProgress")
     playerProfile = playerData.get("PlayerProfile")
 
     # Reset player data
     playerInventory.clear()
     playerEquipment.clear()
-    playerExperience["Experience"] = 0
+    playerProgress["Experience"] = 0
+    playerProgress["MapLevel"] = 1
     for part in playerProfile.keys():
         playerProfile[part] = ""
 
@@ -90,7 +91,7 @@ def DiceRoll(rollAmount = 20):
     return random.randint(1, rollAmount)
 
 
-def Combat(gameData, monsterName, enemyClass = "Monsters"):
+def Combat(gameData, mapZone, monsterName, enemyClass = "Monsters"):
     # Define enemy statistics
     enemyData = gameData.get("MonsterData")[enemyClass][monsterName]
     enemyHealth = enemyData.get("Health")
@@ -123,17 +124,19 @@ def Combat(gameData, monsterName, enemyClass = "Monsters"):
 
         print()
 
-        # Apply / remove buff
-        attackMultiplier = 1.2 if buffTurns > 0 else 1
-        defenceMultiplier = 1
-
         for key in playerEquipment.keys():
             equipment = playerEquipment.get(key)
 
             if equipment.get("Type") == "Weapon":
-                attackMultiplier *= equipment.get("DamageIncrease")
+                if equipment.get("DamageIncrease") > attackMultiplier:
+                    attackMultiplier = equipment.get("DamageIncrease")
             elif equipment.get("Type") == "Armour":
-                defenceMultiplier *= equipment.get("DamageNegation")
+                if equipment.get("DamageNegation") > defenceMultiplier:
+                    defenceMultiplier = equipment.get("DamageNegation")
+
+        # Apply / remove buff
+        attackMultiplier *= 1.2 if buffTurns > 0 else 1
+        defenceMultiplier *= 1
 
         if buffTurns > 0:
             buffTurns -= 1
@@ -180,14 +183,17 @@ def Combat(gameData, monsterName, enemyClass = "Monsters"):
             print(f"{playerName} defeated the {monsterName}!\n{playerName} gained {experienceGained} XP!")
             Aquire(gameData, "Coins", 1, experienceGained, 1)
 
-            playerExperience = playerData.get("PlayerExperience")
-            playerExperience["Experience"] += experienceGained
+            playerProgress = playerData.get("PlayerProgress")
+            playerProgress["Experience"] += experienceGained
             break
 
         print()
 
     # Save player health after battle
     playerCondition["Health"] = currentHealth
+
+    # Increase player zone
+    playerProgress["MapZone"] += 1
 
     # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
@@ -199,6 +205,7 @@ def Adventure(gameData):
     playerData = gameData.get("PlayerData")
     playerAttributes = playerData.get("PlayerAttributes")
     playerCondition = playerData.get("PlayerCondition")
+    playerProgress = playerData.get("PlayerProgress")
 
     # Stamina cost for adventuring
     staminaCost = 10
@@ -219,7 +226,7 @@ def Adventure(gameData):
         monsterName = random.choice(list(monsterData["Monsters"].keys()))
         print(f"{playerData.get("PlayerProfile").get("Name")} encountered a {monsterName}")
 
-        Combat(gameData, monsterName, "Monsters")
+        Combat(gameData, playerProgress.get("MapZone"), monsterName, "Monsters")
     else:
         print(f"{playerData.get("PlayerProfile").get("Name")} encountered nothing.")
 
@@ -492,7 +499,7 @@ def Main():
         action = str(input(f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} like to do?\n> ")).capitalize()
         print()
 
-        # Possible actions, with lambda to insert gameData
+        # Possible actions with gameData as argument
         possibleAction = {
             "Quit": Quit,
             "Adventure": Adventure,
