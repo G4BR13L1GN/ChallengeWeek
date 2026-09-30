@@ -1,13 +1,8 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-<<<<<<< HEAD
-            "Name": "bob",
-            "Class": "Barbarian"
-=======
             "Name": "Sto",
             "Class": "Warlock"
->>>>>>> 5a6658f273ef3148225856293e86369e4bd42c09
         },
         "PlayerAttributes": {
             "Strength": 6,
@@ -15,17 +10,10 @@
             "Intelligence": 18
         },
         "PlayerCondition": {
-<<<<<<< HEAD
             "Health": 140,
             "MaxHealth": 140,
             "Stamina": 100,
             "MaxStamina": 120
-=======
-            "Health": 100,
-            "MaxHealth": 100,
-            "Stamina": 110,
-            "MaxStamina": 110
->>>>>>> 5a6658f273ef3148225856293e86369e4bd42c09
         },
         "PlayerProgress": {
             "Experience": 0,
@@ -285,6 +273,18 @@
                 "Damage": 20,
                 "Experience": 50,
                 "SpecialEffect": "Shield reduces damage by 30% for the next 2 turns"
+            },
+            "Mini Warden": {
+                "Health": 30,
+                "Damage": 10,
+                "Experience": 20,
+                "SpecialEffect": "Darkness reduces the players accuracy by 10% for the next 2 turns"
+            },
+            "Blue Blobby": {
+                "Health": 50,
+                "Damage": 10,
+                "Experience": 20,
+                "SpecialEffect": "Splits into two smaller blobs with 25 health each when killed and those 2 smaller blobs can also split into 2 smaller blobs with 12 health."
             }
         },
         "Bosses": {
@@ -318,7 +318,18 @@
                 "Experience": 300,
                 "SpecialEffect": "Summons a mini warden that has 30 health and 10 damage and attacks the player until it also applies darkness which reduces the players accuracy by 40% for the next 2 turns"
             },
-            ""
+            "Monk Leader": {
+                "Health": 200,
+                "Damage": 30,
+                "Experience": 400,
+                "SpecialEffect": "When meditating, the monk heals 30% of his health and decreases his damage taken by 10% while also applying a a debuff to the player that increases their damage taken by 10% for the next 2 turns"
+            },
+            "Arch duke": {
+                "Health": 500,
+                "Damage": 50,
+                "Experience": 999999999999,
+                "SpecialEffect": "Casts a spell that that applies a curse that will do 50% of the players health in 10 turns."
+            }
         }
     }
 }
