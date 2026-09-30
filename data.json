@@ -1,8 +1,8 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-            "Name": "Henk",
-            "Class": "warlock"
+            "Name": "",
+            "Class": ""
         },
         "PlayerAttributes": {
             "Strength": 6,
@@ -10,56 +10,18 @@
             "Intelligence": 18
         },
         "PlayerCondition": {
-            "Health": 100,
+            "Health": 90,
             "MaxHealth": 100,
-            "Stamina": 110,
+            "Stamina": 60,
             "MaxStamina": 110
         },
         "PlayerProgress": {
-            "Experience": 40,
-            "MapZone": 3,
+            "Experience": 0,
+            "MapZone": 1,
             "MapDimension": "Overworld"
         },
-        "PlayerInventory": {
-            "wood": {
-                "Amount": 3,
-                "Price": 2
-            },
-            "berries": {
-                "Amount": 2,
-                "Price": 2
-            },
-            "coins": {
-                "Amount": 550,
-                "Price": 1
-            },
-            "sword": {
-                "Amount": 2,
-                "Price": 5
-            },
-            "iron": {
-                "Amount": 3,
-                "Price": 4
-            },
-            "coal": {
-                "Amount": 5,
-                "Price": 2
-            },
-            "silver": {
-                "Amount": 8,
-                "Price": 6
-            },
-            "gold": {
-                "Amount": 1,
-                "Price": 10
-            }
-        },
-        "PlayerEquipment": {
-            "sword": {
-                "Type": "Weapon",
-                "DamageIncrease": 2
-            }
-        },
+        "PlayerInventory": {},
+        "PlayerEquipment": {},
         "PlayerSkills": [
             "attack",
             "heal",
@@ -69,7 +31,7 @@
     "ShopData": {
         "chestplate": {
             "Price": 30,
-            "Type": "Armor",
+            "Type": "Armour",
             "DamageNegation": 2
         },
         "sword": {
@@ -84,7 +46,7 @@
         },
         "void chestplate": {
             "Price": 250,
-            "Type": "Armor",
+            "Type": "Armour",
             "DamageNegation": 3
         },
         "reaper scythe": {

@@ -157,17 +157,17 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
 
         # Different functions based on action
         match action:
-            case "Attack":
+            case "attack":
                 # Deal strength + 1 or 2 extra damage, multiplied by attackMultiplier to enemy
                 playerDamage = int((playerAttributes.get("Strength") + DiceRoll(2)) * attackMultiplier)
                 enemyHealth -= playerDamage
 
-                # Limit enemyHealth to 0, not -4
+                # Limit enemyHealth to 0, not -4 for example
                 if enemyHealth < 0:
                     enemyHealth = 0
 
                 print(f"{playerName} did {playerDamage:00} damage!\nThe {monsterName} has {enemyHealth:00} HP left.")
-            case "Heal":
+            case "heal":
                 # Heal 20 HP
                 healAmount = 20
 
@@ -179,7 +179,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
                 currentHealth += healAmount
 
                 print(f"{playerName} healed {healAmount} HP!\n{playerName} has {currentHealth} HP left.")
-            case "Buff":
+            case "buff":
                 # 4 not 3 since buffTurns removes 1 before attack is possible
                 buffTurns = 4
                 print(f"{playerName} applied buff, weapon now does 1.2x damage!")
@@ -218,8 +218,8 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
     # Increase player zone
     playerProgress["MapZone"] += 1
 
-    zones = ["Overworld", "Caverns", "Sift"]
-    playerProgress["MapDimension"] = zones[(playerProgress.get("MapZone") - 1) // 6]
+    # zones = ["Overworld", "Caverns", "Sift"]
+    # playerProgress["MapDimension"] = zones[(playerProgress.get("MapZone") - 1) // 6]
 
     # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
