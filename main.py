@@ -14,9 +14,19 @@ def ResetData(gameData):
     playerInventory.clear()
     playerEquipment.clear()
     playerProgress["Experience"] = 0
-    playerProgress["MapLevel"] = 1
+    playerProgress["MapZone"] = 1
+    playerProgress["MapDimension"] = "Overworld"
+
     for part in playerProfile.keys():
         playerProfile[part] = ""
+
+    # Add "Coins" to inventory
+    playerInventory = {
+        "coins": {
+            "Amount": 0,
+            "Price": 1
+        }
+    }
 
     # Save cleared player inventory
     with open("data.json", "w", encoding = "utf-8") as f:
@@ -116,7 +126,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
     # Loop combat until either player or enemy dies
     while currentHealth > 0 and enemyHealth > 0:
         # Repeat loop if action is not in playerSkills
-        action = str(input(f"How would {playerName} like to attack?\n{playerData.get("PlayerSkills")}\n> ")).capitalize()
+        action = str(input(f"How would {playerName} like to attack?\n{playerData.get("PlayerSkills")}\n> ")).lower()
 
         if action not in playerData.get("PlayerSkills"):
             print("Invalid action\n")
@@ -192,6 +202,15 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
             break
 
         print()
+
+    if currentHealth <= 0:
+        print(f"{playerName} has died!")
+
+        # Update gameData json file
+        with open("data.json", "w", encoding = "utf-8") as f:
+            json.dump(gameData, f, indent = 4, ensure_ascii = False)
+
+        return
 
     # Save player health after battle
     playerCondition["Health"] = currentHealth
@@ -284,11 +303,11 @@ def Mine(gameData):
     mineFactor = playerAttributes.get("Strength") / 10
 
     # Mining materials which can be found
-    Aquire(gameData, "Coal", 1 / mineFactor, 4, 2)
-    Aquire(gameData, "Iron", 2 / mineFactor, 4, 4)
-    Aquire(gameData, "Silver", 3 / mineFactor, 3, 6)
-    Aquire(gameData, "Gold", 4 / mineFactor, 3, 10)
-    Aquire(gameData, "Diamond", 10 / mineFactor, 2, 20)
+    Aquire(gameData, "coal", 1 / mineFactor, 4, 2)
+    Aquire(gameData, "iron", 2 / mineFactor, 4, 4)
+    Aquire(gameData, "silver", 3 / mineFactor, 3, 6)
+    Aquire(gameData, "gold", 4 / mineFactor, 3, 10)
+    Aquire(gameData, "diamond", 10 / mineFactor, 2, 20)
 
     # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
@@ -316,12 +335,12 @@ def Gather(gameData):
     gatherFactor = playerAttributes.get("Dexterity") / 10
 
     # Forest materials which can be found
-    Aquire(gameData, "Coins", 2 / gatherFactor, 20, 1)
-    Aquire(gameData, "Wood", 1 / gatherFactor, 4, 2)
-    Aquire(gameData, "Berries", 1 / gatherFactor, 3, 2)
-    Aquire(gameData, "Fruit", 2 / gatherFactor, 3, 3)
-    Aquire(gameData, "Mysterious potion", 5 / gatherFactor, 2, 10)
-    Aquire(gameData, "Mysterious blade", 100 / gatherFactor, 1, 100)
+    Aquire(gameData, "coins", 2 / gatherFactor, 20, 1)
+    Aquire(gameData, "wood", 1 / gatherFactor, 4, 2)
+    Aquire(gameData, "berries", 1 / gatherFactor, 3, 2)
+    Aquire(gameData, "fruit", 2 / gatherFactor, 3, 3)
+    Aquire(gameData, "mysterious potion", 5 / gatherFactor, 2, 10)
+    Aquire(gameData, "mysterious blade", 100 / gatherFactor, 1, 100)
 
     # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
@@ -417,7 +436,7 @@ def Buy(gameData):
                 print(f"{playerData.get("PlayerProfile").get("Name")} doesn't have enough coin.")
         elif buyConfirmation == "N":
             print()
-            Shop()
+            Shop(gameData)
         else:
             print("Invalid action")
             print()
@@ -436,7 +455,7 @@ def Sell(gameData):
     # Get input for which item player wants to buy
     item = ""
     while item not in list(playerInventory.keys()):
-        item = str(input(f"What item would {playerData.get("PlayerProfile").get("Name")} like to sell?\n{playerData.get("PlayerProfile").get("Name")} currently has: {list(playerInventory.keys())}\n> ").capitalize())
+        item = str(input(f"What item would {playerData.get("PlayerProfile").get("Name")} like to sell?\n{playerData.get("PlayerProfile").get("Name")} currently has: {list(playerInventory.keys())}\n> ").lower())
 
         if item not in list(playerInventory.keys()):
             print("Invalid item")
@@ -463,7 +482,7 @@ def Sell(gameData):
                 print(f"{playerData.get("PlayerProfile").get("Name")} doesn't have enough {item}.")
         elif sellConfirmation == "N":
             print()
-            Shop()
+            Shop(gameData)
         else:
             print("Invalid action")
             print()
@@ -475,14 +494,16 @@ def Sell(gameData):
 
 
 def Shop(gameData):
-    action = str(input(f"What would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} like to do in the shop? (Buy / Sell)\n> ")).capitalize()
+    action = str(input(f"What would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} like to do in the shop? (Buy / Sell / Leave)\n> ")).lower()
     print()
 
     match action:
-        case "Buy":
+        case "buy":
             Buy(gameData)
-        case "Sell":
+        case "sell":
             Sell(gameData)
+        case "leave":
+            return
         case _:
             print("Invalid action")
             Shop(gameData)
@@ -505,16 +526,16 @@ def Main():
     while True:
         # Possible actions with gameData as argument
         possibleActions = {
-            "Quit": Quit,
-            "Adventure": Adventure,
-            "Mine": Mine,
-            "Gather": Gather,
-            "Rest": Rest,
-            "Shop": Shop,
-            "Restart": Restart
+            "quit": Quit,
+            "adventure": Adventure,
+            "mine": Mine,
+            "gather": Gather,
+            "rest": Rest,
+            "shop": Shop,
+            "restart": Restart
         }
 
-        action = str(input(f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} like to do?\n{list(possibleActions)}\n> ")).capitalize()
+        action = str(input(f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} like to do?\n{list(possibleActions)}\n> ")).lower()
         print()
 
         if action in possibleActions:

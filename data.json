@@ -1,86 +1,106 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-            "Name": "perl",
-            "Class": "Barbarian"
+            "Name": "Henk",
+            "Class": "warlock"
         },
         "PlayerAttributes": {
-            "Strength": 18,
+            "Strength": 6,
             "Dexterity": 12,
-            "Intelligence": 6
+            "Intelligence": 18
         },
         "PlayerCondition": {
-            "Health": 140,
-            "MaxHealth": 140,
+            "Health": 100,
+            "MaxHealth": 100,
             "Stamina": 110,
-            "MaxStamina": 120
+            "MaxStamina": 110
         },
         "PlayerProgress": {
-            "Experience": 0,
-            "MapZone": 7,
-            "MapDimension": "Caverns",
-            "MapLevel": 1
+            "Experience": 40,
+            "MapZone": 3,
+            "MapDimension": "Overworld"
         },
         "PlayerInventory": {
-            "Coal": {
+            "wood": {
+                "Amount": 3,
+                "Price": 2
+            },
+            "berries": {
                 "Amount": 2,
                 "Price": 2
             },
-            "Iron": {
-                "Amount": 1,
+            "coins": {
+                "Amount": 50,
+                "Price": 1
+            },
+            "sword": {
+                "Amount": 2,
+                "Price": 5
+            },
+            "iron": {
+                "Amount": 3,
                 "Price": 4
             },
-            "Silver": {
-                "Amount": 3,
+            "coal": {
+                "Amount": 5,
+                "Price": 2
+            },
+            "silver": {
+                "Amount": 8,
                 "Price": 6
             },
-            "Diamond": {
-                "Amount": 2,
-                "Price": 20
+            "gold": {
+                "Amount": 1,
+                "Price": 10
             }
         },
-        "PlayerEquipment": {},
+        "PlayerEquipment": {
+            "sword": {
+                "Type": "Weapon",
+                "DamageIncrease": 2
+            }
+        },
         "PlayerSkills": [
-            "Attack",
-            "Heal",
-            "Buff"
+            "attack",
+            "heal",
+            "buff"
         ]
     },
     "ShopData": {
-        "Chestplate": {
+        "chestplate": {
             "Price": 30,
             "Type": "Armor",
             "DamageNegation": 2
         },
-        "Sword": {
+        "sword": {
             "Price": 5,
             "Type": "Weapon",
             "DamageIncrease": 2
         },
-        "Enchanted Blade": {
+        "enchanted elade": {
             "Price": 100,
             "Type": "Weapon",
             "DamageIncrease": 2.5
         },
-        "Void chestplate": {
+        "void chestplate": {
             "Price": 250,
             "Type": "Armor",
             "DamageNegation": 3
         },
-        "Reaper Scythe": {
+        "reaper scythe": {
             "Price": 300,
             "Type": "Weapon",
             "DamageIncrease": 2.5,
             "SpecialEffect": "Life Steal"
         },
-        "Linked Sword": {
+        "linked sword": {
             "Price": 500,
             "Type": "Weapon",
             "DamageIncrease": 5
         }
     },
     "ClassData": {
-        "Barbarian": {
+        "barbarian": {
             "Health": 140,
             "Stamina": 120,
             "Strength": 18,
@@ -91,7 +111,7 @@
                 "Buff"
             ]
         },
-        "Bard": {
+        "bard": {
             "Health": 100,
             "Stamina": 100,
             "Strength": 8,
@@ -103,7 +123,7 @@
                 "Buff"
             ]
         },
-        "Cleric": {
+        "cleric": {
             "Health": 110,
             "Stamina": 110,
             "Strength": 12,
@@ -115,7 +135,7 @@
                 "Buff"
             ]
         },
-        "Druid": {
+        "druid": {
             "Health": 100,
             "Stamina": 110,
             "Strength": 8,
@@ -127,7 +147,7 @@
                 "Buff"
             ]
         },
-        "Fighter": {
+        "fighter": {
             "Health": 130,
             "Stamina": 120,
             "Strength": 18,
@@ -138,7 +158,7 @@
                 "Buff"
             ]
         },
-        "Monk": {
+        "monk": {
             "Health": 110,
             "Stamina": 140,
             "Strength": 14,
@@ -149,7 +169,7 @@
                 "Buff"
             ]
         },
-        "Paladin": {
+        "paladin": {
             "Health": 130,
             "Stamina": 110,
             "Strength": 16,
@@ -161,7 +181,7 @@
                 "Buff"
             ]
         },
-        "Ranger": {
+        "ranger": {
             "Health": 110,
             "Stamina": 120,
             "Strength": 14,
@@ -172,7 +192,7 @@
                 "Heal"
             ]
         },
-        "Rogue": {
+        "rogue": {
             "Health": 100,
             "Stamina": 120,
             "Strength": 8,
@@ -182,7 +202,7 @@
                 "Attack"
             ]
         },
-        "Sorcerer": {
+        "sorcerer": {
             "Health": 90,
             "Stamina": 100,
             "Strength": 6,
@@ -193,7 +213,7 @@
                 "Buff"
             ]
         },
-        "Warlock": {
+        "warlock": {
             "Health": 100,
             "Stamina": 110,
             "Strength": 6,
@@ -204,7 +224,7 @@
                 "Buff"
             ]
         },
-        "Wizard": {
+        "wizard": {
             "Health": 90,
             "Stamina": 100,
             "Strength": 6,
