@@ -13,11 +13,7 @@
             "Health": 140,
             "MaxHealth": 140,
             "Stamina": 100,
-            "MaxStamina": 120,
-            "Health": 90,
-            "MaxHealth": 100,
-            "Stamina": 100,
-            "MaxStamina": 110
+            "MaxStamina": 120
         },
         "PlayerProgress": {
             "Experience": 20,
