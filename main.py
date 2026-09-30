@@ -93,7 +93,7 @@ def DiceRoll(rollAmount = 20):
 
 def Combat(gameData, enemyClass, mapDimension, monsterName):
     # Define enemy statistics
-    enemyData = gameData.get("MonsterData")[enemyClass][mapDimension][monsterName]
+    enemyData = gameData.get("MonsterData")[mapDimension][enemyClass][monsterName]
     enemyHealth = enemyData.get("Health")
     enemyDamage = enemyData.get("Damage")
 
@@ -227,7 +227,7 @@ def Adventure(gameData):
     if playerAttributes.get("Intelligence") > DiceRoll(20):
         monsterData = gameData.get("MonsterData")
 
-        monsterName = random.choice(list(monsterData["Monsters"][playerProgress.get("MapDimension")].keys()))
+        monsterName = random.choice(list(monsterData[playerProgress.get("MapDimension")]["Monsters"].keys()))
         print(f"{playerData.get("PlayerProfile").get("Name")} encountered a {monsterName}")
 
         Combat(gameData, "Monsters", playerProgress.get("MapDimension"), monsterName)
