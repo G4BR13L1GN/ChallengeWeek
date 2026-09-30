@@ -13,16 +13,20 @@
             "Health": 140,
             "MaxHealth": 140,
             "Stamina": 100,
-            "MaxStamina": 120
+            "MaxStamina": 120,
+            "Health": 90,
+            "MaxHealth": 100,
+            "Stamina": 100,
+            "MaxStamina": 110
         },
         "PlayerProgress": {
-            "Experience": 0,
-            "MapZone": 1,
-            "MapLevel": 1
+            "Experience": 20,
+            "MapZone": 2,
+            "MapDimension": "Overworld"
         },
         "PlayerInventory": {
             "Coins": {
-                "Amount": 30,
+                "Amount": 44,
                 "Price": 1
             },
             "Wood": {

@@ -91,9 +91,9 @@ def DiceRoll(rollAmount = 20):
     return random.randint(1, rollAmount)
 
 
-def Combat(gameData, mapZone, monsterName, enemyClass = "Monsters"):
+def Combat(gameData, enemyClass, mapDimension, monsterName):
     # Define enemy statistics
-    enemyData = gameData.get("MonsterData")[enemyClass][monsterName]
+    enemyData = gameData.get("MonsterData")[enemyClass][mapDimension][monsterName]
     enemyHealth = enemyData.get("Health")
     enemyDamage = enemyData.get("Damage")
 
@@ -124,6 +124,10 @@ def Combat(gameData, mapZone, monsterName, enemyClass = "Monsters"):
 
         print()
 
+        # Assign attack and defence multiplier
+        attackMultiplier, defenceMultiplier = 1, 1
+
+        # Change attack and defence multiplier based on highest armour rating
         for key in playerEquipment.keys():
             equipment = playerEquipment.get(key)
 
@@ -223,10 +227,10 @@ def Adventure(gameData):
     if playerAttributes.get("Intelligence") > DiceRoll(20):
         monsterData = gameData.get("MonsterData")
 
-        monsterName = random.choice(list(monsterData["Monsters"].keys()))
+        monsterName = random.choice(list(monsterData["Monsters"][playerProgress.get("MapDimension")].keys()))
         print(f"{playerData.get("PlayerProfile").get("Name")} encountered a {monsterName}")
 
-        Combat(gameData, playerProgress.get("MapZone"), monsterName, "Monsters")
+        Combat(gameData, "Monsters", playerProgress.get("MapDimension"), monsterName)
     else:
         print(f"{playerData.get("PlayerProfile").get("Name")} encountered nothing.")
 
@@ -373,7 +377,7 @@ def Buy(gameData):
     # Get input for which item player wants to buy
     item = ""
     while item not in list(shopData.keys()):
-        item = str(input(f"What item would {playerData.get("PlayerProfile").get("Name")} like to browse?\nThe shop currently has: {", ".join(list(shopData.keys()))}\n> ").capitalize())
+        item = str(input(f"What item would {playerData.get("PlayerProfile").get("Name")} like to browse?\nThe shop currently has: {", ".join(list(shopData.keys()))}\n> ").lower())
 
         if item not in list(shopData.keys()):
             print("Invalid item")
