@@ -53,7 +53,7 @@ def CharacterSetup(gameData):
 
     # Loop until valid player class is chosen
     while playerClass not in list(classData.keys()):
-        playerClass = str(input(f"What is your characters class?\n{list(classData.keys())}\n> "))
+        playerClass = str(input(f"What is your characters class?\n{", ".join(list(classData.keys()))}\n> ").lower())
 
         if playerClass not in list(classData.keys()):
             print("Class not available (yet)")
@@ -201,7 +201,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
 
     zones = ["Overworld", "Caverns", "Sift"]
     playerProgress["MapDimension"] = zones[(playerProgress.get("MapZone") - 1) // 6]
-    
+
     # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
         json.dump(gameData, f, indent = 4, ensure_ascii = False)
