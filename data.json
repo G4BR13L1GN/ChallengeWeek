@@ -77,7 +77,7 @@
             "Type": "Weapon",
             "DamageIncrease": 2
         },
-        "enchanted elade": {
+        "enchanted blade": {
             "Price": 100,
             "Type": "Weapon",
             "DamageIncrease": 2.5
@@ -247,7 +247,7 @@
                 },
                 "Troll": {
                     "Health": 60,
-                    "Damage": 5,
+                    "Damage": 8,
                     "Experience": 20,
                     "SpecialEffect": "Stun"
                 },
@@ -298,6 +298,12 @@
                     "Damage": 10,
                     "Experience": 20,
                     "SpecialEffect": "Splits into two smaller blobs with 25 health each when killed and those 2 smaller blobs can also split into 2 smaller blobs with 12 health."
+                },
+                "Good luck": {
+                    "Health": 99999999,
+                    "Damage": 99999999,
+                    "Experience": 1,
+                    "SpecialEffect": "This is a joke monster that is impossible to kill and will one shot you and delete ur save."
                 }
             },
             "Bosses": {
