@@ -5,15 +5,15 @@
             "Class": ""
         },
         "PlayerAttributes": {
-            "Strength": 6,
+            "Strength": 18,
             "Dexterity": 12,
-            "Intelligence": 18
+            "Intelligence": 6
         },
         "PlayerCondition": {
-            "Health": 90,
-            "MaxHealth": 100,
-            "Stamina": 60,
-            "MaxStamina": 110
+            "Health": 140,
+            "MaxHealth": 140,
+            "Stamina": 120,
+            "MaxStamina": 120
         },
         "PlayerProgress": {
             "Experience": 0,
