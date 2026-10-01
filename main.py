@@ -205,7 +205,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
 
         # Continue fight if enemy still alive
         if enemyHealth > 0:
-            damageDealt  = int(enemyDamage / defenceMultiplier)
+            damageDealt  = int((enemyDamage / defenceMultiplier) * (DiceRoll(20) / 10))
             currentHealth -= damageDealt
             print(f"The {monsterName} did {damageDealt} damage!\n{playerName} has {currentHealth} HP left.")
         else:
