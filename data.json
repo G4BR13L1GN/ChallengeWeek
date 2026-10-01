@@ -1,26 +1,31 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-            "Name": "Steven",
-            "Class": "monk"
+            "Name": "",
+            "Class": ""
         },
         "PlayerAttributes": {
-            "Strength": 14,
-            "Dexterity": 18,
-            "Intelligence": 10
+            "Strength": 0,
+            "Dexterity": 0,
+            "Intelligence": 0
         },
         "PlayerCondition": {
-            "Health": 110,
-            "MaxHealth": 110,
-            "Stamina": 140,
-            "MaxStamina": 140
+            "Health": 0,
+            "MaxHealth": 0,
+            "Stamina": 0,
+            "MaxStamina": 0
         },
         "PlayerProgress": {
             "Experience": 0,
             "MapZone": 0,
             "MapDimension": "Overworld"
         },
-        "PlayerInventory": {},
+        "PlayerInventory": {
+            "coins": {
+                "Amount": 0,
+                "Price": 1
+            }
+        },
         "PlayerEquipment": {},
         "PlayerSkills": [
             "attack",
@@ -69,8 +74,8 @@
             "Dexterity": 12,
             "Intelligence": 6,
             "Skills": [
-                "Attack",
-                "Buff"
+                "attack",
+                "buff"
             ]
         },
         "bard": {
@@ -80,9 +85,9 @@
             "Dexterity": 14,
             "Intelligence": 16,
             "Skills": [
-                "Attack",
-                "Heal",
-                "Buff"
+                "attack",
+                "heal",
+                "buff"
             ]
         },
         "cleric": {
@@ -92,9 +97,9 @@
             "Dexterity": 10,
             "Intelligence": 16,
             "Skills": [
-                "Attack",
-                "Heal",
-                "Buff"
+                "attack",
+                "heal",
+                "buff"
             ]
         },
         "druid": {
@@ -104,9 +109,9 @@
             "Dexterity": 12,
             "Intelligence": 18,
             "Skills": [
-                "Attack",
-                "Heal",
-                "Buff"
+                "attack",
+                "heal",
+                "buff"
             ]
         },
         "fighter": {
@@ -116,8 +121,8 @@
             "Dexterity": 14,
             "Intelligence": 8,
             "Skills": [
-                "Attack",
-                "Buff"
+                "attack",
+                "buff"
             ]
         },
         "monk": {
@@ -127,8 +132,8 @@
             "Dexterity": 18,
             "Intelligence": 10,
             "Skills": [
-                "Attack",
-                "Buff"
+                "attack",
+                "buff"
             ]
         },
         "paladin": {
@@ -138,9 +143,9 @@
             "Dexterity": 10,
             "Intelligence": 14,
             "Skills": [
-                "Attack",
-                "Heal",
-                "Buff"
+                "attack",
+                "heal",
+                "buff"
             ]
         },
         "ranger": {
@@ -150,8 +155,8 @@
             "Dexterity": 18,
             "Intelligence": 10,
             "Skills": [
-                "Attack",
-                "Heal"
+                "attack",
+                "heal"
             ]
         },
         "rogue": {
@@ -161,7 +166,7 @@
             "Dexterity": 18,
             "Intelligence": 14,
             "Skills": [
-                "Attack"
+                "attack"
             ]
         },
         "sorcerer": {
@@ -171,8 +176,8 @@
             "Dexterity": 12,
             "Intelligence": 18,
             "Skills": [
-                "Attack",
-                "Buff"
+                "attack",
+                "buff"
             ]
         },
         "warlock": {
@@ -182,8 +187,8 @@
             "Dexterity": 12,
             "Intelligence": 18,
             "Skills": [
-                "Attack",
-                "Buff"
+                "attack",
+                "buff"
             ]
         },
         "wizard": {
@@ -193,8 +198,8 @@
             "Dexterity": 10,
             "Intelligence": 18,
             "Skills": [
-                "Attack",
-                "Buff"
+                "attack",
+                "buff"
             ]
         }
     },

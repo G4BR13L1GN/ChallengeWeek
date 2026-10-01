@@ -29,11 +29,10 @@ def ResetData(gameData):
     playerProgress["MapDimension"] = "Overworld"
 
     # Add "coins" to inventory since it is a currency
-    playerInventory = {
-        "coins": {
-            "Amount": 0,
-            "Price": 1
-        }
+    playerInventory = playerData.get("PlayerInventory")
+    playerInventory["coins"] = {
+        "Amount": 0,
+        "Price": 1
     }
 
     # Save cleared player inventory
@@ -338,7 +337,7 @@ def Gather(gameData):
     playerAttributes = playerData.get("PlayerAttributes")
     playerCondition = playerData.get("PlayerCondition")
 
-    playerName = playerName
+    playerName = playerData.get("PlayerProfile").get("Name")
 
     # Stamina cost for gathering
     staminaCost = 10
@@ -388,12 +387,13 @@ def Rest(gameData):
     while action not in (actions := ["long", "short"]):
         action = str(input(f"How long would {playerName} like to rest? (long / short)\n> ")).lower()
 
-        if actions not in actions:
+        if action not in actions:
             print("Invalid action")
             continue
 
-        regeneratedHealth = (maxHealth * 1) if action == "long" else (maxHealth * 0.25)
-        regeneratedStamina = (maxStamina * 1) if action == "long" else (maxStamina * 0.5)
+    # Calculate regenerated health and stamina based on rest time
+    regeneratedHealth = (maxHealth * 1) if action == "long" else (maxHealth * 0.25)
+    regeneratedStamina = (maxStamina * 1) if action == "long" else (maxStamina * 0.5)
 
     # Limit regeneratedHealth if currentHealth will exceed maxHealth + regeneratedHealth
     if currentHealth + regeneratedHealth > maxHealth:
@@ -402,6 +402,10 @@ def Rest(gameData):
     # Limit regeneratedStamina if currentStamina will exceed maxStamina + regeneratedStamina
     if currentStamina + regeneratedStamina > maxStamina:
         regeneratedStamina = maxStamina - currentStamina
+
+    # Add regenerated health and stamina to current
+    currentHealth += regeneratedHealth
+    currentStamina += regeneratedStamina
 
     print(f"\n{playerName} regenerated {regeneratedHealth} health.\n{playerName} now has {currentHealth} HP.")
     print(f"{playerName} regained {regeneratedStamina} stamina.\n{playerName} now has {currentStamina} stamina.")
