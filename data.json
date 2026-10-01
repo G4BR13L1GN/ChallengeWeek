@@ -1,23 +1,23 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-            "Name": "",
-            "Class": ""
+            "Name": "Steven",
+            "Class": "monk"
         },
         "PlayerAttributes": {
-            "Strength": 18,
-            "Dexterity": 12,
-            "Intelligence": 6
+            "Strength": 14,
+            "Dexterity": 18,
+            "Intelligence": 10
         },
         "PlayerCondition": {
-            "Health": 140,
-            "MaxHealth": 140,
-            "Stamina": 120,
-            "MaxStamina": 120
+            "Health": 110,
+            "MaxHealth": 110,
+            "Stamina": 140,
+            "MaxStamina": 140
         },
         "PlayerProgress": {
             "Experience": 0,
-            "MapZone": 1,
+            "MapZone": 0,
             "MapDimension": "Overworld"
         },
         "PlayerInventory": {},
@@ -243,29 +243,11 @@
                     "Experience": 20,
                     "SpecialEffect": "Resurrects after death with 50% health"
                 },
-                "Castle Guard": {
-                    "Health": 100,
-                    "Damage": 20,
-                    "Experience": 50,
-                    "SpecialEffect": "Shield reduces damage by 30% for the next 2 turns"
-                },
-                "Mini Warden": {
-                    "Health": 30,
-                    "Damage": 10,
-                    "Experience": 20,
-                    "SpecialEffect": "Darkness reduces the players accuracy by 10% for the next 2 turns"
-                },
                 "Blue Blobby": {
                     "Health": 50,
                     "Damage": 10,
                     "Experience": 20,
                     "SpecialEffect": "Splits into two smaller blobs with 25 health each when killed and those 2 smaller blobs can also split into 2 smaller blobs with 12 health."
-                },
-                "Good luck🐷": {
-                    "Health": 99999999,
-                    "Damage": 99999999,
-                    "Experience": 1,
-                    "SpecialEffect": "This is a joke monster that is impossible to kill and will one shot you and delete ur save."
                 }
             },
             "Bosses": {
@@ -280,12 +262,6 @@
                     "Damage": 50,
                     "Experience": 200,
                     "SpecialEffect": "Breathes fire that deals 30 damage to all players and applies burn that does 2 damage every turn"
-                },
-                "King": {
-                    "Health": 300,
-                    "Damage": 70,
-                    "Experience": 300,
-                    "SpecialEffect": "Summons castle guards and becomes invulnerable until castle guards are defeated after which he returns to the field and does a big aoe attack"
                 },
                 "Lich": {
                     "Health": 150,
@@ -304,12 +280,6 @@
                     "Damage": 30,
                     "Experience": 400,
                     "SpecialEffect": "When meditating, the monk heals 30% of his health and decreases his damage taken by 10% while also applying a a debuff to the player that increases their damage taken by 10% for the next 2 turns"
-                },
-                "Arch duke": {
-                    "Health": 500,
-                    "Damage": 50,
-                    "Experience": 999999999999,
-                    "SpecialEffect": "Casts a spell that that applies a curse that will do 50% of the players health in 10 turns."
                 }
             }
         },
@@ -318,8 +288,40 @@
             "Bosses": {}
         },
         "Sift": {
-            "Monsters": {},
-            "Bosses": {}
+            "Monsters": {
+                "Castle Guard": {
+                    "Health": 100,
+                    "Damage": 20,
+                    "Experience": 50,
+                    "SpecialEffect": "Shield reduces damage by 30% for the next 2 turns"
+                }
+            },
+            "Bosses": {
+                "King": {
+                    "Health": 300,
+                    "Damage": 70,
+                    "Experience": 300,
+                    "SpecialEffect": "Summons castle guards and becomes invulnerable until castle guards are defeated after which he returns to the field and does a big aoe attack"
+                },
+                "Arch duke": {
+                    "Health": 500,
+                    "Damage": 50,
+                    "Experience": 999999999999,
+                    "SpecialEffect": "Casts a spell that that applies a curse that will do 50% of the players health in 10 turns."
+                },
+                "Mini Warden": {
+                    "Health": 30,
+                    "Damage": 10,
+                    "Experience": 20,
+                    "SpecialEffect": "Darkness reduces the players accuracy by 10% for the next 2 turns"
+                },
+                "Good luck🐷": {
+                    "Health": 99999999,
+                    "Damage": 99999999,
+                    "Experience": 1,
+                    "SpecialEffect": "This is a joke monster that is impossible to kill and will one shot you and delete ur save."
+                }
+            }
         }
     }
 }

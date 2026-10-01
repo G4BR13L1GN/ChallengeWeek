@@ -5,22 +5,30 @@ import json
 def ResetData(gameData):
     # Assign player data variables
     playerData = gameData.get("PlayerData")
+    playerProfile = playerData.get("PlayerProfile")
+    playerCondition = playerData.get("PlayerCondition")
+    playerAttributes = playerData.get("PlayerAttributes")
+    playerProgress = playerData.get("PlayerProgress")
     playerInventory = playerData.get("PlayerInventory")
     playerEquipment = playerData.get("PlayerEquipment")
-    playerProgress = playerData.get("PlayerProgress")
-    playerProfile = playerData.get("PlayerProfile")
 
     # Reset player data
-    playerInventory.clear()
-    playerEquipment.clear()
-    playerProgress["Experience"] = 0
-    playerProgress["MapZone"] = 1
-    playerProgress["MapDimension"] = "Overworld"
-
     for part in playerProfile.keys():
         playerProfile[part] = ""
 
-    # Add "Coins" to inventory
+    for attribute in playerAttributes.keys():
+        playerAttributes[attribute] = 0
+
+    for condition in playerCondition.keys():
+        playerCondition[condition] = 0
+
+    playerInventory.clear()
+    playerEquipment.clear()
+
+    playerProgress["Experience"], playerProgress["MapZone"] = 0, 0
+    playerProgress["MapDimension"] = "Overworld"
+
+    # Add "coins" to inventory since it is a currency
     playerInventory = {
         "coins": {
             "Amount": 0,
@@ -56,20 +64,21 @@ def CharacterSetup(gameData):
     # have to change playerSkills based on class
 
     # Assign name
-    playerProfile["Name"] = str(input("\nWhat is your characters name?\n> "))
+    playerName = str(input("\nWhat is your characters name?\n> "))
+    playerProfile["Name"] = playerName
     print()
 
-    # Loop until class is valid
+    # Loop until valid player class is chosen
     playerClass = ""
 
-    # Loop until valid player class is chosen
-    while playerClass not in list(classData.keys()):
-        playerClass = str(input(f"What is your characters class?\n \
-            {", ".join(list(classData.keys()))}\n> ").lower())
+    while playerClass not in (classes := list(classData.keys())):
+        playerClass = str(input(
+            f"What is your characters class?\n"
+            f"{", ".join(classes)}\n> "
+        ).lower())
 
-        if playerClass not in list(classData.keys()):
-            print("Class not available (yet)")
-            print()
+        if playerClass not in classes:
+            print("Class not available (yet)\n")
 
     # Assign class once
     playerProfile["Class"] = playerClass
@@ -79,11 +88,18 @@ def CharacterSetup(gameData):
         playerAttributes[attribute] = classData[playerClass][attribute]
 
     # Assign health and stamina based on class
-    playerCondition["Health"] = classData[playerClass].get("Health")
-    playerCondition["MaxHealth"] = playerCondition.get("Health")
+    for condition in ["Health", "Stamina"]:
+        playerCondition[condition] = classData[playerClass][condition]
 
-    playerCondition["Stamina"] = classData[playerClass].get("Stamina")
-    playerCondition["MaxStamina"] = playerCondition.get("Stamina")
+    # Assign max health and stamina with slicing
+    for condition in ["MaxHealth", "MaxStamina"]:
+        playerCondition[condition] = playerCondition[condition[3:]]
+
+    # Welcome player and display stats
+    print(f"\nWelcome {playerName} the {playerClass}!\n\nYour stats are:\n"
+          f"Attributes: {", ".join([f"{key}: {value}" for key, value in playerAttributes.items()])}\n"
+          f"Condition: {", ".join([f"{key}: {value}" for key, value in playerCondition.items()])}"
+    )
 
     # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
@@ -104,7 +120,7 @@ def DiceRoll(rollAmount = 20):
 
 
 def Combat(gameData, enemyClass, mapDimension, monsterName):
-    # Define enemy statistics
+    # Define enemy statistics based off of arguments
     enemyData = gameData.get("MonsterData")[mapDimension][enemyClass][monsterName]
     enemyHealth = enemyData.get("Health")
     enemyDamage = enemyData.get("Damage")
@@ -123,15 +139,14 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
     # Set buff counter
     buffTurns = 0
 
-    print()
-
     # Loop combat until either player or enemy dies
     while currentHealth > 0 and enemyHealth > 0:
         # Repeat loop if action is not in playerSkills
-        action = str(input(f"How would {playerName} like to attack?\n {playerData.get("PlayerSkills")}\n> ")).lower()
+        action = str(input(f"\nHow would {playerName} like to attack?\n"
+                           f"{playerData.get("PlayerSkills")}\n> ")).lower()
 
         if action not in playerData.get("PlayerSkills"):
-            print("Invalid action\n")
+            print("Invalid action")
             continue
 
         print()
@@ -152,8 +167,9 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
 
         # Apply / remove buff
         attackMultiplier *= 1.2 if buffTurns > 0 else 1
-        defenceMultiplier *= 1
+        defenceMultiplier *= 1.2 if buffTurns > 0 else 1
 
+        # Remove buff counter
         if buffTurns > 0:
             buffTurns -= 1
 
@@ -161,7 +177,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
         match action:
             case "attack":
                 # Deal strength + 1 or 2 extra damage, multiplied by attackMultiplier to enemy
-                playerDamage = int((playerAttributes.get("Strength") + DiceRoll(2)) * attackMultiplier)
+                playerDamage = int((playerAttributes.get("Strength") * (DiceRoll(20) / 10)) * attackMultiplier)
                 enemyHealth -= playerDamage
 
                 # Limit enemyHealth to 0, not -4 for example
@@ -182,9 +198,8 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
 
                 print(f"{playerName} healed {healAmount} HP!\n{playerName} has {currentHealth} HP left.")
             case "buff":
-                # 4 not 3 since buffTurns removes 1 before attack is possible
-                buffTurns = 4
-                print(f"{playerName} applied buff, weapon now does 1.2x damage!")
+                buffTurns = 3
+                print(f"{playerName} applied buff, weapon damage and damage negation * 1.2!")
 
         print()
 
@@ -197,14 +212,12 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
             # Reward player with experience and coins with maximum of monster XP
             experienceGained = enemyData.get("Experience", 0)
 
-            print(f"{playerName} defeated the {monsterName}!\n{playerName} gained {experienceGained} XP!")
-            Aquire(gameData, "coins", 1, experienceGained, 1)
+            print(f"{playerName} defeated the {monsterName} and gained {experienceGained} XP!\n")
+            Aquire(gameData, "coins", 100, experienceGained, 1)
 
             playerProgress = playerData.get("PlayerProgress")
             playerProgress["Experience"] += experienceGained
             break
-
-        print()
 
     if currentHealth <= 0:
         print(f"{playerName} has died!")
@@ -220,6 +233,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
 
     # Increase player zone
     playerProgress["MapZone"] += 1
+    print(f"{playerName} has advanced to next map zone!")
 
     # zones = ["Overworld", "Caverns", "Sift"]
     # playerProgress["MapDimension"] = zones[(playerProgress.get("MapZone") - 1) // 6]
@@ -246,6 +260,7 @@ def Adventure(gameData):
         print(f"{playerName} doesn't have enough stamina to adventure, {playerName} should rest!")
         return
 
+    # Remove stamina from playerCondition
     playerCondition["Stamina"] -= staminaCost
 
     print(f"{playerName} has used {staminaCost} stamina points to adventure.")
@@ -262,17 +277,13 @@ def Adventure(gameData):
         print(f"{playerName} encountered nothing.")
 
 
-def Aquire(gameData, itemName, spawnChance = 5, maxSpawnAmount = 5, itemPrice = 10):
-    # Aquire item with arguments gameData which it adds items ontop of,
-    #                            name of the item,
-    #                            spawn chance (from 1 to x),
-    #                            max spawn amount,
-    #                            and price of the item
+def Aquire(gameData, itemName, spawnPercentage = 20, maxSpawnAmount = 5, itemPrice = 10):
+    # Aquire item with gameData to add item onto, name of item, spawn chance, max spawn amount, and price
     playerData = gameData.get("PlayerData")
     playerInventory = playerData.get("PlayerInventory")
 
     # random chance from 1 to spawnChance, which accepts that is or is under 1
-    if random.uniform(0, spawnChance) <= 1:
+    if random.uniform(0, 100 / spawnPercentage) <= 1:
         spawnAmount = random.randint(1, maxSpawnAmount)
         print(f"{playerData.get("PlayerProfile").get("Name")} got {spawnAmount} {itemName}!")
 
@@ -304,18 +315,18 @@ def Mine(gameData):
 
     playerCondition["Stamina"] -= staminaCost
 
-    print(f"{playerName} has used {staminaCost} stamina points to mine, \
-          and now has {playerCondition.get("Stamina")} stamina left.")
+    print(f"{playerName} has used {staminaCost} stamina points to mine,"
+          f"and now has {playerCondition.get("Stamina")} stamina left.")
 
     # Higher chance on materials if strength is high
     mineFactor = playerAttributes.get("Strength") / 10
 
     # Mining materials which can be found
-    Aquire(gameData, "coal", 1 / mineFactor, 4, 2)
-    Aquire(gameData, "iron", 2 / mineFactor, 4, 4)
-    Aquire(gameData, "silver", 3 / mineFactor, 3, 6)
-    Aquire(gameData, "gold", 4 / mineFactor, 3, 10)
-    Aquire(gameData, "diamond", 20 / mineFactor, 2, 20)
+    Aquire(gameData, "coal", 100 / mineFactor, 4, 2)
+    Aquire(gameData, "iron", 50 / mineFactor, 4, 4)
+    Aquire(gameData, "silver", 33 / mineFactor, 3, 6)
+    Aquire(gameData, "gold", 25 / mineFactor, 3, 10)
+    Aquire(gameData, "diamond", 5 / mineFactor, 2, 20)
 
     # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
@@ -339,19 +350,19 @@ def Gather(gameData):
 
     playerCondition["Stamina"] -= staminaCost
 
-    print(f"{playerName} has used {staminaCost} stamina points to gather, \
-           and now has {playerCondition.get("Stamina")} stamina left.")
+    print(f"{playerName} has used {staminaCost} stamina points to gather,"
+          f"and now has {playerCondition.get("Stamina")} stamina left.")
 
     # Higher chance on materials if dexterity is high
     gatherFactor = playerAttributes.get("Dexterity") / 10
 
     # Forest materials which can be found
-    Aquire(gameData, "coins", 2 / gatherFactor, 20, 1)
-    Aquire(gameData, "wood", 1 / gatherFactor, 4, 2)
-    Aquire(gameData, "berries", 1 / gatherFactor, 3, 2)
-    Aquire(gameData, "fruit", 2 / gatherFactor, 3, 3)
-    Aquire(gameData, "mysterious potion", 5 / gatherFactor, 2, 10)
-    Aquire(gameData, "mysterious blade", 100 / gatherFactor, 1, 100)
+    Aquire(gameData, "coins", 50 / gatherFactor, 20, 1)
+    Aquire(gameData, "wood", 100 / gatherFactor, 4, 2)
+    Aquire(gameData, "berries", 100 / gatherFactor, 3, 2)
+    Aquire(gameData, "fruit", 50 / gatherFactor, 3, 3)
+    Aquire(gameData, "mysterious potion", 20 / gatherFactor, 2, 10)
+    Aquire(gameData, "mysterious blade", 1 / gatherFactor, 1, 100)
 
     # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
@@ -368,25 +379,31 @@ def Rest(gameData):
     # Define health and stamina
     currentHealth = playerCondition.get("Health")
     maxHealth = playerCondition.get("MaxHealth")
-    regeneratedHealth = int(maxHealth * 0.15) # +15% health
 
     currentStamina = playerCondition.get("Stamina")
     maxStamina = playerCondition.get("MaxStamina")
-    regeneratedStamina = maxStamina - currentStamina # fully restore stamina
 
-    # Limit regeneratedHealth if currentHealth will exceed maxHealth with regeneratedHealth
+    # Ask player for short or long rest
+    action = ""
+    while action not in (actions := ["long", "short"]):
+        action = str(input(f"How long would {playerName} like to rest? (long / short)\n> ")).lower()
+
+        if actions not in actions:
+            print("Invalid action")
+            continue
+
+        regeneratedHealth = (maxHealth * 1) if action == "long" else (maxHealth * 0.25)
+        regeneratedStamina = (maxStamina * 1) if action == "long" else (maxStamina * 0.5)
+
+    # Limit regeneratedHealth if currentHealth will exceed maxHealth + regeneratedHealth
     if currentHealth + regeneratedHealth > maxHealth:
         regeneratedHealth = maxHealth - currentHealth
 
-    # Regenerate health
-    currentHealth += regeneratedHealth
-    if currentHealth > maxHealth:
-        currentHealth = maxHealth
+    # Limit regeneratedStamina if currentStamina will exceed maxStamina + regeneratedStamina
+    if currentStamina + regeneratedStamina > maxStamina:
+        regeneratedStamina = maxStamina - currentStamina
 
-    # Regenerate stamina
-    currentStamina += regeneratedStamina
-
-    print(f"{playerName} regenerated {regeneratedHealth} health.\n{playerName} now has {currentHealth} HP.")
+    print(f"\n{playerName} regenerated {regeneratedHealth} health.\n{playerName} now has {currentHealth} HP.")
     print(f"{playerName} regained {regeneratedStamina} stamina.\n{playerName} now has {currentStamina} stamina.")
 
     # Save player health and stamina
@@ -411,11 +428,11 @@ def Buy(gameData):
 
     # Get input for which item player wants to buy
     item = ""
-    while item not in list(shopData.keys()):
-        item = str(input(f"What item would {playerName} like to browse?\nThe shop currently has: \
-                         {list(shopData.keys())}\n> ").lower())
+    while item not in (shopItems := list(shopData.keys())):
+        item = str(input(f"What item would {playerName} like to browse?\nThe shop currently has:\n"
+                         f"{shopItems}\n> ").lower())
 
-        if item not in list(shopData.keys()):
+        if item not in shopItems:
             print("Invalid item")
             print()
 
@@ -432,7 +449,7 @@ def Buy(gameData):
 
         if buyConfirmation == "Y":
             if playerInventory.get("coins", {}).get("Amount") >= itemPrice:
-                Aquire(gameData, item, 1, 1, itemPrice)
+                Aquire(gameData, item, 100, 1, itemPrice)
                 playerInventory["coins"]["Amount"] -= itemPrice
 
                 # Add item to PlayerEquipment for specific types
@@ -470,11 +487,11 @@ def Sell(gameData):
 
     # Get input for which item player wants to buy
     item = ""
-    while item not in list(playerInventory.keys()):
-        item = str(input(f"What item would {playerName} like to sell?\n \
-                         {playerName} currently has: {list(playerInventory.keys())}\n> ").lower())
+    while item not in (inventoryItems := list(playerInventory.keys())):
+        item = str(input(f"What item would {playerName} like to sell? {playerName} currently has:\n" 
+                         f"{inventoryItems}\n> ").lower())
 
-        if item not in list(playerInventory.keys()):
+        if item not in inventoryItems:
             print("Invalid item")
             print()
 
@@ -489,6 +506,7 @@ def Sell(gameData):
 
         if sellConfirmation == "Y":
             if playerInventory.get(item).get("Amount") > 0:
+                # Not aquire for coins since coins already exists in json at character creation
                 playerInventory["coins"]["Amount"] += playerInventory.get(item).get("Price")
                 playerInventory[item]["Amount"] -= 1
 
@@ -511,8 +529,8 @@ def Sell(gameData):
 
 
 def Shop(gameData):
-    action = str(input(f"What would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} \
-                       like to do in the shop? (Buy / Sell / Leave)\n> ")).lower()
+    action = str(input(f"What would {gameData.get("PlayerData").get("PlayerProfile").get("Name")}"
+                       f"like to do in the shop? (Buy / Sell / Leave)\n> ")).lower()
     print()
 
     match action:
@@ -527,6 +545,20 @@ def Shop(gameData):
             Shop(gameData)
 
 
+def Status(gameData):
+    # Assign player data
+    playerData = gameData.get("PlayerData")
+    playerCondition = playerData.get("PlayerCondition")
+    playerProgress = playerData.get("PlayerProgress")
+    playerName = playerData.get("PlayerProfile").get("Name")
+
+    print(f"{playerName} currently has {playerCondition.get("Health")} HP and "
+          f"{playerCondition.get("Stamina")} stamina.")
+
+    print(f"{playerName} currently has {playerProgress.get("Experience")} XP points, and "
+          f"is located in map zone {playerProgress.get("MapZone")} in the \"{playerProgress.get("MapDimension")}.\"")
+
+
 def Main():
     with open("data.json", "r", encoding = "utf-8") as f:
         gameData = json.load(f)
@@ -537,11 +569,11 @@ def Main():
     if playerProfile.get("Name") == "" or playerProfile.get("Class") == "":
         CharacterSetup(gameData)
 
-    # Reassign playerProfile with new name
-    with open("data.json", "r", encoding = "utf-8") as f:
-        gameData = json.load(f)
-
     while True:
+        # Reassign gameData after each action
+        with open("data.json", "r", encoding = "utf-8") as f:
+            gameData = json.load(f)
+
         # Possible actions with gameData as argument
         possibleActions = {
             "quit": Quit,
@@ -549,12 +581,14 @@ def Main():
             "mine": Mine,
             "gather": Gather,
             "rest": Rest,
+            "status": Status,
             "shop": Shop,
             "restart": Restart
         }
 
-        action = str(input(f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} \
-                            like to do?\n{list(possibleActions)}\n> ")).lower()
+        action = str(input(f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")}"
+                           f"like to do?\n{list(possibleActions)}\n> ")).lower()
+        
         print()
 
         if action in possibleActions:
