@@ -25,7 +25,9 @@ def ResetData(gameData):
     playerInventory.clear()
     playerEquipment.clear()
 
-    playerProgress["Experience"], playerProgress["MapZone"] = 0, 0
+    for part in ["Experience", "MapZone", "DaysPassed"]:
+        playerProgress[part] = 0
+
     playerProgress["MapDimension"] = "Overworld"
 
     # Add "coins" to inventory since it is a currency
@@ -95,7 +97,8 @@ def CharacterSetup(gameData):
         playerCondition[condition] = playerCondition[condition[3:]]
 
     # Welcome player and display stats
-    print(f"\nWelcome {playerName} the {playerClass}!\n\nYour stats are:\n"
+    print(f"\nWelcome {playerName} the {playerClass}!\n")
+    print(f"Your stats are:\n"
           f"Attributes: {", ".join([f"{key}: {value}" for key, value in playerAttributes.items()])}\n"
           f"Condition: {", ".join([f"{key}: {value}" for key, value in playerCondition.items()])}"
     )
@@ -176,7 +179,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
         match action:
             case "attack":
                 # Deal strength + 1 or 2 extra damage, multiplied by attackMultiplier to enemy
-                playerDamage = int((playerAttributes.get("Strength") * (DiceRoll(20) / 10)) * attackMultiplier)
+                playerDamage = round(((playerAttributes.get("Strength") * (DiceRoll(20) / 10)) * attackMultiplier), 0)
                 enemyHealth -= playerDamage
 
                 # Limit enemyHealth to 0, not -4 for example
@@ -186,16 +189,15 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
                 print(f"{playerName} did {playerDamage:00} damage!\nThe {monsterName} has {enemyHealth:00} HP left.")
             case "heal":
                 # Heal 20 HP
-                healAmount = 20
+                regeneratedHealth = 20
 
-                # Limit healAmount if currentHealth will exceed maxHealth with healAmount
-                if currentHealth + healAmount > playerCondition.get("MaxHealth"):
-                    healAmount = maxHealth - currentHealth
+                # Limit regeneratedHealth if currentHealth will exceed maxHealth with regeneratedHealth
+                regeneratedHealth = min(currentHealth + regeneratedHealth, maxHealth)
 
                 # Apply healing
-                currentHealth += healAmount
+                currentHealth += regeneratedHealth
 
-                print(f"{playerName} healed {healAmount} HP!\n{playerName} has {currentHealth} HP left.")
+                print(f"{playerName} healed {regeneratedHealth} HP!\n{playerName} has {currentHealth} HP left.")
             case "buff":
                 buffTurns = 3
                 print(f"{playerName} applied buff, weapon damage and damage negation * 1.2!")
@@ -204,7 +206,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
 
         # Continue fight if enemy still alive
         if enemyHealth > 0:
-            damageDealt  = int((enemyDamage / defenceMultiplier) * (DiceRoll(20) / 10))
+            damageDealt  = round(((enemyDamage / defenceMultiplier) * (DiceRoll(20) / 10)), 0)
             currentHealth -= damageDealt
             print(f"The {monsterName} did {damageDealt} damage!\n{playerName} has {currentHealth} HP left.")
         else:
@@ -231,8 +233,11 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
     playerCondition["Health"] = currentHealth
 
     # Increase player zone
-    playerProgress["MapZone"] += 1
     print(f"{playerName} has advanced to next map zone!")
+    playerProgress["MapZone"] += 1
+
+    # Increase daysPassed
+    playerProgress["DaysPassed"] += 0.5
 
     # zones = ["Overworld", "Caverns", "Sift"]
     # playerProgress["MapDimension"] = zones[(playerProgress.get("MapZone") - 1) // 6]
@@ -275,6 +280,13 @@ def Adventure(gameData):
     else:
         print(f"{playerName} encountered nothing.")
 
+    # Increase daysPassed
+    playerProgress["DaysPassed"] += 0.5
+
+    # Update gameData json file
+    with open("data.json", "w", encoding = "utf-8") as f:
+        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+
 
 def Aquire(gameData, itemName, spawnPercentage = 20, maxSpawnAmount = 5, itemPrice = 10):
     # Aquire item with gameData to add item onto, name of item, spawn chance, max spawn amount, and price
@@ -314,7 +326,7 @@ def Mine(gameData):
 
     playerCondition["Stamina"] -= staminaCost
 
-    print(f"{playerName} has used {staminaCost} stamina points to mine,"
+    print(f"{playerName} has used {staminaCost} stamina points to mine, "
           f"and now has {playerCondition.get("Stamina")} stamina left.")
 
     # Higher chance on materials if strength is high
@@ -326,6 +338,9 @@ def Mine(gameData):
     Aquire(gameData, "silver", 33 / mineFactor, 3, 6)
     Aquire(gameData, "gold", 25 / mineFactor, 3, 10)
     Aquire(gameData, "diamond", 5 / mineFactor, 2, 20)
+
+    # Increase daysPassed
+    playerData.get("PlayerProgress")["DaysPassed"] += 0.5
 
     # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
@@ -349,7 +364,7 @@ def Gather(gameData):
 
     playerCondition["Stamina"] -= staminaCost
 
-    print(f"{playerName} has used {staminaCost} stamina points to gather,"
+    print(f"{playerName} has used {staminaCost} stamina points to gather, "
           f"and now has {playerCondition.get("Stamina")} stamina left.")
 
     # Higher chance on materials if dexterity is high
@@ -362,6 +377,9 @@ def Gather(gameData):
     Aquire(gameData, "fruit", 50 / gatherFactor, 3, 3)
     Aquire(gameData, "mysterious potion", 20 / gatherFactor, 2, 10)
     Aquire(gameData, "mysterious blade", 1 / gatherFactor, 1, 100)
+
+    # Increase daysPassed
+    playerData.get("PlayerProgress")["DaysPassed"] += 0.5
 
     # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
@@ -395,15 +413,15 @@ def Rest(gameData):
     regeneratedHealth = (maxHealth * 1) if action == "long" else (maxHealth * 0.25)
     regeneratedStamina = (maxStamina * 1) if action == "long" else (maxStamina * 0.5)
 
-    # Limit regeneratedHealth if currentHealth will exceed maxHealth + regeneratedHealth
-    if currentHealth + regeneratedHealth > maxHealth:
+    # Limit regeneratedHealth so currentHealth will not exceed maxHealth
+    if (currentHealth + regeneratedHealth) > maxHealth:
         regeneratedHealth = maxHealth - currentHealth
 
-    # Limit regeneratedStamina if currentStamina will exceed maxStamina + regeneratedStamina
-    if currentStamina + regeneratedStamina > maxStamina:
+    # Limit regeneratedStamina so currentStamina will not exceed maxHealth
+    if (currentStamina + regeneratedStamina) > maxStamina:
         regeneratedStamina = maxStamina - currentStamina
 
-    # Add regenerated health and stamina to current
+    # Add regenerated health and stamina onto current
     currentHealth += regeneratedHealth
     currentStamina += regeneratedStamina
 
@@ -413,6 +431,9 @@ def Rest(gameData):
     # Save player health and stamina
     playerCondition["Health"] = currentHealth
     playerCondition["Stamina"] = currentStamina
+
+    # Increase daysPassed based on rest length
+    playerData.get("PlayerProgress")["DaysPassed"] += 1 if action == "long" else 0.5
 
     # Update gameData json file
     with open("data.json", "w", encoding = "utf-8") as f:
@@ -548,6 +569,13 @@ def Shop(gameData):
             print("Invalid action")
             Shop(gameData)
 
+    # Increase daysPassed
+    gameData.get("PlayerData").get("PlayerProgress")["DaysPassed"] += 0.5
+
+    # Update gameData json file
+    with open("data.json", "w", encoding = "utf-8") as f:
+        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+
 
 def Status(gameData):
     # Assign player data
@@ -555,6 +583,8 @@ def Status(gameData):
     playerCondition = playerData.get("PlayerCondition")
     playerProgress = playerData.get("PlayerProgress")
     playerName = playerData.get("PlayerProfile").get("Name")
+
+    print(f"It is currently day {round(playerProgress.get("DaysPassed"), 0)}.")
 
     print(f"{playerName} currently has {playerCondition.get("Health")} HP and "
           f"{playerCondition.get("Stamina")} stamina.")
@@ -590,7 +620,7 @@ def Main():
             "restart": Restart
         }
 
-        action = str(input(f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")}"
+        action = str(input(f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} "
                            f"like to do?\n{list(possibleActions)}\n> ")).lower()
         
         print()

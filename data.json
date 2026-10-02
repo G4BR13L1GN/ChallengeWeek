@@ -18,7 +18,8 @@
         "PlayerProgress": {
             "Experience": 0,
             "MapZone": 0,
-            "MapDimension": "Overworld"
+            "MapDimension": "Overworld",
+            "DaysPassed": 0
         },
         "PlayerInventory": {
             "coins": {
