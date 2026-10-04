@@ -1,38 +1,34 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-            "Name": "Steven",
-            "Class": "barbarian"
+            "Name": "",
+            "Class": ""
         },
         "PlayerAttributes": {
-            "Strength": 18,
-            "Dexterity": 12,
-            "Intelligence": 6
+            "Strength": 0,
+            "Dexterity": 0,
+            "Intelligence": 0
         },
         "PlayerCondition": {
-            "Health": 132.0,
-            "MaxHealth": 140,
-            "Stamina": 110,
-            "MaxStamina": 120
+            "Health": 0,
+            "MaxHealth": 0,
+            "Stamina": 0,
+            "MaxStamina": 0
         },
         "PlayerProgress": {
-            "Experience": 20,
-            "MapZone": 1,
+            "Experience": 0,
+            "MapZone": 0,
             "MapDimension": "Overworld",
-            "DaysPassed": 1.5
+            "DaysPassed": 0
         },
         "PlayerInventory": {
             "coins": {
-                "Amount": 11,
+                "Amount": 0,
                 "Price": 1
             }
         },
         "PlayerEquipment": {},
-        "PlayerSkills": [
-            "melee",
-            "block",
-            "buff"
-        ]
+        "PlayerSkills": []
     },
     "ShopData": {
         "chestplate": {
