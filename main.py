@@ -5,27 +5,23 @@ import json
 def ResetData(gameData):
     # Assign player data variables
     playerData = gameData.get("PlayerData")
-    playerProfile = playerData.get("PlayerProfile")
-    playerCondition = playerData.get("PlayerCondition")
-    playerAttributes = playerData.get("PlayerAttributes")
     playerProgress = playerData.get("PlayerProgress")
-    playerInventory = playerData.get("PlayerInventory")
-    playerEquipment = playerData.get("PlayerEquipment")
 
     # Reset player data
-    for part in playerProfile.keys():
+    for part in (playerProfile := playerData.get("PlayerProfile")).keys():
         playerProfile[part] = ""
 
-    for attribute in playerAttributes.keys():
+    for attribute in (playerAttributes := playerData.get("PlayerAttributes")).keys():
         playerAttributes[attribute] = 0
 
-    for condition in playerCondition.keys():
+    for condition in (playerCondition := playerData.get("PlayerCondition")).keys():
         playerCondition[condition] = 0
 
-    playerInventory.clear()
-    playerEquipment.clear()
+    playerData.get("PlayerInventory").clear()
+    playerData.get("PlayerEquipment").clear()
 
-    for part in ["Experience", "MapZone", "DaysPassed"]:
+    playerProgress = playerData.get("PlayerProgress")
+    for part in ("Experience", "MapZone", "DaysPassed"):
         playerProgress[part] = 0
 
     playerProgress["MapDimension"] = "Overworld"
@@ -85,15 +81,15 @@ def CharacterSetup(gameData):
     playerProfile["Class"] = playerClass
 
     # Assign each attribute based on class
-    for attribute in ["Strength", "Dexterity", "Intelligence"]:
+    for attribute in ("Strength", "Dexterity", "Intelligence"):
         playerAttributes[attribute] = classData[playerClass][attribute]
 
     # Assign health and stamina based on class
-    for condition in ["Health", "Stamina"]:
+    for condition in ("Health", "Stamina"):
         playerCondition[condition] = classData[playerClass][condition]
 
     # Assign max health and stamina with slicing
-    for condition in ["MaxHealth", "MaxStamina"]:
+    for condition in ("MaxHealth", "MaxStamina"):
         playerCondition[condition] = playerCondition[condition[3:]]
 
     # Welcome player and display stats
@@ -402,7 +398,7 @@ def Rest(gameData):
 
     # Ask player for short or long rest
     action = ""
-    while action not in (actions := ["long", "short"]):
+    while action not in (actions := ("long", "short")):
         action = str(input(f"How long would {playerName} like to rest? (long / short)\n> ")).lower()
 
         if action not in actions:
@@ -468,7 +464,7 @@ def Buy(gameData):
     print(f"The {item} costs {itemPrice} coins.")
 
     buyConfirmation = ""
-    while buyConfirmation not in ["Y", "N"]:
+    while buyConfirmation not in ("Y", "N"):
         # Ask for confirmation to buy item
         buyConfirmation = str(input(f"Would {playerName} like to buy the {item}? (Y/N)\n> ")).capitalize()
 
@@ -525,7 +521,7 @@ def Sell(gameData):
     print(f"The {item} sells for {playerInventory.get(item).get("Price")} coins.")
 
     sellConfirmation = ""
-    while sellConfirmation not in ["Y", "N"]:
+    while sellConfirmation not in ("Y", "N"):
         # Ask for confirmation to sell item
         sellConfirmation = str(input(f"Would {playerName} like to sell the {item}? (Y/N)\n> ")).capitalize()
 

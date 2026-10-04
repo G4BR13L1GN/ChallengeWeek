@@ -1,19 +1,19 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-            "Name": "",
-            "Class": ""
+            "Name": "steven",
+            "Class": "barbarian"
         },
         "PlayerAttributes": {
-            "Strength": 0,
-            "Dexterity": 0,
-            "Intelligence": 0
+            "Strength": 18,
+            "Dexterity": 12,
+            "Intelligence": 6
         },
         "PlayerCondition": {
-            "Health": 0,
-            "MaxHealth": 0,
-            "Stamina": 0,
-            "MaxStamina": 0
+            "Health": 140,
+            "MaxHealth": 140,
+            "Stamina": 120,
+            "MaxStamina": 120
         },
         "PlayerProgress": {
             "Experience": 0,
