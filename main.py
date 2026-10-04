@@ -84,7 +84,7 @@ def CharacterSetup(gameData):
     # Loop until valid player class is chosen
     playerClass = Validate(
         (classes := classData.keys()), 
-        f"What is your characters class?\n{", ".join(classes)}\n> "
+        f"\nWhat is your characters class?\n{", ".join(classes)}\n> "
     )
 
     # Assign class once
@@ -107,10 +107,12 @@ def CharacterSetup(gameData):
 
     # Welcome player and display stats
     print(f"\nWelcome {playerName} the {playerClass}!\n")
+
     print(f"Your stats are:\n"
           f"Attributes: {", ".join([f"{key}: {value}" for key, value in playerAttributes.items()])}\n"
-          f"Condition: {", ".join([f"{key}: {value}" for key, value in playerCondition.items()])}\n"
-          f"Skills: {", ".join([skill.capitalize() for skill in playerSkills])}")
+          f"Condition: {", ".join([f"{key}: {value}" for key, value in list(playerCondition.items())[::2]])}\n"
+          f"Skills: {", ".join([skill.capitalize() for skill in playerSkills])}"
+    )
 
     # Update gameData json file
     SaveToJson(gameData)
@@ -157,6 +159,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
             f"\nWhat would {playerName} like to do?\nattack, defence, support\n> "
         )
 
+        # Empty line after checking attack
         print()
 
         # Assign attack and defence multiplier
@@ -196,15 +199,20 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
                 match attackType:
                     # Deal damage based on attributes, from 0.1 to 2.0x damage
                     case "melee":
-                        playerDamage = round(((playerAttributes.get("Strength") * (DiceRoll(20) / 10)) * attackMultiplier), 0)
+                        playerDamage = round(
+                            ((playerAttributes.get("Strength") * (DiceRoll(20) / 10)) * attackMultiplier), 
+                            0
+                        )
                     case "ranged":
-                        playerDamage = round(((playerAttributes.get("Dexterity")
-                                               * (DiceRoll(20) / 10)) 
-                                               * attackMultiplier), 0)
+                        playerDamage = round(
+                            ((playerAttributes.get("Dexterity") * (DiceRoll(20) / 10)) * attackMultiplier),
+                            0
+                        )
                     case "spell":
-                        playerDamage = round(((playerAttributes.get("Intelligence")
-                                               * (DiceRoll(20) / 10)) 
-                                               * attackMultiplier), 0)
+                        playerDamage = round(
+                            ((playerAttributes.get("Intelligence") * (DiceRoll(20) / 10)) * attackMultiplier),
+                            0
+                        )
 
                 enemyHealth -= playerDamage
 
@@ -249,7 +257,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
                 )
 
             case "support":
-                types = ("buff", "heal") # warcry, focus, concentrate
+                types = ("buff", "heal") # add warcry, focus, concentrate instead of general buff
                 availableTypes = [skill for skill in types if skill in playerSkills]
 
                 supportType = Validate(
@@ -277,6 +285,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
                             f"{playerName} has {currentHealth} HP left."
                         )
 
+        # Empty line after player action
         print()
 
         # Continue fight if enemy still alive
@@ -528,13 +537,12 @@ def Buy(gameData):
     item = Validate(
         shopItems := list(shopData.keys()), 
         f"What item would {playerName} like to browse?\nThe shop currently has:\n{", ".join(shopItems)}\n> "
-    ).lower()
+    )
 
     # Print price of item
     itemPrice = shopData.get(item).get("Price")
 
-    print()
-    print(f"The {item} costs {itemPrice} coins.")
+    print(f"\nThe {item} costs {itemPrice} coins.")
 
     buyConfirmation = Validate(
         ("y", "n"), 
@@ -615,6 +623,7 @@ def Shop(gameData):
         f"like to do in the shop?\nbuy, sell, leave\n> "
     )
 
+    # Empty line after player action
     print()
 
     match action:
@@ -685,7 +694,8 @@ def Main():
             f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} "
             f"like to do?\n{", ".join(list(possibleActions))}\n> "
         )
-        
+
+        # Empty line after player action
         print()
 
         if action in possibleActions:
