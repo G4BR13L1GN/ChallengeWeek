@@ -2,6 +2,23 @@ import random
 import json
 
 
+def SaveToJson(gameData):
+    with open("data.json", "w", encoding="utf-8") as f:
+        json.dump(gameData, f, indent=4, ensure_ascii=False)
+
+
+def Validate(options, message):
+    value = ""
+
+    while value not in options:
+        value = str(input(f"{message}").lower())
+
+        if value not in options:
+            print("Invalid input\n")
+
+    return value
+
+
 def ResetData(gameData):
     # Assign player data variables
     playerData = gameData.get("PlayerData")
@@ -36,8 +53,7 @@ def ResetData(gameData):
     }
 
     # Save cleared player inventory
-    with open("data.json", "w", encoding = "utf-8") as f:
-        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+    SaveToJson(gameData)
 
 
 def Restart(gameData):
@@ -67,16 +83,8 @@ def CharacterSetup(gameData):
     print()
 
     # Loop until valid player class is chosen
-    playerClass = ""
-
-    while playerClass not in (classes := list(classData.keys())):
-        playerClass = str(input(
-            f"What is your characters class?\n"
-            f"{", ".join(classes)}\n> "
-        ).lower())
-
-        if playerClass not in classes:
-            print("Class not available (yet)\n")
+    playerClass = Validate((classes := classData.keys()), 
+    f"What is your characters class?\n{", ".join(classes)}\n> ")
 
     # Assign class once
     playerProfile["Class"] = playerClass
@@ -105,14 +113,12 @@ def CharacterSetup(gameData):
     )
 
     # Update gameData json file
-    with open("data.json", "w", encoding = "utf-8") as f:
-        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+    SaveToJson(gameData)
 
 
 def Quit(gameData):
     # Update gameData json file
-    with open("data.json", "w", encoding = "utf-8") as f:
-        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+    SaveToJson(gameData)
 
     quit()
 
@@ -146,12 +152,8 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
     # Loop combat until either player or enemy dies
     while currentHealth > 0 and enemyHealth > 0:
         # Repeat loop if action is not in playerSkills
-        action = str(input(f"\nWhat would {playerName} like to do?\n"
-                           "attack, defence, support\n> ")).lower()
-
-        if action not in ("attack", "defence", "support"):
-            print("Invalid action")
-            continue
+        action = Validate(("attack", "defence", "support"),
+        f"\nWhat would {playerName} like to do?\nattack, defence, support\n> ")
 
         print()
 
@@ -183,14 +185,8 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
                 types = ("melee", "ranged", "spell")
                 availableTypes = [skill for skill in types if skill in playerSkills]
                 
-                attackType = ""
-                while attackType not in availableTypes:
-                    attackType = str(input(f"How would {playerName} like to attack?\n"
-                                           f"{", ".join(availableTypes)}\n> "))
-
-                    if attackType not in availableTypes:
-                        print("Invalid action\n")
-                        continue
+                attackType = Validate(availableTypes, 
+                f"How would {playerName} like to attack?\n{", ".join(availableTypes)}\n> ")
 
                 playerDamage = 0
 
@@ -220,14 +216,8 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
                 types = ("block", "dodge", "ward")
                 availableTypes = [skill for skill in types if skill in playerSkills]
 
-                defendType = ""
-                while defendType not in availableTypes:
-                    defendType = str(input(f"How would {playerName} like to defend?\n"
-                                           f"{", ".join(availableTypes)}\n> "))
-
-                    if defendType not in availableTypes:
-                        print("Invalid action\n")
-                        continue
+                defendType = Validate(availableTypes, 
+                f"How would {playerName} like to defend?\n{", ".join(availableTypes)}\n> ")
 
                 diceRoll = DiceRoll(20)
 
@@ -252,14 +242,8 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
                 types = ("buff", "heal") # warcry, focus, concentrate
                 availableTypes = [skill for skill in types if skill in playerSkills]
 
-                supportType = ""
-                while supportType not in availableTypes:
-                    supportType = str(input(f"How would {playerName} like to defend?\n"
-                                            f"{", ".join(availableTypes)}\n> "))
-
-                    if attackType not in availableTypes:
-                        print("Invalid action\n")
-                        continue
+                supportType = Validate(availableTypes, 
+                f"How would {playerName} like to defend?\n{", ".join(availableTypes)}\n> ")
 
                 match supportType:
                     case "buff":
@@ -300,8 +284,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
         print(f"{playerName} has died!")
 
         # Update gameData json file
-        with open("data.json", "w", encoding = "utf-8") as f:
-            json.dump(gameData, f, indent = 4, ensure_ascii = False)
+        SaveToJson(gameData)
 
         return
 
@@ -319,8 +302,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
     # playerProgress["MapDimension"] = zones[(playerProgress.get("MapZone") - 1) // 6]
 
     # Update gameData json file
-    with open("data.json", "w", encoding = "utf-8") as f:
-        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+    SaveToJson(gameData)
 
 
 def Adventure(gameData):
@@ -360,8 +342,7 @@ def Adventure(gameData):
     playerProgress["DaysPassed"] += 0.5
 
     # Update gameData json file
-    with open("data.json", "w", encoding = "utf-8") as f:
-        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+    SaveToJson(gameData)
 
 
 def Aquire(gameData, itemName, spawnPercentage = 20, maxSpawnAmount = 5, itemPrice = 10):
@@ -381,8 +362,7 @@ def Aquire(gameData, itemName, spawnPercentage = 20, maxSpawnAmount = 5, itemPri
         }
 
     # Update gameData json file
-    with open("data.json", "w", encoding = "utf-8") as f:
-        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+    SaveToJson(gameData)
 
 
 def Mine(gameData):
@@ -419,8 +399,7 @@ def Mine(gameData):
     playerData.get("PlayerProgress")["DaysPassed"] += 0.5
 
     # Update gameData json file
-    with open("data.json", "w", encoding = "utf-8") as f:
-        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+    SaveToJson(gameData)
 
 
 def Gather(gameData):
@@ -458,8 +437,7 @@ def Gather(gameData):
     playerData.get("PlayerProgress")["DaysPassed"] += 0.5
 
     # Update gameData json file
-    with open("data.json", "w", encoding = "utf-8") as f:
-        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+    SaveToJson(gameData)
 
 
 def Rest(gameData):
@@ -477,13 +455,8 @@ def Rest(gameData):
     maxStamina = playerCondition.get("MaxStamina")
 
     # Ask player for short or long rest
-    action = ""
-    while action not in (actions := ("long", "short")):
-        action = str(input(f"How long would {playerName} like to rest? (long / short)\n> ")).lower()
-
-        if action not in actions:
-            print("Invalid action")
-            continue
+    action = Validate(("long", "short"), 
+    f"How long would {playerName} like to rest? (long / short)\n> ")
 
     # Calculate regenerated health and stamina based on rest time
     regeneratedHealth = (maxHealth * 1) if action == "long" else (maxHealth * 0.25)
@@ -512,8 +485,7 @@ def Rest(gameData):
     playerData.get("PlayerProgress")["DaysPassed"] += 1 if action == "long" else 0.5
 
     # Update gameData json file
-    with open("data.json", "w", encoding = "utf-8") as f:
-        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+    SaveToJson(gameData)
 
 
 def Buy(gameData):
@@ -528,14 +500,8 @@ def Buy(gameData):
     shopData = gameData.get("ShopData")
 
     # Get input for which item player wants to buy
-    item = ""
-    while item not in (shopItems := list(shopData.keys())):
-        item = str(input(f"What item would {playerName} like to browse?\nThe shop currently has:\n"
-                         f"{shopItems}\n> ").lower())
-
-        if item not in shopItems:
-            print("Invalid item")
-            print()
+    item = Validate(shopItems := list(shopData.keys()), 
+    f"What item would {playerName} like to browse?\nThe shop currently has:\n{", ".join(shopItems)}\n> ").lower()
 
     # Print price of item
     itemPrice = shopData.get(item).get("Price")
@@ -543,40 +509,33 @@ def Buy(gameData):
     print()
     print(f"The {item} costs {itemPrice} coins.")
 
-    buyConfirmation = ""
-    while buyConfirmation not in ("Y", "N"):
-        # Ask for confirmation to buy item
-        buyConfirmation = str(input(f"Would {playerName} like to buy the {item}? (Y/N)\n> ")).capitalize()
+    buyConfirmation = Validate(("y", "n"), 
+    f"Would {playerName} like to buy the {item}? (Y/N)\n> ")
 
-        if buyConfirmation == "Y":
-            if playerInventory.get("coins", {}).get("Amount") >= itemPrice:
-                Aquire(gameData, item, 100, 1, itemPrice)
-                playerInventory["coins"]["Amount"] -= itemPrice
+    if buyConfirmation == "Y":
+        if playerInventory.get("coins", {}).get("Amount") >= itemPrice:
+            Aquire(gameData, item, 100, 1, itemPrice)
+            playerInventory["coins"]["Amount"] -= itemPrice
 
-                # Add item to PlayerEquipment for specific types
-                if shopData.get(item).get("Type") in ["Weapon", "Armour"]:
-                    playerEquipment[item] = {
-                        "Type": shopData.get(item).get("Type")
-                    }
+            # Add item to PlayerEquipment for specific types
+            if shopData.get(item).get("Type") in ["Weapon", "Armour"]:
+                playerEquipment[item] = {
+                    "Type": shopData.get(item).get("Type")
+                }
 
-                    if shopData.get(item).get("Type") == "Weapon":
-                        playerEquipment[item]["DamageIncrease"] = shopData.get(item).get("DamageIncrease")
-                    elif shopData.get(item).get("Type") == "Armour":
-                        playerEquipment[item]["DamageNegation"] = shopData.get(item).get("DamageNegation")
+                if shopData.get(item).get("Type") == "Weapon":
+                    playerEquipment[item]["DamageIncrease"] = shopData.get(item).get("DamageIncrease")
+                elif shopData.get(item).get("Type") == "Armour":
+                    playerEquipment[item]["DamageNegation"] = shopData.get(item).get("DamageNegation")
 
-            else:
-                print(f"{playerName} doesn't have enough coin.")
-        elif buyConfirmation == "N":
-            print()
-            Shop(gameData)
         else:
-            print("Invalid action")
-            print()
-            continue
+            print(f"{playerName} doesn't have enough coin.")
+    elif buyConfirmation == "N":
+        print()
+        Shop(gameData)
 
     # Update gameData json file
-    with open("data.json", "w", encoding = "utf-8") as f:
-        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+    SaveToJson(gameData)
 
 
 def Sell(gameData):
@@ -587,51 +546,41 @@ def Sell(gameData):
     playerName = playerData.get("PlayerProfile").get("Name")
 
     # Get input for which item player wants to buy
-    item = ""
-    while item not in (inventoryItems := list(playerInventory.keys())):
-        item = str(input(f"What item would {playerName} like to sell? {playerName} currently has:\n" 
-                         f"{inventoryItems}\n> ").lower())
-
-        if item not in inventoryItems:
-            print("Invalid item")
-            print()
+    item = Validate(inventoryItems := playerInventory.keys(),
+    f"What item would {playerName} like to sell? {playerName} currently has:\n{", ".join(inventoryItems)}\n> ")
 
     # Print price of item
     print()
     print(f"The {item} sells for {playerInventory.get(item).get("Price")} coins.")
 
-    sellConfirmation = ""
-    while sellConfirmation not in ("Y", "N"):
-        # Ask for confirmation to sell item
-        sellConfirmation = str(input(f"Would {playerName} like to sell the {item}? (Y/N)\n> ")).capitalize()
+    # Ask for confirmation to sell item
+    sellConfirmation = Validate(("y", "n"), 
+    f"Would {playerName} like to sell the {item}? (Y/N)\n> ")
 
-        if sellConfirmation == "Y":
-            if playerInventory.get(item).get("Amount") > 0:
-                # Not aquire for coins since coins already exists in json at character creation
-                playerInventory["coins"]["Amount"] += playerInventory.get(item).get("Price")
-                playerInventory[item]["Amount"] -= 1
+    if sellConfirmation == "Y":
+        if playerInventory.get(item).get("Amount") > 0:
+            # Not aquire for coins since coins already exists in json at character creation
+            playerInventory["coins"]["Amount"] += playerInventory.get(item).get("Price")
+            playerInventory[item]["Amount"] -= 1
 
-                # Remove item from inventory if 0 left
-                if playerInventory[item].get("Amount") <= 0:
-                    playerInventory.pop(item)
-            else:
-                print(f"{playerName} doesn't have enough {item}.")
-        elif sellConfirmation == "N":
-            print()
-            Shop(gameData)
+            # Remove item from inventory if 0 left
+            if playerInventory[item].get("Amount") <= 0:
+                playerInventory.pop(item)
         else:
-            print("Invalid action")
-            print()
-            continue
+            print(f"{playerName} doesn't have enough {item}.")
+    elif sellConfirmation == "N":
+        print()
+        Shop(gameData)
 
     # Update gameData json file
-    with open("data.json", "w", encoding = "utf-8") as f:
-        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+    SaveToJson(gameData)
 
 
 def Shop(gameData):
-    action = str(input(f"What would {gameData.get("PlayerData").get("PlayerProfile").get("Name")}"
-                       f"like to do in the shop? (Buy / Sell / Leave)\n> ")).lower()
+    action = Validate(("buy", "sell", "leave"), 
+    f"What would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} "
+    f"like to do in the shop?\nbuy, sell, leave\n> ")
+
     print()
 
     match action:
@@ -641,16 +590,12 @@ def Shop(gameData):
             Sell(gameData)
         case "leave":
             return
-        case _:
-            print("Invalid action")
-            Shop(gameData)
 
     # Increase daysPassed
     gameData.get("PlayerData").get("PlayerProgress")["DaysPassed"] += 0.5
 
     # Update gameData json file
-    with open("data.json", "w", encoding = "utf-8") as f:
-        json.dump(gameData, f, indent = 4, ensure_ascii = False)
+    SaveToJson(gameData)
 
 
 def Status(gameData):
@@ -696,8 +641,9 @@ def Main():
             "restart": Restart
         }
 
-        action = str(input(f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} "
-                           f"like to do?\n{", ".join(list(possibleActions))}\n> ")).lower()
+        action = Validate(possibleActions, 
+        f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} "
+        f"like to do?\n{", ".join(list(possibleActions))}\n> ")
         
         print()
 
