@@ -1,35 +1,37 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-            "Name": "steven",
-            "Class": "barbarian"
+            "Name": "Steven",
+            "Class": "paladin"
         },
         "PlayerAttributes": {
-            "Strength": 18,
-            "Dexterity": 12,
-            "Intelligence": 6
+            "Strength": 16,
+            "Dexterity": 10,
+            "Intelligence": 14
         },
         "PlayerCondition": {
-            "Health": 140,
-            "MaxHealth": 140,
-            "Stamina": 120,
-            "MaxStamina": 120
+            "Health": 107.0,
+            "MaxHealth": 130,
+            "Stamina": 30,
+            "MaxStamina": 110
         },
         "PlayerProgress": {
-            "Experience": 0,
-            "MapZone": 0,
+            "Experience": 20,
+            "MapZone": 1,
             "MapDimension": "Overworld",
-            "DaysPassed": 0
+            "DaysPassed": 4.5
         },
         "PlayerInventory": {
             "coins": {
-                "Amount": 0,
+                "Amount": 11,
                 "Price": 1
             }
         },
         "PlayerEquipment": {},
         "PlayerSkills": [
-            "attack",
+            "melee",
+            "spell",
+            "block",
             "heal",
             "buff"
         ]
@@ -75,7 +77,8 @@
             "Dexterity": 12,
             "Intelligence": 6,
             "Skills": [
-                "attack",
+                "melee",
+                "block",
                 "buff"
             ]
         },
@@ -86,7 +89,9 @@
             "Dexterity": 14,
             "Intelligence": 16,
             "Skills": [
-                "attack",
+                "ranged",
+                "spell",
+                "dodge",
                 "heal",
                 "buff"
             ]
@@ -98,7 +103,9 @@
             "Dexterity": 10,
             "Intelligence": 16,
             "Skills": [
-                "attack",
+                "melee",
+                "spell",
+                "ward",
                 "heal",
                 "buff"
             ]
@@ -110,9 +117,10 @@
             "Dexterity": 12,
             "Intelligence": 18,
             "Skills": [
-                "attack",
-                "heal",
-                "buff"
+                "spell",
+                "dodge",
+                "ward",
+                "heal"
             ]
         },
         "fighter": {
@@ -122,7 +130,10 @@
             "Dexterity": 14,
             "Intelligence": 8,
             "Skills": [
-                "attack",
+                "melee",
+                "ranged",
+                "block",
+                "dodge",
                 "buff"
             ]
         },
@@ -133,7 +144,9 @@
             "Dexterity": 18,
             "Intelligence": 10,
             "Skills": [
-                "attack",
+                "melee",
+                "block",
+                "dodge",
                 "buff"
             ]
         },
@@ -144,7 +157,9 @@
             "Dexterity": 10,
             "Intelligence": 14,
             "Skills": [
-                "attack",
+                "melee",
+                "spell",
+                "block",
                 "heal",
                 "buff"
             ]
@@ -156,7 +171,9 @@
             "Dexterity": 18,
             "Intelligence": 10,
             "Skills": [
-                "attack",
+                "melee",
+                "ranged",
+                "dodge",
                 "heal"
             ]
         },
@@ -167,7 +184,10 @@
             "Dexterity": 18,
             "Intelligence": 14,
             "Skills": [
-                "attack"
+                "melee",
+                "ranged",
+                "dodge",
+                "buff"
             ]
         },
         "sorcerer": {
@@ -177,7 +197,8 @@
             "Dexterity": 12,
             "Intelligence": 18,
             "Skills": [
-                "attack",
+                "spell",
+                "ward",
                 "buff"
             ]
         },
@@ -188,7 +209,9 @@
             "Dexterity": 12,
             "Intelligence": 18,
             "Skills": [
-                "attack",
+                "spell",
+                "ward",
+                "heal",
                 "buff"
             ]
         },
@@ -199,7 +222,8 @@
             "Dexterity": 10,
             "Intelligence": 18,
             "Skills": [
-                "attack",
+                "spell",
+                "ward",
                 "buff"
             ]
         }

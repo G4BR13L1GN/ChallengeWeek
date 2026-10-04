@@ -17,6 +17,8 @@ def ResetData(gameData):
     for condition in (playerCondition := playerData.get("PlayerCondition")).keys():
         playerCondition[condition] = 0
 
+    playerData.get("PlayerSkills").clear()
+
     playerData.get("PlayerInventory").clear()
     playerData.get("PlayerEquipment").clear()
 
@@ -55,10 +57,9 @@ def CharacterSetup(gameData):
     playerProfile = playerData.get("PlayerProfile")
     playerAttributes = playerData.get("PlayerAttributes")
     playerCondition = playerData.get("PlayerCondition")
+    playerSkills = playerData.get("PlayerSkills")
 
     classData = gameData.get("ClassData")
-
-    # have to change playerSkills based on class
 
     # Assign name
     playerName = str(input("\nWhat is your characters name?\n> "))
@@ -92,11 +93,15 @@ def CharacterSetup(gameData):
     for condition in ("MaxHealth", "MaxStamina"):
         playerCondition[condition] = playerCondition[condition[3:]]
 
+    # Add class skills to playerSkills
+    playerSkills.extend(classData[playerClass]["Skills"])
+
     # Welcome player and display stats
     print(f"\nWelcome {playerName} the {playerClass}!\n")
     print(f"Your stats are:\n"
           f"Attributes: {", ".join([f"{key}: {value}" for key, value in playerAttributes.items()])}\n"
-          f"Condition: {", ".join([f"{key}: {value}" for key, value in playerCondition.items()])}"
+          f"Condition: {", ".join([f"{key}: {value}" for key, value in playerCondition.items()])}\n"
+          f"Skills: {", ".join([skill.capitalize() for skill in playerSkills])}"
     )
 
     # Update gameData json file
@@ -112,9 +117,9 @@ def Quit(gameData):
     quit()
 
 
-def DiceRoll(rollAmount = 20):
-    # Return random int from 1 to rollAmount, 20 if no amount given
-    return random.randint(1, rollAmount)
+def DiceRoll(maxRoll = 20):
+    # Roll a random int from 1 to maxRoll, 20 if no amount is given
+    return random.randint(1, maxRoll)
 
 
 def Combat(gameData, enemyClass, mapDimension, monsterName):
@@ -128,6 +133,7 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
     playerCondition = playerData.get("PlayerCondition")
     playerAttributes = playerData.get("PlayerAttributes")
     playerEquipment = playerData.get("PlayerEquipment")
+    playerSkills = playerData.get("PlayerSkills")
 
     currentHealth = playerCondition.get("Health")
     maxHealth = playerCondition.get("MaxHealth")
@@ -140,10 +146,10 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
     # Loop combat until either player or enemy dies
     while currentHealth > 0 and enemyHealth > 0:
         # Repeat loop if action is not in playerSkills
-        action = str(input(f"\nHow would {playerName} like to attack?\n"
-                           f"{playerData.get("PlayerSkills")}\n> ")).lower()
+        action = str(input(f"\nWhat would {playerName} like to do?\n"
+                           "attack, defence, support\n> ")).lower()
 
-        if action not in playerData.get("PlayerSkills"):
+        if action not in ("attack", "defence", "support"):
             print("Invalid action")
             continue
 
@@ -174,29 +180,103 @@ def Combat(gameData, enemyClass, mapDimension, monsterName):
         # Different functions based on action
         match action:
             case "attack":
-                # Deal strength + 1 or 2 extra damage, multiplied by attackMultiplier to enemy
-                playerDamage = round(((playerAttributes.get("Strength") * (DiceRoll(20) / 10)) * attackMultiplier), 0)
+                types = ("melee", "ranged", "spell")
+                availableTypes = [skill for skill in types if skill in playerSkills]
+                
+                attackType = ""
+                while attackType not in availableTypes:
+                    attackType = str(input(f"How would {playerName} like to attack?\n"
+                                           f"{", ".join(availableTypes)}\n> "))
+
+                    if attackType not in availableTypes:
+                        print("Invalid action\n")
+                        continue
+
+                playerDamage = 0
+
+                match attackType:
+                    case "melee":
+                        # Deal damage based on strength, from 0.1 to 2.0x damage
+                        playerDamage = round(((playerAttributes.get("Strength")
+                                                * (DiceRoll(20) / 10)) * attackMultiplier), 0)
+                    case "ranged":
+                        # Deal damage based on dexterity, from 0.1 to 2.0x damage
+                        playerDamage = round(((playerAttributes.get("Dexterity")
+                                                * (DiceRoll(20) / 10)) * attackMultiplier), 0)
+                    case "spell":
+                        # Deal damage based on intelligence, from 0.1 to 2.0x damage
+                        playerDamage = round(((playerAttributes.get("Intelligence")
+                                                * (DiceRoll(20) / 10)) * attackMultiplier), 0)
+
                 enemyHealth -= playerDamage
 
                 # Limit enemyHealth to 0, not -4 for example
                 if enemyHealth < 0:
                     enemyHealth = 0
 
-                print(f"{playerName} did {playerDamage:00} damage!\nThe {monsterName} has {enemyHealth:00} HP left.")
-            case "heal":
-                # Heal 20 HP
-                regeneratedHealth = 20
+                print(f"{playerName} did {playerDamage} damage!\nThe {monsterName} has {enemyHealth} HP left.")
 
-                # Limit regeneratedHealth if currentHealth will exceed maxHealth with regeneratedHealth
-                regeneratedHealth = min(currentHealth + regeneratedHealth, maxHealth)
+            case "defence":
+                types = ("block", "dodge", "ward")
+                availableTypes = [skill for skill in types if skill in playerSkills]
 
-                # Apply healing
-                currentHealth += regeneratedHealth
+                defendType = ""
+                while defendType not in availableTypes:
+                    defendType = str(input(f"How would {playerName} like to defend?\n"
+                                           f"{", ".join(availableTypes)}\n> "))
 
-                print(f"{playerName} healed {regeneratedHealth} HP!\n{playerName} has {currentHealth} HP left.")
-            case "buff":
-                buffTurns = 3
-                print(f"{playerName} applied buff, weapon damage and damage negation * 1.2!")
+                    if defendType not in availableTypes:
+                        print("Invalid action\n")
+                        continue
+
+                diceRoll = DiceRoll(20)
+
+                match defendType:
+                    case "block":
+                        # Double defenceMultiplier if strength * roll > 10
+                        defenceMultiplier *= 2 if (playerAttributes.get("Strength") * 
+                                               (diceRoll / 10)) > 10 else 1
+                    case "dodge":
+                        # Double defenceMultiplier if dexterity * roll > 10
+                        defenceMultiplier *= 2 if (playerAttributes.get("Dexterity") * 
+                                                (diceRoll / 10)) > 10 else 1
+                    case "ward":
+                        # Double defenceMultiplier if intelligence * roll > 10
+                        defenceMultiplier *= 2 if (playerAttributes.get("Intelligence") * 
+                                                (diceRoll / 10)) > 10 else 1
+
+                print(f"{playerName} performed a succesful block, damage negation * 2 for this turn!"
+                      if diceRoll > 10 else
+                      f"{playerName} failed the defence action, no damage negation bonus this turn!")
+            case "support":
+                types = ("buff", "heal") # warcry, focus, concentrate
+                availableTypes = [skill for skill in types if skill in playerSkills]
+
+                supportType = ""
+                while supportType not in availableTypes:
+                    supportType = str(input(f"How would {playerName} like to defend?\n"
+                                            f"{", ".join(availableTypes)}\n> "))
+
+                    if attackType not in availableTypes:
+                        print("Invalid action\n")
+                        continue
+
+                match supportType:
+                    case "buff":
+                        buffTurns = 3
+                        print(f"{playerName} applied buff, weapon damage and damage negation * 1.2!")
+                    case "heal":
+                        # Heal 10 to 30 HP
+                        regeneratedHealth = 10 + DiceRoll(20)
+
+                        # Limit regeneratedHealth so currentHealth will not exceed maxHealth
+                        if (currentHealth + regeneratedHealth) > maxHealth:
+                            regeneratedHealth = maxHealth - currentHealth
+
+                        # Apply healing
+                        currentHealth += regeneratedHealth
+
+                        print(f"{playerName} healed {regeneratedHealth} HP!\n{playerName} has {currentHealth} HP left.")
 
         print()
 
@@ -617,7 +697,7 @@ def Main():
         }
 
         action = str(input(f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} "
-                           f"like to do?\n{list(possibleActions)}\n> ")).lower()
+                           f"like to do?\n{", ".join(list(possibleActions))}\n> ")).lower()
         
         print()
 
