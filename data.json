@@ -1,40 +1,34 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-            "Name": "Steven",
-            "Class": "paladin"
+            "Name": "",
+            "Class": ""
         },
         "PlayerAttributes": {
-            "Strength": 16,
-            "Dexterity": 10,
-            "Intelligence": 14
+            "Strength": 0,
+            "Dexterity": 0,
+            "Intelligence": 0
         },
         "PlayerCondition": {
-            "Health": 107.0,
-            "MaxHealth": 130,
-            "Stamina": 30,
-            "MaxStamina": 110
+            "Health": 0,
+            "MaxHealth": 0,
+            "Stamina": 0,
+            "MaxStamina": 0
         },
         "PlayerProgress": {
-            "Experience": 20,
-            "MapZone": 1,
+            "Experience": 0,
+            "MapZone": 0,
             "MapDimension": "Overworld",
-            "DaysPassed": 4.5
+            "DaysPassed": 0
         },
         "PlayerInventory": {
             "coins": {
-                "Amount": 11,
+                "Amount": 0,
                 "Price": 1
             }
         },
         "PlayerEquipment": {},
-        "PlayerSkills": [
-            "melee",
-            "spell",
-            "block",
-            "heal",
-            "buff"
-        ]
+        "PlayerSkills": []
     },
     "ShopData": {
         "chestplate": {
