@@ -2,6 +2,7 @@ import random
 import json
 
 
+# Utility Functions
 def SaveToJson(gameData):
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(gameData, f, indent=4, ensure_ascii=False)
@@ -17,6 +18,11 @@ def Validate(options, message):
             print("Invalid input\n")
 
     return value
+
+
+def DiceRoll(maxRoll = 20):
+    # Roll a random int from 1 to maxRoll, 20 if no amount is given
+    return random.randint(1, maxRoll)
 
 
 def ResetData(gameData):
@@ -64,6 +70,7 @@ def Restart(gameData):
         CharacterSetup(gameData)
 
 
+# Gameplay Functions
 def CharacterSetup(gameData):
     # Reset data so there is no save conflict
     ResetData(gameData)
@@ -123,11 +130,6 @@ def Quit(gameData):
     SaveToJson(gameData)
 
     quit()
-
-
-def DiceRoll(maxRoll = 20):
-    # Roll a random int from 1 to maxRoll, 20 if no amount is given
-    return random.randint(1, maxRoll)
 
 
 def Combat(gameData, enemyClass, mapDimension, monsterName):
@@ -487,7 +489,7 @@ def Rest(gameData):
     # Ask player for short or long rest
     action = Validate(
         ("long", "short"), 
-        f"How long would {playerName} like to rest? (long / short)\n> "
+        f"How long would {playerName} like to rest?\nlong, short\n> "
     )
 
     # Calculate regenerated health and stamina based on rest time
@@ -584,7 +586,8 @@ def Sell(gameData):
 
     # Get input for which item player wants to buy
     item = Validate(
-        inventoryItems := playerInventory.keys(),
+        # [1:] so it will exclude coins, and turn to list since you can't slice dict.keys()
+        inventoryItems := list(playerInventory.keys())[1:],
         f"What item would {playerName} like to sell? {playerName} currently has:\n{", ".join(inventoryItems)}\n> "
     )
 

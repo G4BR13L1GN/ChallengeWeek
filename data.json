@@ -1,19 +1,19 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-            "Name": "",
-            "Class": ""
+            "Name": "Gabriël",
+            "Class": "paladin"
         },
         "PlayerAttributes": {
-            "Strength": 0,
-            "Dexterity": 0,
-            "Intelligence": 0
+            "Strength": 16,
+            "Dexterity": 10,
+            "Intelligence": 14
         },
         "PlayerCondition": {
-            "Health": 0,
-            "MaxHealth": 0,
-            "Stamina": 0,
-            "MaxStamina": 0
+            "Health": 130,
+            "MaxHealth": 130,
+            "Stamina": 110,
+            "MaxStamina": 110
         },
         "PlayerProgress": {
             "Experience": 0,
@@ -28,7 +28,13 @@
             }
         },
         "PlayerEquipment": {},
-        "PlayerSkills": []
+        "PlayerSkills": [
+            "melee",
+            "spell",
+            "block",
+            "heal",
+            "buff"
+        ]
     },
     "ShopData": {
         "chestplate": {
@@ -267,7 +273,7 @@
                     "Experience": 20,
                     "SpecialEffect": "Resurrects after death with 50% health"
                 },
-                "Blue Blobby": {
+                "Blue Slime": {
                     "Health": 50,
                     "Damage": 10,
                     "Experience": 20,
