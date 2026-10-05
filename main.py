@@ -665,6 +665,7 @@ def Status(gameData):
     )
 
 
+# Main Function
 def Main():
     with open("data.json", "r", encoding = "utf-8") as f:
         gameData = json.load(f)
@@ -707,5 +708,6 @@ def Main():
             print("Invalid action")
 
 
+# Call main
 if __name__ == "__main__":
     Main()
