@@ -1,77 +1,34 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-            "Name": "Gabriël",
-            "Class": "paladin"
+            "Name": "",
+            "Class": ""
         },
         "PlayerAttributes": {
-            "Strength": 16,
-            "Dexterity": 10,
-            "Intelligence": 14
+            "Strength": 0,
+            "Dexterity": 0,
+            "Intelligence": 0
         },
         "PlayerCondition": {
-            "Health": 130.0,
-            "MaxHealth": 130,
-            "Stamina": 70,
-            "MaxStamina": 110
+            "Health": 0,
+            "MaxHealth": 0,
+            "Stamina": 0,
+            "MaxStamina": 0
         },
         "PlayerProgress": {
-            "Experience": 20,
-            "MapZone": 1,
+            "Experience": 0,
+            "MapZone": 0,
             "MapDimension": "Overworld",
-            "DaysPassed": 23.0
+            "DaysPassed": 0
         },
         "PlayerInventory": {
             "coins": {
-                "Amount": 631,
+                "Amount": 0,
                 "Price": 1
-            },
-            "coal": {
-                "Amount": 40,
-                "Price": 2
-            },
-            "gold": {
-                "Amount": 7,
-                "Price": 10
-            },
-            "wood": {
-                "Amount": 15,
-                "Price": 2
-            },
-            "berries": {
-                "Amount": 15,
-                "Price": 2
-            },
-            "fruit": {
-                "Amount": 4,
-                "Price": 3
-            },
-            "silver": {
-                "Amount": 6,
-                "Price": 6
-            },
-            "iron": {
-                "Amount": 24,
-                "Price": 4
-            },
-            "diamond": {
-                "Amount": 1,
-                "Price": 20
             }
         },
-        "PlayerEquipment": {
-            "sword": {
-                "Type": "Weapon",
-                "DamageIncrease": 2
-            }
-        },
-        "PlayerSkills": [
-            "melee",
-            "spell",
-            "block",
-            "heal",
-            "buff"
-        ]
+        "PlayerEquipment": {},
+        "PlayerSkills": []
     },
     "LootData": {
         "Mine": {
