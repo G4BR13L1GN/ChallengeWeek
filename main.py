@@ -609,8 +609,6 @@ def Sell(gameData):
         f"Would {playerName} like to sell the {item}? (Y/N)\n> "
     )
 
-    print(sellConfirmation)
-
     if sellConfirmation == "y":
         if playerInventory.get(item).get("Amount") > 0:
             # Not aquire for coins since coins already exists in json at character creation
