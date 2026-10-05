@@ -400,6 +400,8 @@ def Mine(gameData):
 
     playerName = playerData.get("PlayerProfile").get("Name")
 
+    lootData = gameData.get("LootData").get("Mine")
+
     # Stamina cost for mining
     staminaCost = 10
 
@@ -419,11 +421,14 @@ def Mine(gameData):
     mineFactor = playerAttributes.get("Strength") / 10
 
     # Mining materials which can be found
-    Aquire(gameData, "coal", 100 / mineFactor, 4, 2)
-    Aquire(gameData, "iron", 50 / mineFactor, 4, 4)
-    Aquire(gameData, "silver", 33 / mineFactor, 3, 6)
-    Aquire(gameData, "gold", 25 / mineFactor, 3, 10)
-    Aquire(gameData, "diamond", 5 / mineFactor, 2, 20)
+    for key in lootData.keys():
+        Aquire(
+            gameData, 
+            key, 
+            lootData[key].get("chance") / mineFactor, 
+            lootData[key].get("maxAmount"), 
+            lootData[key].get("price")
+        )
 
     # Increase daysPassed
     playerData.get("PlayerProgress")["DaysPassed"] += 0.5
@@ -438,6 +443,8 @@ def Gather(gameData):
     playerCondition = playerData.get("PlayerCondition")
 
     playerName = playerData.get("PlayerProfile").get("Name")
+
+    lootData = gameData.get("LootData").get("Forest")
 
     # Stamina cost for gathering
     staminaCost = 10
@@ -458,12 +465,14 @@ def Gather(gameData):
     gatherFactor = playerAttributes.get("Dexterity") / 10
 
     # Forest materials which can be found
-    Aquire(gameData, "coins", 50 / gatherFactor, 20, 1)
-    Aquire(gameData, "wood", 100 / gatherFactor, 4, 2)
-    Aquire(gameData, "berries", 100 / gatherFactor, 3, 2)
-    Aquire(gameData, "fruit", 50 / gatherFactor, 3, 3)
-    Aquire(gameData, "mysterious potion", 20 / gatherFactor, 2, 10)
-    Aquire(gameData, "mysterious blade", 1 / gatherFactor, 1, 100)
+    for key in lootData.keys():
+        Aquire(
+            gameData, 
+            key, 
+            lootData[key].get("chance") / gatherFactor, 
+            lootData[key].get("maxAmount"), 
+            lootData[key].get("price")
+        )
 
     # Increase daysPassed
     playerData.get("PlayerProgress")["DaysPassed"] += 0.5
@@ -551,7 +560,7 @@ def Buy(gameData):
         f"Would {playerName} like to buy the {item}? (Y/N)\n> "
     )
 
-    if buyConfirmation == "Y":
+    if buyConfirmation == "y":
         if playerInventory.get("coins", {}).get("Amount") >= itemPrice:
             Aquire(gameData, item, 100, 1, itemPrice)
             playerInventory["coins"]["Amount"] -= itemPrice
@@ -569,7 +578,7 @@ def Buy(gameData):
 
         else:
             print(f"{playerName} doesn't have enough coin.")
-    elif buyConfirmation == "N":
+    elif buyConfirmation == "n":
         print()
         Shop(gameData)
 
@@ -600,7 +609,9 @@ def Sell(gameData):
         f"Would {playerName} like to sell the {item}? (Y/N)\n> "
     )
 
-    if sellConfirmation == "Y":
+    print(sellConfirmation)
+
+    if sellConfirmation == "y":
         if playerInventory.get(item).get("Amount") > 0:
             # Not aquire for coins since coins already exists in json at character creation
             playerInventory["coins"]["Amount"] += playerInventory.get(item).get("Price")
@@ -611,7 +622,7 @@ def Sell(gameData):
                 playerInventory.pop(item)
         else:
             print(f"{playerName} doesn't have enough {item}.")
-    elif sellConfirmation == "N":
+    elif sellConfirmation == "n":
         print()
         Shop(gameData)
 

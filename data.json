@@ -10,24 +10,61 @@
             "Intelligence": 14
         },
         "PlayerCondition": {
-            "Health": 130,
+            "Health": 130.0,
             "MaxHealth": 130,
-            "Stamina": 110,
+            "Stamina": 70,
             "MaxStamina": 110
         },
         "PlayerProgress": {
-            "Experience": 0,
-            "MapZone": 0,
+            "Experience": 20,
+            "MapZone": 1,
             "MapDimension": "Overworld",
-            "DaysPassed": 0
+            "DaysPassed": 23.0
         },
         "PlayerInventory": {
             "coins": {
-                "Amount": 0,
+                "Amount": 631,
                 "Price": 1
+            },
+            "coal": {
+                "Amount": 40,
+                "Price": 2
+            },
+            "gold": {
+                "Amount": 7,
+                "Price": 10
+            },
+            "wood": {
+                "Amount": 15,
+                "Price": 2
+            },
+            "berries": {
+                "Amount": 15,
+                "Price": 2
+            },
+            "fruit": {
+                "Amount": 4,
+                "Price": 3
+            },
+            "silver": {
+                "Amount": 6,
+                "Price": 6
+            },
+            "iron": {
+                "Amount": 24,
+                "Price": 4
+            },
+            "diamond": {
+                "Amount": 1,
+                "Price": 20
             }
         },
-        "PlayerEquipment": {},
+        "PlayerEquipment": {
+            "sword": {
+                "Type": "Weapon",
+                "DamageIncrease": 2
+            }
+        },
         "PlayerSkills": [
             "melee",
             "spell",
@@ -35,6 +72,67 @@
             "heal",
             "buff"
         ]
+    },
+    "LootData": {
+        "Mine": {
+            "coal": {
+                "chance": 100,
+                "maxAmount": 4,
+                "price": 2
+            },
+            "iron": {
+                "chance": 50,
+                "maxAmount": 4,
+                "price": 4
+            },
+            "silver": {
+                "chance": 33,
+                "maxAmount": 3,
+                "price": 6
+            },
+            "gold": {
+                "chance": 25,
+                "maxAmount": 3,
+                "price": 10
+            },
+            "diamond": {
+                "chance": 5,
+                "maxAmount": 2,
+                "price": 20
+            }
+        },
+        "Forest": {
+            "coins": {
+                "chance": 50,
+                "maxAmount": 20,
+                "price": 1
+            },
+            "wood": {
+                "chance": 100,
+                "maxAmount": 4,
+                "price": 2
+            },
+            "berries": {
+                "chance": 100,
+                "maxAmount": 3,
+                "price": 2
+            },
+            "fruit": {
+                "chance": 50,
+                "maxAmount": 3,
+                "price": 3
+            },
+            "mysterious potion": {
+                "chance": 20,
+                "maxAmount": 2,
+                "price": 10
+            },
+            "mysterious blade": {
+                "chance": 1,
+                "maxAmount": 1,
+                "price": 100
+            }
+        }
     },
     "ShopData": {
         "chestplate": {
