@@ -3,12 +3,12 @@ import json
 
 
 # Utility Functions
-def SaveToJson(gameData):
-    with open("data.json", "w", encoding="utf-8") as f:
-        json.dump(gameData, f, indent=4, ensure_ascii=False)
+def save_to_json(game_data):
+    with open("data.json", "w", encoding="utf-8") as file:
+        json.dump(game_data, file, indent=4, ensure_ascii=False)
 
 
-def Validate(options, message):
+def validate(options, message):
     value = ""
 
     while value not in options:
@@ -20,618 +20,691 @@ def Validate(options, message):
     return value
 
 
-def DiceRoll(maxRoll = 20):
-    # Roll a random int from 1 to maxRoll, 20 if no amount is given
-    return random.randint(1, maxRoll)
+def dice_roll(max_roll=20):
+    # Roll a random int from 1 to max_roll, 20 if no amount is given
+    return random.randint(1, max_roll)
 
 
-def ResetData(gameData):
+def reset_data(game_data):
     # Assign player data variables
-    playerData = gameData.get("PlayerData")
-    playerProgress = playerData.get("PlayerProgress")
+    player_data = game_data.get("PlayerData")
+    player_progress = player_data.get("PlayerProgress")
 
     # Reset player data
-    for part in (playerProfile := playerData.get("PlayerProfile")).keys():
-        playerProfile[part] = ""
+    for part in (player_profile := player_data.get("PlayerProfile")).keys():
+        player_profile[part] = ""
 
-    for attribute in (playerAttributes := playerData.get("PlayerAttributes")).keys():
-        playerAttributes[attribute] = 0
+    for attribute in (player_attributes := player_data.get("PlayerAttributes")).keys():
+        player_attributes[attribute] = 0
 
-    for condition in (playerCondition := playerData.get("PlayerCondition")).keys():
-        playerCondition[condition] = 0
+    for condition in (player_condition := player_data.get("PlayerCondition")).keys():
+        player_condition[condition] = 0
 
-    playerData.get("PlayerSkills").clear()
+    player_data.get("PlayerSkills").clear()
 
-    playerData.get("PlayerInventory").clear()
-    playerData.get("PlayerEquipment").clear()
+    player_data.get("PlayerInventory").clear()
+    player_data.get("PlayerEquipment").clear()
 
-    playerProgress = playerData.get("PlayerProgress")
+    player_progress = player_data.get("PlayerProgress")
     for part in ("Experience", "MapZone", "DaysPassed"):
-        playerProgress[part] = 0
+        player_progress[part] = 0
 
-    playerProgress["MapDimension"] = "Overworld"
+    player_progress["MapDimension"] = "Overworld"
 
     # Add "coins" to inventory since it is a currency
-    playerInventory = playerData.get("PlayerInventory")
-    playerInventory["coins"] = {
+    player_inventory = player_data.get("PlayerInventory")
+    player_inventory["coins"] = {
         "Amount": 0,
         "Price": 1
     }
 
     # Save cleared player inventory
-    SaveToJson(gameData)
+    save_to_json(game_data)
 
 
-def Restart(gameData):
+def restart(game_data):
     # Only continue if player has agreed twice
     if str(input("Do you really want to restart? (Y/N)\n> ").upper()) == "Y" and \
        str(input("\nAre you sure? (Y/N)\n> ").upper()) == "Y":
         # Set up new character
-        CharacterSetup(gameData)
+        character_setup(game_data)
 
 
 # Gameplay Functions
-def CharacterSetup(gameData):
+def character_setup(game_data):
     # Reset data so there is no save conflict
-    ResetData(gameData)
+    reset_data(game_data)
 
-    # Assign playerData and classData
-    playerData = gameData.get("PlayerData")
-    playerProfile = playerData.get("PlayerProfile")
-    playerAttributes = playerData.get("PlayerAttributes")
-    playerCondition = playerData.get("PlayerCondition")
-    playerSkills = playerData.get("PlayerSkills")
+    # Assign player_data and class_data
+    player_data = game_data.get("PlayerData")
+    player_profile = player_data.get("PlayerProfile")
+    player_attributes = player_data.get("PlayerAttributes")
+    player_condition = player_data.get("PlayerCondition")
+    player_skills = player_data.get("PlayerSkills")
 
-    classData = gameData.get("ClassData")
+    class_data = game_data.get("ClassData")
 
     # Assign name
-    playerName = str(input("\nWhat is your characters name?\n> "))
-    playerProfile["Name"] = playerName
+    player_name = str(input("\nWhat is your characters name?\n> "))
+    player_profile["Name"] = player_name
 
     # Loop until valid player class is chosen
-    playerClass = Validate(
-        (classes := classData.keys()), 
+    player_class = validate(
+        (classes := class_data.keys()),
         f"\nWhat is your characters class?\n{", ".join(classes)}\n> "
     )
 
     # Assign class once
-    playerProfile["Class"] = playerClass
+    player_profile["Class"] = player_class
 
     # Assign each attribute based on class
     for attribute in ("Strength", "Dexterity", "Intelligence"):
-        playerAttributes[attribute] = classData[playerClass][attribute]
+        player_attributes[attribute] = class_data[player_class][attribute]
 
     # Assign health and stamina based on class
     for condition in ("Health", "Stamina"):
-        playerCondition[condition] = classData[playerClass][condition]
+        player_condition[condition] = class_data[player_class][condition]
 
     # Assign max health and stamina with slicing
     for condition in ("MaxHealth", "MaxStamina"):
-        playerCondition[condition] = playerCondition[condition[3:]]
+        player_condition[condition] = player_condition[condition[3:]]
 
-    # Add class skills to playerSkills
-    playerSkills.extend(classData[playerClass]["Skills"])
+    # Add class skills to player_skills
+    player_skills.extend(class_data[player_class]["Skills"])
 
     # Welcome player and display stats
-    print(f"\nWelcome {playerName} the {playerClass}!\n")
+    print(f"\nWelcome {player_name} the {player_class}!\n")
 
-    print(f"Your stats are:\n"
-          f"Attributes: {", ".join([f"{key}: {value}" for key, value in playerAttributes.items()])}\n"
-          f"Condition: {", ".join([f"{key}: {value}" for key, value in list(playerCondition.items())[::2]])}\n"
-          f"Skills: {", ".join([skill.capitalize() for skill in playerSkills])}"
+    print(
+        f"Your stats are:\n"
+        f"Attributes: {", ".join([f"{key}: {value}" for key,
+                                 value in player_attributes.items()])}\n"
+        f"Condition: {", ".join([f"{key}: {value}" for key, value in list(
+            player_condition.items())[::2]])}\n"
+        f"Skills: {", ".join([skill.capitalize() for skill in player_skills])}"
     )
 
-    # Update gameData json file
-    SaveToJson(gameData)
+    # Update game_data json file
+    save_to_json(game_data)
 
 
-def Quit(gameData):
-    # Update gameData json file
-    SaveToJson(gameData)
+def quit_game(game_data):
+    # Update game_data json file
+    save_to_json(game_data)
 
     quit()
 
 
-def Combat(gameData, enemyClass, mapDimension, monsterName):
+def combat(game_data, enemy_class, map_dimension, monster_name):
     # Define enemy statistics based off of arguments
-    enemyData = gameData.get("MonsterData")[mapDimension][enemyClass][monsterName]
-    enemyHealth = enemyData.get("Health")
-    enemyDamage = enemyData.get("Damage")
+    enemy_data = game_data.get("MonsterData")[
+        map_dimension][enemy_class][monster_name]
+    enemy_health = enemy_data.get("Health")
+    enemy_damage = enemy_data.get("Damage")
 
     # Define player statistics
-    playerData = gameData.get("PlayerData")
-    playerCondition = playerData.get("PlayerCondition")
-    playerAttributes = playerData.get("PlayerAttributes")
-    playerEquipment = playerData.get("PlayerEquipment")
-    playerSkills = playerData.get("PlayerSkills")
+    player_data = game_data.get("PlayerData")
+    player_condition = player_data.get("PlayerCondition")
+    player_attributes = player_data.get("PlayerAttributes")
+    player_equipment = player_data.get("PlayerEquipment")
+    player_skills = player_data.get("PlayerSkills")
 
-    currentHealth = playerCondition.get("Health")
-    maxHealth = playerCondition.get("MaxHealth")
+    current_health = player_condition.get("Health")
+    max_health = player_condition.get("MaxHealth")
 
-    playerName = playerData.get("PlayerProfile").get("Name")
+    player_name = player_data.get("PlayerProfile").get("Name")
 
     # Set buff counter
-    buffTurns = 0
+    buff_turns = 0
 
     # Loop combat until either player or enemy dies
-    while currentHealth > 0 and enemyHealth > 0:
-        # Repeat loop if action is not in playerSkills
-        action = Validate(
+    while current_health > 0 and enemy_health > 0:
+        # Repeat loop if action is not in player_skills
+        action = validate(
             ("attack", "defence", "support"),
-            f"\nWhat would {playerName} like to do?\nattack, defence, support\n> "
+            f"\nWhat would {player_name} like to do?\nattack, defence, support\n> "
         )
 
         # Empty line after checking attack
         print()
 
         # Assign attack and defence multiplier
-        attackMultiplier, defenceMultiplier = 1, 1
+        attack_multiplier, defence_multiplier = 1, 1
 
         # Change attack and defence multiplier based on highest armour rating
-        for key in playerEquipment.keys():
-            equipment = playerEquipment.get(key)
+        for key in player_equipment.keys():
+            equipment = player_equipment.get(key)
 
             if equipment.get("Type") == "Weapon":
-                if equipment.get("DamageIncrease") > attackMultiplier:
-                    attackMultiplier = equipment.get("DamageIncrease")
+                if equipment.get("DamageIncrease") > attack_multiplier:
+                    attack_multiplier = equipment.get("DamageIncrease")
             elif equipment.get("Type") == "Armour":
-                if equipment.get("DamageNegation") > defenceMultiplier:
-                    defenceMultiplier = equipment.get("DamageNegation")
+                if equipment.get("DamageNegation") > defence_multiplier:
+                    defence_multiplier = equipment.get("DamageNegation")
 
         # Apply / remove buff
-        attackMultiplier *= 1.2 if buffTurns > 0 else 1
-        defenceMultiplier *= 1.2 if buffTurns > 0 else 1
+        attack_multiplier *= 1.2 if buff_turns > 0 else 1
+        defence_multiplier *= 1.2 if buff_turns > 0 else 1
 
         # Remove buff counter
-        buffTurns -= 1 if buffTurns > 0 else 0
+        buff_turns -= 1 if buff_turns > 0 else 0
 
         # Different functions based on action
         match action:
             case "attack":
                 types = ("melee", "ranged", "spell")
-                availableTypes = [skill for skill in types if skill in playerSkills]
-                
-                attackType = Validate(
-                    availableTypes, 
-                    f"How would {playerName} like to attack?\n{", ".join(availableTypes)}\n> "
+                available_types = [
+                    skill for skill in types if skill in player_skills]
+
+                attack_type = validate(
+                    available_types,
+                    f"How would {player_name} like to attack?\n{", ".join(available_types)}\n> "
                 )
 
-                playerDamage = 0
+                player_damage = 0
 
-                match attackType:
+                match attack_type:
                     # Deal damage based on attributes, from 0.1 to 2.0x damage
                     case "melee":
-                        playerDamage = round(
-                            ((playerAttributes.get("Strength") * (DiceRoll(20) / 10)) * attackMultiplier), 
+                        player_damage = round(
+                            ((player_attributes.get("Strength") *
+                             (dice_roll(20) / 10)) * attack_multiplier),
                             0
                         )
                     case "ranged":
-                        playerDamage = round(
-                            ((playerAttributes.get("Dexterity") * (DiceRoll(20) / 10)) * attackMultiplier),
+                        player_damage = round(
+                            ((player_attributes.get("Dexterity") *
+                             (dice_roll(20) / 10)) * attack_multiplier),
                             0
                         )
                     case "spell":
-                        playerDamage = round(
-                            ((playerAttributes.get("Intelligence") * (DiceRoll(20) / 10)) * attackMultiplier),
+                        player_damage = round(
+                            ((player_attributes.get("Intelligence") *
+                             (dice_roll(20) / 10)) * attack_multiplier),
                             0
                         )
 
-                enemyHealth -= playerDamage
+                enemy_health -= player_damage
 
-                # Limit enemyHealth to 0, not -4 for example
-                if enemyHealth < 0:
-                    enemyHealth = 0
+                # Limit enemy_health to 0, not -4 for example
+                if enemy_health < 0:
+                    enemy_health = 0
 
-                print(f"{playerName} did {playerDamage} damage!\nThe {monsterName} has {enemyHealth} HP left.")
+                print(
+                    f"{player_name} did {player_damage} damage!\n"
+                    f"The {monster_name} has {enemy_health} HP left."
+                )
 
             case "defence":
                 types = ("block", "dodge", "ward")
-                availableTypes = [skill for skill in types if skill in playerSkills]
+                available_types = [
+                    skill for skill in types if skill in player_skills]
 
-                defendType = Validate(
-                    availableTypes, 
-                    f"How would {playerName} like to defend?\n{", ".join(availableTypes)}\n> "
+                defend_type = validate(
+                    available_types,
+                    f"How would {player_name} like to defend?\n{", ".join(available_types)}\n> "
                 )
 
-                diceRoll = DiceRoll(20)
+                dice_roll_result = dice_roll(20)
 
-                match defendType:
+                match defend_type:
                     case "block":
-                        # Double defenceMultiplier if strength * roll > 10
-                        defenceMultiplier *= 2 if (
-                            playerAttributes.get("Strength") * (diceRoll / 10)
+                        # Double defence_multiplier if strength * roll > 10
+                        defence_multiplier *= 2 if (
+                            player_attributes.get(
+                                "Strength") * (dice_roll_result / 10)
                         ) > 10 else 1
                     case "dodge":
-                        # Double defenceMultiplier if dexterity * roll > 10
-                        defenceMultiplier *= 2 if (
-                            playerAttributes.get("Dexterity") * (diceRoll / 10)
+                        # Double defence_multiplier if dexterity * roll > 10
+                        defence_multiplier *= 2 if (
+                            player_attributes.get(
+                                "Dexterity") * (dice_roll_result / 10)
                         ) > 10 else 1
                     case "ward":
-                        # Double defenceMultiplier if intelligence * roll > 10
-                        defenceMultiplier *= 2 if (
-                            playerAttributes.get("Intelligence") * (diceRoll / 10)
+                        # Double defence_multiplier if intelligence * roll > 10
+                        defence_multiplier *= 2 if (
+                            player_attributes.get(
+                                "Intelligence") * (dice_roll_result / 10)
                         ) > 10 else 1
 
                 print(
-                    f"{playerName} performed a succesful block, damage negation * 2 for this turn!"
-                    if diceRoll > 10 
-                    else f"{playerName} failed the defence action, no damage negation bonus this turn!"
+                    f"{player_name} performed a succesful block, damage negation * 2 for this turn!"
+                    if dice_roll_result > 10
+                    else f"{player_name} failed the defence action, no damage negation bonus this turn!"
                 )
 
             case "support":
-                types = ("buff", "heal") # add warcry, focus, concentrate instead of general buff
-                availableTypes = [skill for skill in types if skill in playerSkills]
+                # add warcry, focus, concentrate instead of general buff
+                types = ("buff", "heal")
+                available_types = [
+                    skill for skill in types if skill in player_skills]
 
-                supportType = Validate(
-                    availableTypes, 
-                    f"How would {playerName} like to defend?\n{", ".join(availableTypes)}\n> "
+                support_type = validate(
+                    available_types,
+                    f"How would {player_name} like to defend?\n{", ".join(available_types)}\n> "
                 )
 
-                match supportType:
+                match support_type:
                     case "buff":
-                        buffTurns = 3
-                        print(f"{playerName} applied buff, weapon damage and damage negation * 1.2!")
+                        buff_turns = 3
+                        print(
+                            f"{player_name} applied buff, weapon damage and damage negation * 1.2!")
                     case "heal":
                         # Heal 10 to 30 HP
-                        regeneratedHealth = 10 + DiceRoll(20)
+                        regenerated_health = 10 + dice_roll(20)
 
-                        # Limit regeneratedHealth so currentHealth will not exceed maxHealth
-                        if (currentHealth + regeneratedHealth) > maxHealth:
-                            regeneratedHealth = maxHealth - currentHealth
+                        # Limit regenerated_health so current_health will not exceed max_health
+                        if (current_health + regenerated_health) > max_health:
+                            regenerated_health = max_health - current_health
 
                         # Apply healing
-                        currentHealth += regeneratedHealth
+                        current_health += regenerated_health
 
                         print(
-                            f"{playerName} healed {regeneratedHealth} HP!\n"
-                            f"{playerName} has {currentHealth} HP left."
+                            f"{player_name} healed {regenerated_health} HP!\n"
+                            f"{player_name} has {current_health} HP left."
                         )
 
         # Empty line after player action
         print()
 
         # Continue fight if enemy still alive
-        if enemyHealth > 0:
+        if enemy_health > 0:
             # Calculate damage dealt by enemy
-            damageDealt  = round(((enemyDamage / defenceMultiplier) * (DiceRoll(20) / 10)), 0)
-            currentHealth -= damageDealt
+            damage_dealt = round(
+                ((enemy_damage / defence_multiplier) * (dice_roll(20) / 10)),
+                0
+            )
+            current_health -= damage_dealt
 
-            print(f"The {monsterName} did {damageDealt} damage!\n{playerName} has {currentHealth} HP left.")
+            print(
+                f"The {monster_name} did {damage_dealt} damage!\n"
+                f"{player_name} has {current_health} HP left."
+            )
         else:
             # Reward player with experience and coins with maximum of monster XP
-            experienceGained = enemyData.get("Experience", 0)
+            experience_gained = enemy_data.get("Experience", 0)
 
-            print(f"{playerName} defeated the {monsterName} and gained {experienceGained} XP!\n")
-            Aquire(gameData, "coins", 100, experienceGained, 1)
+            print(
+                f"{player_name} defeated the {monster_name} and gained "
+                f"{experience_gained} XP!\n"
+            )
 
-            playerProgress = playerData.get("PlayerProgress")
-            playerProgress["Experience"] += experienceGained
+            aquire(game_data, "coins", 100, experience_gained, 1)
+
+            player_progress = player_data.get("PlayerProgress")
+            player_progress["Experience"] += experience_gained
             break
 
-    if currentHealth <= 0:
-        print(f"{playerName} has died!")
+    if current_health <= 0:
+        print(f"{player_name} has died!")
 
-        # Update gameData json file
-        SaveToJson(gameData)
+        # Update game_data json file
+        save_to_json(game_data)
 
         return
 
     # Save player health after battle
-    playerCondition["Health"] = currentHealth
+    player_condition["Health"] = current_health
 
     # Increase player zone
-    print(f"{playerName} has advanced to next map zone!")
-    playerProgress["MapZone"] += 1
+    print(f"{player_name} has advanced to next map zone!")
+    player_progress["MapZone"] += 1
 
-    # Increase daysPassed
-    playerProgress["DaysPassed"] += 0.5
+    # Increase days_passed
+    player_progress["DaysPassed"] += 0.5
 
     # zones = ["Overworld", "Caverns", "Sift"]
-    # playerProgress["MapDimension"] = zones[(playerProgress.get("MapZone") - 1) // 6]
+    # player_progress["MapDimension"] = zones[(player_progress.get("MapZone") - 1) // 6]
 
-    # Update gameData json file
-    SaveToJson(gameData)
+    # Update game_data json file
+    save_to_json(game_data)
 
 
-def Adventure(gameData):
+def adventure(game_data):
     # Assign player data
-    playerData = gameData.get("PlayerData")
-    playerAttributes = playerData.get("PlayerAttributes")
-    playerCondition = playerData.get("PlayerCondition")
-    playerProgress = playerData.get("PlayerProgress")
+    player_data = game_data.get("PlayerData")
+    player_attributes = player_data.get("PlayerAttributes")
+    player_condition = player_data.get("PlayerCondition")
+    player_progress = player_data.get("PlayerProgress")
 
-    playerName = playerData.get("PlayerProfile").get("Name")
+    player_name = player_data.get("PlayerProfile").get("Name")
 
     # Stamina cost for adventuring
-    staminaCost = 10
+    stamina_cost = 10
 
     # Prevent stamina going below 0
-    if (playerCondition["Stamina"] - staminaCost) < 0:
-        print(f"{playerName} doesn't have enough stamina to adventure, {playerName} should rest!")
+    if (player_condition["Stamina"] - stamina_cost) < 0:
+        print(
+            f"{player_name} doesn't have enough stamina to adventure, "
+            f"{player_name} should rest!"
+        )
         return
 
-    # Remove stamina from playerCondition
-    playerCondition["Stamina"] -= staminaCost
+    # Remove stamina from player_condition
+    player_condition["Stamina"] -= stamina_cost
 
-    print(f"{playerName} has used {staminaCost} stamina points to adventure.")
+    print(f"{player_name} has used {stamina_cost} stamina points to adventure.")
 
     # Encounter if player intelligence passes sight check
-    if playerAttributes.get("Intelligence") > DiceRoll(20):
-        monsterData = gameData.get("MonsterData")
+    if player_attributes.get("Intelligence") > dice_roll(20):
+        monster_data = game_data.get("MonsterData")
 
-        monsterName = random.choice(list(monsterData[playerProgress.get("MapDimension")]["Monsters"].keys()))
-        print(f"{playerName} encountered a {monsterName}")
+        monster_name = random.choice(
+            list(monster_data[player_progress.get(
+                "MapDimension")]["Monsters"].keys())
+        )
 
-        Combat(gameData, "Monsters", playerProgress.get("MapDimension"), monsterName)
+        print(f"{player_name} encountered a {monster_name}")
+
+        combat(
+            game_data,
+            "Monsters",
+            player_progress.get("MapDimension"),
+            monster_name
+        )
     else:
-        print(f"{playerName} encountered nothing.")
+        print(f"{player_name} encountered nothing.")
 
-    # Increase daysPassed
-    playerProgress["DaysPassed"] += 0.5
+    # Increase days_passed
+    player_progress["DaysPassed"] += 0.5
 
-    # Update gameData json file
-    SaveToJson(gameData)
+    # Update game_data json file
+    save_to_json(game_data)
 
 
-def Aquire(gameData, itemName, spawnPercentage = 20, maxSpawnAmount = 5, itemPrice = 10):
-    # Aquire item with gameData to add item onto, name of item, spawn chance, max spawn amount, and price
-    playerData = gameData.get("PlayerData")
-    playerInventory = playerData.get("PlayerInventory")
+def aquire(
+    game_data,
+    item_name,
+    spawn_percentage=20,
+    max_spawn_amount=5,
+    item_price=10
+):
+    # Aquire item with game_data to add item onto, name of item, spawn chance,
+    # max spawn amount, and price
+    player_data = game_data.get("PlayerData")
+    player_inventory = player_data.get("PlayerInventory")
 
-    # random chance from 1 to spawnChance, which accepts that is or is under 1
-    if random.uniform(0, 100 / spawnPercentage) <= 1:
-        spawnAmount = random.randint(1, maxSpawnAmount)
-        print(f"{playerData.get("PlayerProfile").get("Name")} got {spawnAmount} {itemName}!")
+    # random chance from 1 to spawn_chance, which accepts that is or is under 1
+    if random.uniform(0, 100 / spawn_percentage) <= 1:
+        spawn_amount = random.randint(1, max_spawn_amount)
+
+        print(
+            f"{player_data.get("PlayerProfile").get("Name")} "
+            f"got {spawn_amount} {item_name}!"
+        )
 
         # .get() can give existing amount, or 0 if it doesn't exist yet
-        playerInventory[itemName] = {
-            "Amount": playerInventory.get(itemName, {}).get("Amount", 0) + spawnAmount,
-            "Price": itemPrice
+        player_inventory[item_name] = {
+            "Amount": player_inventory.get(item_name, {}).get("Amount", 0) + spawn_amount,
+            "Price": item_price
         }
 
-    # Update gameData json file
-    SaveToJson(gameData)
+    # Update game_data json file
+    save_to_json(game_data)
 
 
-def Mine(gameData):
-    playerData = gameData.get("PlayerData")
-    playerAttributes = playerData.get("PlayerAttributes")
-    playerCondition = playerData.get("PlayerCondition")
+def mine(game_data):
+    player_data = game_data.get("PlayerData")
+    player_attributes = player_data.get("PlayerAttributes")
+    player_condition = player_data.get("PlayerCondition")
 
-    playerName = playerData.get("PlayerProfile").get("Name")
+    player_name = player_data.get("PlayerProfile").get("Name")
 
-    lootData = gameData.get("LootData").get("Mine")
+    loot_data = game_data.get("LootData").get("Mine")
 
     # Stamina cost for mining
-    staminaCost = 10
+    stamina_cost = 10
 
     # Prevent stamina going below 0
-    if (playerCondition["Stamina"] - staminaCost) < 0:
-        print(f"{playerName} doesn't have enough stamina to mine, {playerName} should rest!")
+    if (player_condition["Stamina"] - stamina_cost) < 0:
+        print(
+            f"{player_name} doesn't have enough stamina to mine, "
+            f"{player_name} should rest!"
+        )
         return
 
-    playerCondition["Stamina"] -= staminaCost
+    player_condition["Stamina"] -= stamina_cost
 
     print(
-        f"{playerName} has used {staminaCost} stamina points to mine, "
-        f"and now has {playerCondition.get("Stamina")} stamina left."
+        f"{player_name} has used {stamina_cost} stamina points to mine, "
+        f"and now has {player_condition.get("Stamina")} stamina left."
     )
 
     # Higher chance on materials if strength is high
-    mineFactor = playerAttributes.get("Strength") / 10
+    mine_factor = player_attributes.get("Strength") / 10
 
     # Mining materials which can be found
-    for key in lootData.keys():
-        Aquire(
-            gameData, 
-            key, 
-            lootData[key].get("chance") / mineFactor, 
-            lootData[key].get("maxAmount"), 
-            lootData[key].get("price")
+    for key in loot_data.keys():
+        aquire(
+            game_data,
+            key,
+            loot_data[key].get("chance") / mine_factor,
+            loot_data[key].get("maxAmount"),
+            loot_data[key].get("price")
         )
 
-    # Increase daysPassed
-    playerData.get("PlayerProgress")["DaysPassed"] += 0.5
+    # Increase days_passed
+    player_data.get("PlayerProgress")["DaysPassed"] += 0.5
 
-    # Update gameData json file
-    SaveToJson(gameData)
+    # Update game_data json file
+    save_to_json(game_data)
 
 
-def Gather(gameData):
-    playerData = gameData.get("PlayerData")
-    playerAttributes = playerData.get("PlayerAttributes")
-    playerCondition = playerData.get("PlayerCondition")
+def gather(game_data):
+    player_data = game_data.get("PlayerData")
+    player_attributes = player_data.get("PlayerAttributes")
+    player_condition = player_data.get("PlayerCondition")
 
-    playerName = playerData.get("PlayerProfile").get("Name")
+    player_name = player_data.get("PlayerProfile").get("Name")
 
-    lootData = gameData.get("LootData").get("Forest")
+    loot_data = game_data.get("LootData").get("Forest")
 
     # Stamina cost for gathering
-    staminaCost = 10
+    stamina_cost = 10
 
     # Prevent stamina going below 0
-    if (playerCondition["Stamina"] - staminaCost) < 0:
-        print(f"{playerName} doesn't have enough stamina to adventure, {playerName} should rest!")
+    if (player_condition["Stamina"] - stamina_cost) < 0:
+        print(
+            f"{player_name} doesn't have enough stamina to adventure, "
+            f"{player_name} should rest!"
+        )
         return
 
-    playerCondition["Stamina"] -= staminaCost
+    player_condition["Stamina"] -= stamina_cost
 
     print(
-        f"{playerName} has used {staminaCost} stamina points to gather, "
-        f"and now has {playerCondition.get("Stamina")} stamina left."
+        f"{player_name} has used {stamina_cost} stamina points to gather, "
+        f"and now has {player_condition.get("Stamina")} stamina left."
     )
 
     # Higher chance on materials if dexterity is high
-    gatherFactor = playerAttributes.get("Dexterity") / 10
+    gather_factor = player_attributes.get("Dexterity") / 10
 
     # Forest materials which can be found
-    for key in lootData.keys():
-        Aquire(
-            gameData, 
-            key, 
-            lootData[key].get("chance") / gatherFactor, 
-            lootData[key].get("maxAmount"), 
-            lootData[key].get("price")
+    for key in loot_data.keys():
+        aquire(
+            game_data,
+            key,
+            loot_data[key].get("chance") / gather_factor,
+            loot_data[key].get("maxAmount"),
+            loot_data[key].get("price")
         )
 
-    # Increase daysPassed
-    playerData.get("PlayerProgress")["DaysPassed"] += 0.5
+    # Increase days_passed
+    player_data.get("PlayerProgress")["DaysPassed"] += 0.5
 
-    # Update gameData json file
-    SaveToJson(gameData)
+    # Update game_data json file
+    save_to_json(game_data)
 
 
-def Rest(gameData):
+def rest(game_data):
     # Define player statistics
-    playerData = gameData.get("PlayerData")
-    playerCondition = playerData.get("PlayerCondition")
+    player_data = game_data.get("PlayerData")
+    player_condition = player_data.get("PlayerCondition")
 
-    playerName = playerData.get("PlayerProfile").get("Name")
+    player_name = player_data.get("PlayerProfile").get("Name")
 
     # Define health and stamina
-    currentHealth = playerCondition.get("Health")
-    maxHealth = playerCondition.get("MaxHealth")
+    current_health = player_condition.get("Health")
+    max_health = player_condition.get("MaxHealth")
 
-    currentStamina = playerCondition.get("Stamina")
-    maxStamina = playerCondition.get("MaxStamina")
+    current_stamina = player_condition.get("Stamina")
+    max_stamina = player_condition.get("MaxStamina")
 
     # Ask player for short or long rest
-    action = Validate(
-        ("long", "short"), 
-        f"How long would {playerName} like to rest?\nlong, short\n> "
+    action = validate(
+        ("long", "short"),
+        f"How long would {player_name} like to rest?\nlong, short\n> "
     )
 
     # Calculate regenerated health and stamina based on rest time
-    regeneratedHealth = (maxHealth * 1) if action == "long" else (maxHealth * 0.25)
-    regeneratedStamina = (maxStamina * 1) if action == "long" else (maxStamina * 0.5)
+    regenerated_health = (
+        max_health * 1) if action == "long" else (max_health * 0.25)
+    regenerated_stamina = (
+        max_stamina * 1) if action == "long" else (max_stamina * 0.5)
 
-    # Limit regeneratedHealth so currentHealth will not exceed maxHealth
-    if (currentHealth + regeneratedHealth) > maxHealth:
-        regeneratedHealth = maxHealth - currentHealth
+    # Limit regenerated_health so current_health will not exceed max_health
+    if (current_health + regenerated_health) > max_health:
+        regenerated_health = max_health - current_health
 
-    # Limit regeneratedStamina so currentStamina will not exceed maxHealth
-    if (currentStamina + regeneratedStamina) > maxStamina:
-        regeneratedStamina = maxStamina - currentStamina
+    # Limit regenerated_stamina so current_stamina will not exceed max_stamina
+    if (current_stamina + regenerated_stamina) > max_stamina:
+        regenerated_stamina = max_stamina - current_stamina
 
     # Add regenerated health and stamina onto current
-    currentHealth += regeneratedHealth
-    currentStamina += regeneratedStamina
+    current_health += regenerated_health
+    current_stamina += regenerated_stamina
 
     print(
-        f"\n{playerName} regenerated {regeneratedHealth} health.\n{playerName} now has {currentHealth} HP."
-        f"{playerName} regained {regeneratedStamina} stamina.\n{playerName} now has {currentStamina} stamina."
+        f"\n{player_name} regenerated {regenerated_health} health.\n"
+        f"{player_name} now has {current_health} HP."
+        f"{player_name} regained {regenerated_stamina} stamina.\n"
+        f"{player_name} now has {current_stamina} stamina."
     )
 
     # Save player health and stamina
-    playerCondition["Health"] = currentHealth
-    playerCondition["Stamina"] = currentStamina
+    player_condition["Health"] = current_health
+    player_condition["Stamina"] = current_stamina
 
-    # Increase daysPassed based on rest length
-    playerData.get("PlayerProgress")["DaysPassed"] += 1 if action == "long" else 0.5
+    # Increase days_passed based on rest length
+    player_data.get("PlayerProgress")[
+        "DaysPassed"] += 1 if action == "long" else 0.5
 
-    # Update gameData json file
-    SaveToJson(gameData)
+    # Update game_data json file
+    save_to_json(game_data)
 
 
-def Buy(gameData):
+def buy(game_data):
     # Define player data
-    playerData = gameData.get("PlayerData")
-    playerInventory = playerData.get("PlayerInventory")
-    playerEquipment = playerData.get("PlayerEquipment")
+    player_data = game_data.get("PlayerData")
+    player_inventory = player_data.get("PlayerInventory")
+    player_equipment = player_data.get("PlayerEquipment")
 
-    playerName = playerData.get("PlayerProfile").get("Name")
+    player_name = player_data.get("PlayerProfile").get("Name")
 
     # Define shop items
-    shopData = gameData.get("ShopData")
+    shop_data = game_data.get("ShopData")
 
     # Get input for which item player wants to buy
-    item = Validate(
-        shopItems := list(shopData.keys()), 
-        f"What item would {playerName} like to browse?\nThe shop currently has:\n{", ".join(shopItems)}\n> "
+    item = validate(
+        shop_items := list(shop_data.keys()),
+        f"What item would {player_name} like to browse?\n"
+        f"The shop currently has:\n{", ".join(shop_items)}\n> "
     )
 
     # Print price of item
-    itemPrice = shopData.get(item).get("Price")
+    item_price = shop_data.get(item).get("Price")
 
-    print(f"\nThe {item} costs {itemPrice} coins.")
+    print(f"\nThe {item} costs {item_price} coins.")
 
-    buyConfirmation = Validate(
-        ("y", "n"), 
-        f"Would {playerName} like to buy the {item}? (Y/N)\n> "
+    buy_confirmation = validate(
+        ("y", "n"),
+        f"Would {player_name} like to buy the {item}? (Y/N)\n> "
     )
 
-    if buyConfirmation == "y":
-        if playerInventory.get("coins", {}).get("Amount") >= itemPrice:
-            Aquire(gameData, item, 100, 1, itemPrice)
-            playerInventory["coins"]["Amount"] -= itemPrice
+    if buy_confirmation == "y":
+        if player_inventory.get("coins", {}).get("Amount") >= item_price:
+            aquire(game_data, item, 100, 1, item_price)
+            player_inventory["coins"]["Amount"] -= item_price
 
-            # Add item to PlayerEquipment for specific types
-            if shopData.get(item).get("Type") in ["Weapon", "Armour"]:
-                playerEquipment[item] = {
-                    "Type": shopData.get(item).get("Type")
+            # Add item to player_equipment for specific types
+            if shop_data.get(item).get("Type") in ["Weapon", "Armour"]:
+                player_equipment[item] = {
+                    "Type": shop_data.get(item).get("Type")
                 }
 
-                if shopData.get(item).get("Type") == "Weapon":
-                    playerEquipment[item]["DamageIncrease"] = shopData.get(item).get("DamageIncrease")
-                elif shopData.get(item).get("Type") == "Armour":
-                    playerEquipment[item]["DamageNegation"] = shopData.get(item).get("DamageNegation")
+                if shop_data.get(item).get("Type") == "Weapon":
+                    player_equipment[item]["DamageIncrease"] = shop_data.get(
+                        item).get("DamageIncrease")
+                elif shop_data.get(item).get("Type") == "Armour":
+                    player_equipment[item]["DamageNegation"] = shop_data.get(
+                        item).get("DamageNegation")
 
         else:
-            print(f"{playerName} doesn't have enough coin.")
-    elif buyConfirmation == "n":
+            print(f"{player_name} doesn't have enough coin.")
+
+    elif buy_confirmation == "n":
         print()
-        Shop(gameData)
+        shop(game_data)
 
-    # Update gameData json file
-    SaveToJson(gameData)
+    # Update game_data json file
+    save_to_json(game_data)
 
 
-def Sell(gameData):
+def sell(game_data):
     # Define player data
-    playerData = gameData.get("PlayerData")
-    playerInventory = playerData.get("PlayerInventory")
+    player_data = game_data.get("PlayerData")
+    player_inventory = player_data.get("PlayerInventory")
 
-    playerName = playerData.get("PlayerProfile").get("Name")
+    player_name = player_data.get("PlayerProfile").get("Name")
 
     # Get input for which item player wants to buy
-    item = Validate(
+    item = validate(
         # [1:] so it will exclude coins, and turn to list since you can't slice dict.keys()
-        inventoryItems := list(playerInventory.keys())[1:],
-        f"What item would {playerName} like to sell? {playerName} currently has:\n{", ".join(inventoryItems)}\n> "
+        inventory_items := list(player_inventory.keys())[1:],
+        f"What item would {player_name} like to sell? "
+        f"{player_name} currently has:\n{", ".join(inventory_items)}\n> "
     )
 
     # Print price of item
-    print(f"\nThe {item} sells for {playerInventory.get(item).get("Price")} coins.")
-
-    # Ask for confirmation to sell item
-    sellConfirmation = Validate(
-        ("y", "n"), 
-        f"Would {playerName} like to sell the {item}? (Y/N)\n> "
+    print(
+        f"\nThe {item} sells for "
+        f"{player_inventory.get(item).get("Price")} coins."
     )
 
-    if sellConfirmation == "y":
-        if playerInventory.get(item).get("Amount") > 0:
+    # Ask for confirmation to sell item
+    sell_confirmation = validate(
+        ("y", "n"),
+        f"Would {player_name} like to sell the {item}? (Y/N)\n> "
+    )
+
+    if sell_confirmation == "y":
+        if player_inventory.get(item).get("Amount") > 0:
             # Not aquire for coins since coins already exists in json at character creation
-            playerInventory["coins"]["Amount"] += playerInventory.get(item).get("Price")
-            playerInventory[item]["Amount"] -= 1
+            player_inventory["coins"]["Amount"] += player_inventory.get(
+                item).get("Price")
+            player_inventory[item]["Amount"] -= 1
 
             # Remove item from inventory if 0 left
-            if playerInventory[item].get("Amount") <= 0:
-                playerInventory.pop(item)
+            if player_inventory[item].get("Amount") <= 0:
+                player_inventory.pop(item)
+
         else:
-            print(f"{playerName} doesn't have enough {item}.")
-    elif sellConfirmation == "n":
+            print(f"{player_name} doesn't have enough {item}.")
+
+    elif sell_confirmation == "n":
         print()
-        Shop(gameData)
+        shop(game_data)
 
-    # Update gameData json file
-    SaveToJson(gameData)
+    # Update game_data json file
+    save_to_json(game_data)
 
 
-def Shop(gameData):
-    action = Validate(
-        ("buy", "sell", "leave"), 
-        f"What would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} "
+def shop(game_data):
+    action = validate(
+        ("buy", "sell", "leave"),
+        f"What would {game_data.get("PlayerData").get("PlayerProfile").get("Name")} "
         f"like to do in the shop?\nbuy, sell, leave\n> "
     )
 
@@ -640,83 +713,84 @@ def Shop(gameData):
 
     match action:
         case "buy":
-            Buy(gameData)
+            buy(game_data)
         case "sell":
-            Sell(gameData)
+            sell(game_data)
         case "leave":
             return
 
-    # Increase daysPassed
-    gameData.get("PlayerData").get("PlayerProgress")["DaysPassed"] += 0.5
+    # Increase days_passed
+    game_data.get("PlayerData").get("PlayerProgress")["DaysPassed"] += 0.5
 
-    # Update gameData json file
-    SaveToJson(gameData)
+    # Update game_data json file
+    save_to_json(game_data)
 
 
-def Status(gameData):
+def status(game_data):
     # Assign player data
-    playerData = gameData.get("PlayerData")
-    playerCondition = playerData.get("PlayerCondition")
-    playerProgress = playerData.get("PlayerProgress")
-    playerName = playerData.get("PlayerProfile").get("Name")
-
-    print(f"It is currently day {round(playerProgress.get("DaysPassed"), 0)}.")
+    player_data = game_data.get("PlayerData")
+    player_condition = player_data.get("PlayerCondition")
+    player_progress = player_data.get("PlayerProgress")
+    player_name = player_data.get("PlayerProfile").get("Name")
 
     print(
-        f"{playerName} currently has {playerCondition.get("Health")} HP "
-        f"and {playerCondition.get("Stamina")} stamina."
+        f"It is currently day {round(player_progress.get("DaysPassed"), 0)}.")
+
+    print(
+        f"{player_name} currently has {player_condition.get("Health")} HP "
+        f"and {player_condition.get("Stamina")} stamina."
     )
 
     print(
-        f"{playerName} currently has {playerProgress.get("Experience")} XP points, "
-        f"and is located in map zone {playerProgress.get("MapZone")} "
-        f"in the \"{playerProgress.get("MapDimension")}.\""
+        f"{player_name} currently has {player_progress.get("Experience")} XP points, "
+        f"and is located in map zone {player_progress.get("MapZone")} "
+        f"in the \"{player_progress.get("MapDimension")}.\""
     )
 
 
 # Main Function
-def Main():
-    with open("data.json", "r", encoding = "utf-8") as f:
-        gameData = json.load(f)
+def main():
+    with open("data.json", "r", encoding="utf-8") as file:
+        game_data = json.load(file)
 
-    playerData = gameData.get("PlayerData")
-    playerProfile = playerData.get("PlayerProfile")
+    player_data = game_data.get("PlayerData")
+    player_profile = player_data.get("PlayerProfile")
 
-    if playerProfile.get("Class") == "":
-        CharacterSetup(gameData)
+    if player_profile.get("Class") == "":
+        character_setup(game_data)
 
     while True:
-        # Reassign gameData after each action
-        with open("data.json", "r", encoding = "utf-8") as f:
-            gameData = json.load(f)
+        # Reassign game_data after each action
+        with open("data.json", "r", encoding="utf-8") as file:
+            game_data = json.load(file)
 
-        # Possible actions with gameData as argument
-        possibleActions = {
-            "quit": Quit,
-            "adventure": Adventure,
-            "mine": Mine,
-            "gather": Gather,
-            "rest": Rest,
-            "status": Status,
-            "shop": Shop,
-            "restart": Restart
+        # Possible actions with game_data as argument
+        possible_actions = {
+            "quit": quit_game,
+            "adventure": adventure,
+            "mine": mine,
+            "gather": gather,
+            "rest": rest,
+            "status": status,
+            "shop": shop,
+            "restart": restart
         }
 
-        action = Validate(
-            possibleActions, 
-            f"\nWhat would {gameData.get("PlayerData").get("PlayerProfile").get("Name")} "
-            f"like to do?\n{", ".join(list(possibleActions))}\n> "
+        action = validate(
+            possible_actions,
+            f"\nWhat would {game_data.get("PlayerData").get("PlayerProfile").get("Name")} "
+            f"like to do?\n{", ".join(list(possible_actions))}\n> "
         )
 
         # Empty line after player action
         print()
 
-        if action in possibleActions:
-            possibleActions[action](gameData)
+        if action in possible_actions:
+            possible_actions[action](game_data)
         else:
             print("Invalid action")
 
 
 # Call main
 if __name__ == "__main__":
-    Main()
+    main()
