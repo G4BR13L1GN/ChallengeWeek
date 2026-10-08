@@ -4,8 +4,8 @@ import json
 
 # Utility Functions
 def save_to_json(game_data):
-    with open("data.json", "w", encoding="utf-8") as file:
-        json.dump(game_data, file, indent=4, ensure_ascii=False)
+    with open("data.json", "w", encoding = "utf-8") as f:
+        json.dump(game_data, f, indent = 4, ensure_ascii = False)
 
 
 def validate(options, message):
@@ -20,7 +20,7 @@ def validate(options, message):
     return value
 
 
-def dice_roll(max_roll=20):
+def dice_roll(max_roll = 20):
     # Roll a random int from 1 to max_roll, 20 if no amount is given
     return random.randint(1, max_roll)
 
@@ -117,10 +117,8 @@ def character_setup(game_data):
 
     print(
         f"Your stats are:\n"
-        f"Attributes: {", ".join([f"{key}: {value}" for key,
-                                 value in player_attributes.items()])}\n"
-        f"Condition: {", ".join([f"{key}: {value}" for key, value in list(
-            player_condition.items())[::2]])}\n"
+        f"Attributes: {", ".join([f"{key}: {value}" for key, value in player_attributes.items()])}\n"
+        f"Condition: {", ".join([f"{key}: {value}" for key, value in list(player_condition.items())[::2]])}\n"
         f"Skills: {", ".join([skill.capitalize() for skill in player_skills])}"
     )
 
@@ -137,8 +135,7 @@ def quit_game(game_data):
 
 def combat(game_data, enemy_class, map_dimension, monster_name):
     # Define enemy statistics based off of arguments
-    enemy_data = game_data.get("MonsterData")[
-        map_dimension][enemy_class][monster_name]
+    enemy_data = game_data.get("MonsterData")[map_dimension][enemy_class][monster_name]
     enemy_health = enemy_data.get("Health")
     enemy_damage = enemy_data.get("Damage")
 
@@ -193,8 +190,7 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
         match action:
             case "attack":
                 types = ("melee", "ranged", "spell")
-                available_types = [
-                    skill for skill in types if skill in player_skills]
+                available_types = [skill for skill in types if skill in player_skills]
 
                 attack_type = validate(
                     available_types,
@@ -207,20 +203,17 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
                     # Deal damage based on attributes, from 0.1 to 2.0x damage
                     case "melee":
                         player_damage = round(
-                            ((player_attributes.get("Strength") *
-                             (dice_roll(20) / 10)) * attack_multiplier),
+                            ((player_attributes.get("Strength") * (dice_roll(20) / 10)) * attack_multiplier),
                             0
                         )
                     case "ranged":
                         player_damage = round(
-                            ((player_attributes.get("Dexterity") *
-                             (dice_roll(20) / 10)) * attack_multiplier),
+                            ((player_attributes.get("Dexterity") * (dice_roll(20) / 10)) * attack_multiplier),
                             0
                         )
                     case "spell":
                         player_damage = round(
-                            ((player_attributes.get("Intelligence") *
-                             (dice_roll(20) / 10)) * attack_multiplier),
+                            ((player_attributes.get("Intelligence") * (dice_roll(20) / 10)) * attack_multiplier),
                             0
                         )
 
@@ -237,8 +230,7 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
 
             case "defence":
                 types = ("block", "dodge", "ward")
-                available_types = [
-                    skill for skill in types if skill in player_skills]
+                available_types = [skill for skill in types if skill in player_skills]
 
                 defend_type = validate(
                     available_types,
@@ -251,20 +243,19 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
                     case "block":
                         # Double defence_multiplier if strength * roll > 10
                         defence_multiplier *= 2 if (
-                            player_attributes.get(
-                                "Strength") * (dice_roll_result / 10)
+                            player_attributes.get("Strength") * (dice_roll_result / 10)
                         ) > 10 else 1
+
                     case "dodge":
                         # Double defence_multiplier if dexterity * roll > 10
                         defence_multiplier *= 2 if (
-                            player_attributes.get(
-                                "Dexterity") * (dice_roll_result / 10)
+                            player_attributes.get("Dexterity") * (dice_roll_result / 10)
                         ) > 10 else 1
+
                     case "ward":
                         # Double defence_multiplier if intelligence * roll > 10
                         defence_multiplier *= 2 if (
-                            player_attributes.get(
-                                "Intelligence") * (dice_roll_result / 10)
+                            player_attributes.get("Intelligence") * (dice_roll_result / 10)
                         ) > 10 else 1
 
                 print(
@@ -274,10 +265,8 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
                 )
 
             case "support":
-                # add warcry, focus, concentrate instead of general buff
-                types = ("buff", "heal")
-                available_types = [
-                    skill for skill in types if skill in player_skills]
+                types = ("buff", "heal")  # add warcry, focus, concentrate instead of general buff
+                available_types = [skill for skill in types if skill in player_skills]
 
                 support_type = validate(
                     available_types,
@@ -288,7 +277,9 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
                     case "buff":
                         buff_turns = 3
                         print(
-                            f"{player_name} applied buff, weapon damage and damage negation * 1.2!")
+                            f"{player_name} applied buff, weapon damage and damage negation * 1.2!"
+                        )
+
                     case "heal":
                         # Heal 10 to 30 HP
                         regenerated_health = 10 + dice_roll(20)
@@ -321,13 +312,14 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
                 f"The {monster_name} did {damage_dealt} damage!\n"
                 f"{player_name} has {current_health} HP left."
             )
+
         else:
             # Reward player with experience and coins with maximum of monster XP
             experience_gained = enemy_data.get("Experience", 0)
 
             print(
-                f"{player_name} defeated the {monster_name} and gained "
-                f"{experience_gained} XP!\n"
+                f"{player_name} defeated the {monster_name} "
+                f"and gained {experience_gained} XP!\n"
             )
 
             aquire(game_data, "coins", 100, experience_gained, 1)
@@ -391,8 +383,7 @@ def adventure(game_data):
         monster_data = game_data.get("MonsterData")
 
         monster_name = random.choice(
-            list(monster_data[player_progress.get(
-                "MapDimension")]["Monsters"].keys())
+            list(monster_data[player_progress.get("MapDimension")]["Monsters"].keys())
         )
 
         print(f"{player_name} encountered a {monster_name}")
@@ -413,19 +404,12 @@ def adventure(game_data):
     save_to_json(game_data)
 
 
-def aquire(
-    game_data,
-    item_name,
-    spawn_percentage=20,
-    max_spawn_amount=5,
-    item_price=10
-):
-    # Aquire item with game_data to add item onto, name of item, spawn chance,
-    # max spawn amount, and price
+def aquire(game_data, item_name, spawn_percentage = 20, max_spawn_amount = 5, item_price = 10):
+    # Aquire item with game_data to add item onto, name of item, spawn chance, max spawn amount, and price
     player_data = game_data.get("PlayerData")
     player_inventory = player_data.get("PlayerInventory")
 
-    # random chance from 1 to spawn_chance, which accepts that is or is under 1
+    # Random chance from 1 to spawn_percentage, which accepts that is or is under 1
     if random.uniform(0, 100 / spawn_percentage) <= 1:
         spawn_amount = random.randint(1, max_spawn_amount)
 
@@ -559,10 +543,8 @@ def rest(game_data):
     )
 
     # Calculate regenerated health and stamina based on rest time
-    regenerated_health = (
-        max_health * 1) if action == "long" else (max_health * 0.25)
-    regenerated_stamina = (
-        max_stamina * 1) if action == "long" else (max_stamina * 0.5)
+    regenerated_health = (max_health * 1) if action == "long" else (max_health * 0.25)
+    regenerated_stamina = (max_stamina * 1) if action == "long" else (max_stamina * 0.5)
 
     # Limit regenerated_health so current_health will not exceed max_health
     if (current_health + regenerated_health) > max_health:
@@ -588,8 +570,7 @@ def rest(game_data):
     player_condition["Stamina"] = current_stamina
 
     # Increase days_passed based on rest length
-    player_data.get("PlayerProgress")[
-        "DaysPassed"] += 1 if action == "long" else 0.5
+    player_data.get("PlayerProgress")["DaysPassed"] += 1 if action == "long" else 0.5
 
     # Update game_data json file
     save_to_json(game_data)
@@ -635,11 +616,9 @@ def buy(game_data):
                 }
 
                 if shop_data.get(item).get("Type") == "Weapon":
-                    player_equipment[item]["DamageIncrease"] = shop_data.get(
-                        item).get("DamageIncrease")
+                    player_equipment[item]["DamageIncrease"] = shop_data.get(item).get("DamageIncrease")
                 elif shop_data.get(item).get("Type") == "Armour":
-                    player_equipment[item]["DamageNegation"] = shop_data.get(
-                        item).get("DamageNegation")
+                    player_equipment[item]["DamageNegation"] = shop_data.get(item).get("DamageNegation")
 
         else:
             print(f"{player_name} doesn't have enough coin.")
@@ -682,8 +661,7 @@ def sell(game_data):
     if sell_confirmation == "y":
         if player_inventory.get(item).get("Amount") > 0:
             # Not aquire for coins since coins already exists in json at character creation
-            player_inventory["coins"]["Amount"] += player_inventory.get(
-                item).get("Price")
+            player_inventory["coins"]["Amount"] += player_inventory.get(item).get("Price")
             player_inventory[item]["Amount"] -= 1
 
             # Remove item from inventory if 0 left
@@ -733,8 +711,7 @@ def status(game_data):
     player_progress = player_data.get("PlayerProgress")
     player_name = player_data.get("PlayerProfile").get("Name")
 
-    print(
-        f"It is currently day {round(player_progress.get("DaysPassed"), 0)}.")
+    print(f"It is currently day {round(player_progress.get("DaysPassed"), 0)}.")
 
     print(
         f"{player_name} currently has {player_condition.get("Health")} HP "
@@ -750,8 +727,8 @@ def status(game_data):
 
 # Main Function
 def main():
-    with open("data.json", "r", encoding="utf-8") as file:
-        game_data = json.load(file)
+    with open("data.json", "r", encoding = "utf-8") as f:
+        game_data = json.load(f)
 
     player_data = game_data.get("PlayerData")
     player_profile = player_data.get("PlayerProfile")
@@ -761,8 +738,8 @@ def main():
 
     while True:
         # Reassign game_data after each action
-        with open("data.json", "r", encoding="utf-8") as file:
-            game_data = json.load(file)
+        with open("data.json", "r", encoding = "utf-8") as f:
+            game_data = json.load(f)
 
         # Possible actions with game_data as argument
         possible_actions = {
