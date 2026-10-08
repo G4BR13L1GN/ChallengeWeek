@@ -1,6 +1,11 @@
 import random
 import json
 
+# add:
+# weapon durability, reduced sell price based on durability
+# crafting
+# map
+# fight multiple enemies
 
 # Utility Functions
 def save_to_json(game_data):
@@ -8,12 +13,18 @@ def save_to_json(game_data):
         json.dump(game_data, f, indent = 4, ensure_ascii = False)
 
 
-def validate(options, message):
+def validate(options, message, data_type = str):
     value = ""
 
     while value not in options:
-        value = str(input(f"{message}").lower())
+        value = input(f"{message}").lower()
 
+        try:
+            value = data_type(value)
+        except:
+            print("Invalid input\n")
+            continue
+        
         if value not in options:
             print("Invalid input\n")
 
@@ -404,14 +415,17 @@ def adventure(game_data):
     save_to_json(game_data)
 
 
-def aquire(game_data, item_name, spawn_percentage = 20, max_spawn_amount = 5, item_price = 10):
+def aquire(game_data, item_name, spawn_percentage = 20, max_spawn_amount = 5, spawn_all = False, item_price = 10):
     # Aquire item with game_data to add item onto, name of item, spawn chance, max spawn amount, and price
     player_data = game_data.get("PlayerData")
     player_inventory = player_data.get("PlayerInventory")
 
     # Random chance from 1 to spawn_percentage, which accepts that is or is under 1
     if random.uniform(0, 100 / spawn_percentage) <= 1:
-        spawn_amount = random.randint(1, max_spawn_amount)
+        if spawn_all:
+            spawn_amount = max_spawn_amount
+        else:
+            spawn_amount = random.randint(1, max_spawn_amount)
 
         print(
             f"{player_data.get("PlayerProfile").get("Name")} "
@@ -597,17 +611,28 @@ def buy(game_data):
     # Print price of item
     item_price = shop_data.get(item).get("Price")
 
-    print(f"\nThe {item} costs {item_price} coins.")
+    print(f"\nEach {item} costs {item_price} coins.")
+
+    # Ask how many player wants to buy
+    buy_amount = validate(
+        range(1, 100),
+        f"How much of {item} would you like to buy?\n1 - 99\n> ",
+        int
+    )
 
     buy_confirmation = validate(
         ("y", "n"),
-        f"Would {player_name} like to buy the {item}? (Y/N)\n> "
+        f"Would {player_name} like to buy the {item}{"s" if buy_amount > 1 else ""}? (Y/N)\n> "
     )
 
     if buy_confirmation == "y":
-        if player_inventory.get("coins", {}).get("Amount") >= item_price:
-            aquire(game_data, item, 100, 1, item_price)
-            player_inventory["coins"]["Amount"] -= item_price
+        if player_inventory.get("coins", {}).get("Amount") >= item_price * buy_amount:
+            aquire(game_data, item, 100, buy_amount, True, item_price)
+            player_inventory["coins"]["Amount"] -= item_price * buy_amount
+
+            print(f"{player_name} bought {buy_amount} "
+                  f"{item}{"s" if buy_amount > 1 else ""} "
+                  f"for {buy_amount * item_price} coins!")
 
             # Add item to player_equipment for specific types
             if shop_data.get(item).get("Type") in ["Weapon", "Armour"]:
@@ -619,13 +644,11 @@ def buy(game_data):
                     player_equipment[item]["DamageIncrease"] = shop_data.get(item).get("DamageIncrease")
                 elif shop_data.get(item).get("Type") == "Armour":
                     player_equipment[item]["DamageNegation"] = shop_data.get(item).get("DamageNegation")
-
         else:
             print(f"{player_name} doesn't have enough coin.")
 
     elif buy_confirmation == "n":
-        print()
-        shop(game_data)
+        return
 
     # Update game_data json file
     save_to_json(game_data)
@@ -638,42 +661,61 @@ def sell(game_data):
 
     player_name = player_data.get("PlayerProfile").get("Name")
 
-    # Get input for which item player wants to buy
-    item = validate(
-        # [1:] so it will exclude coins, and turn to list since you can't slice dict.keys()
-        inventory_items := list(player_inventory.keys())[1:],
-        f"What item would {player_name} like to sell? "
-        f"{player_name} currently has:\n{", ".join(inventory_items)}\n> "
-    )
+    # Get input for which item player wants to buy, if player has items to sell
+    if len(player_inventory.keys()) > 1:
+        item = validate(
+            # [1:] so it will exclude coins, and turn to list since you can't slice dict.keys()
+            inventory_items := list(player_inventory.keys())[1:],
+            f"What item would {player_name} like to sell? "
+            f"{player_name} currently has:\n{", ".join(inventory_items)}\n> "
+        )
+    else:
+        print(f"{player_name} has nothing to sell!")
+        return
 
     # Print price of item
+    item_price = player_inventory.get(item).get("Price")
+
     print(
-        f"\nThe {item} sells for "
-        f"{player_inventory.get(item).get("Price")} coins."
+        f"\nEach {item} sells for "
+        f"{item_price} coins."
+    )
+
+    # Ask how many player wants to sell
+    max_sell_amount = player_inventory.get(item).get("Amount") + 1
+
+    sell_amount = validate(
+        range(1, max_sell_amount),
+        f"\nHow much of {item} would you like to sell?\n"
+        f"1 - {max_sell_amount}\n> ",
+        int
     )
 
     # Ask for confirmation to sell item
     sell_confirmation = validate(
         ("y", "n"),
-        f"Would {player_name} like to sell the {item}? (Y/N)\n> "
+        f"\nWould {player_name} like to sell the {item}{"s" if sell_amount > 1 else ""}? (Y/N)\n> "
     )
 
     if sell_confirmation == "y":
         if player_inventory.get(item).get("Amount") > 0:
             # Not aquire for coins since coins already exists in json at character creation
-            player_inventory["coins"]["Amount"] += player_inventory.get(item).get("Price")
-            player_inventory[item]["Amount"] -= 1
+            player_inventory["coins"]["Amount"] += item_price * sell_amount
+            player_inventory[item]["Amount"] -= sell_amount
+
+            print(f"{player_name} sold {sell_amount} "
+                  f"{item}{"s" if sell_amount > 1 else ""} "
+                  f"for {item_price * sell_amount} coins!"
+            )
 
             # Remove item from inventory if 0 left
             if player_inventory[item].get("Amount") <= 0:
                 player_inventory.pop(item)
-
         else:
             print(f"{player_name} doesn't have enough {item}.")
 
     elif sell_confirmation == "n":
-        print()
-        shop(game_data)
+        return
 
     # Update game_data json file
     save_to_json(game_data)
