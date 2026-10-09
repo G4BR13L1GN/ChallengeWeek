@@ -21,7 +21,7 @@ def validate(options, message, data_type = str):
 
         try:
             value = data_type(value)
-        except:
+        except (ValueError, TypeError):
             print("Invalid input\n")
             continue
         
