@@ -2,18 +2,23 @@ import random
 import json
 
 # add:
-# weapon durability, reduced sell price based on durability
+
 # crafting
+# - met sets (player inventory materials in crafting materials)
+
 # map
+
 # fight multiple enemies
+# - met classes
+
 
 # Utility Functions
 def save_to_json(game_data):
-    with open("data.json", "w", encoding = "utf-8") as f:
-        json.dump(game_data, f, indent = 4, ensure_ascii = False)
+    with open("data.json", "w", encoding="utf-8") as f:
+        json.dump(game_data, f, indent=4, ensure_ascii=False)
 
 
-def validate(options, message, data_type = str):
+def validate(options, message, data_type=str):
     value = ""
 
     while value not in options:
@@ -24,14 +29,14 @@ def validate(options, message, data_type = str):
         except (ValueError, TypeError):
             print("Invalid input\n")
             continue
-        
+
         if value not in options:
             print("Invalid input\n")
 
     return value
 
 
-def dice_roll(max_roll = 20):
+def dice_roll(max_roll=20):
     # Roll a random int from 1 to max_roll, 20 if no amount is given
     return random.randint(1, max_roll)
 
@@ -415,7 +420,7 @@ def adventure(game_data):
     save_to_json(game_data)
 
 
-def aquire(game_data, item_name, spawn_percentage = 20, max_spawn_amount = 5, spawn_all = False, item_price = 10):
+def aquire(game_data, item_name, spawn_percentage=20, max_spawn_amount=5, spawn_all=False, item_price=10):
     # Aquire item with game_data to add item onto, name of item, spawn chance, max spawn amount, and price
     player_data = game_data.get("PlayerData")
     player_inventory = player_data.get("PlayerInventory")
@@ -673,8 +678,8 @@ def sell(game_data):
         print(f"{player_name} has nothing to sell!")
         return
 
-    # Print price of item
-    item_price = player_inventory.get(item).get("Price")
+    # Print price of item, reduced sell price
+    item_price = player_inventory.get(item).get("Price") * 0.8
 
     print(
         f"\nEach {item} sells for "
@@ -706,7 +711,7 @@ def sell(game_data):
             print(f"{player_name} sold {sell_amount} "
                   f"{item}{"s" if sell_amount > 1 else ""} "
                   f"for {item_price * sell_amount} coins!"
-            )
+                  )
 
             # Remove item from inventory if 0 left
             if player_inventory[item].get("Amount") <= 0:
@@ -769,7 +774,7 @@ def status(game_data):
 
 # Main Function
 def main():
-    with open("data.json", "r", encoding = "utf-8") as f:
+    with open("data.json", "r", encoding="utf-8") as f:
         game_data = json.load(f)
 
     player_data = game_data.get("PlayerData")
@@ -780,7 +785,7 @@ def main():
 
     while True:
         # Reassign game_data after each action
-        with open("data.json", "r", encoding = "utf-8") as f:
+        with open("data.json", "r", encoding="utf-8") as f:
             game_data = json.load(f)
 
         # Possible actions with game_data as argument
