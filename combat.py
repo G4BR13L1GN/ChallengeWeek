@@ -28,13 +28,14 @@ def special_attacks(game_data, trigger, player_state):
 
     # Player Equipment Special Effect
     if trigger == "Player Attack":
-        for equipment in player_data["PlayerEquipment"].values():
+        for equipment in player_data.get("PlayerEquipment", {}).values():
             special_effect = equipment.get("SpecialEffect", {})
 
             # Reaper Scythe: Life Steal
             if special_effect.get("effect") == "life_steal":
                 healing = round(
-                    player_state["damage"] * special_effect.get("percentage", 0)
+                    player_state["damage"] *
+                    special_effect.get("percentage", 0)
                 )
                 old_health = player_state["current_health"]
 
@@ -70,7 +71,8 @@ def special_attacks(game_data, trigger, player_state):
 
             case "stun":
                 player_state["stunned"] = enemy_effect_data.get("turns", 1)
-                player_state["extra_damage"] += enemy_effect_data.get("damage", 0)
+                player_state["extra_damage"] += enemy_effect_data.get(
+                    "damage", 0)
 
             case "poison" | "bleed" | "burn":
                 player_state["damage_over_time"] = enemy_effect_data.get(
@@ -114,7 +116,8 @@ def special_attacks(game_data, trigger, player_state):
                     "player_damage_taken_increase", 0
                 )
 
-                player_state["buff_turns"] = enemy_effect_data.get("buff_turns", 0)
+                player_state["buff_turns"] = enemy_effect_data.get(
+                    "buff_turns", 0)
 
             case "shield_wall":
                 player_state["enemy_defence"] = 1 + enemy_effect_data.get(
@@ -123,7 +126,8 @@ def special_attacks(game_data, trigger, player_state):
                 player_state["buff_turns"] = enemy_effect_data.get("turns", 0)
 
             case "darkness":
-                player_state["darkness_turns"] = enemy_effect_data.get("turns", 0)
+                player_state["darkness_turns"] = enemy_effect_data.get(
+                    "turns", 0)
                 player_state["accuracy_reduction"] = enemy_effect_data.get(
                     "accuracy_reduction", 50
                 )
@@ -167,7 +171,8 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
 
     # Make enemy using class for each enemy name in enemy_names
     for enemy in enemy_names:
-        monster_data = game_data.get("MonsterData")[map_dimension][enemy_class][enemy]
+        monster_data = game_data.get("MonsterData")[
+            map_dimension][enemy_class][enemy]
         new_monster = Enemy(enemy, monster_data)
         enemies.append(new_monster)
 
@@ -188,10 +193,10 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
     # Set player state
     state = {
         "current_health": current_health,
-        "enemy_health": enemy_health,
-        "enemy_data": enemy_data,
-        "monster_name": monster_name,
-        "enemy_damage": enemy_damage,
+        "enemy_health": 0,
+        "enemy_data": {},
+        "monster_name": "",
+        "enemy_damage": "",
         "enemy_defence": 1,
         "player_damage_increase": 1,
         "darkness_turns": 0,
@@ -210,7 +215,7 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
     }
 
     # Loop combat until either player or all enemies dead
-    while current_health > 0 and [enemy.health > 0 for enemy in enemies]:
+    while current_health > 0 and any(enemy.health > 0 for enemy in enemies):
         # Repeat loop if action is not in player_skills
         action = validate(
             ("attack", "defence", "support"),
@@ -235,12 +240,12 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
                     defence_multiplier = equipment.get("DamageNegation")
 
         # Apply / remove buff
-        buff_turns = player_state["Buffs"]["buff_turns"]
+        buff_turns = state["buff_turns"]
         attack_multiplier *= 1.2 if buff_turns > 0 else 1
         defence_multiplier *= 1.2 if buff_turns > 0 else 1
 
         # Remove buff counter
-        player_state["Buffs"]["buff_turns"] -= 1 if buff_turns > 0 else 0
+        state["buff_turns"] -= 1 if buff_turns > 0 else 0
 
         # Different functions based on action
         match action:
@@ -258,7 +263,8 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
 
                 # Player can choose attack type if in player_skills
                 types = ("melee", "ranged", "spell")
-                available_types = [skill for skill in types if skill in player_skills]
+                available_types = [
+                    skill for skill in types if skill in player_skills]
 
                 attack_type = validate(
                     available_types,
@@ -271,24 +277,27 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
                     # Deal damage based on attributes, from 0.1 to 2.0x damage
                     case "melee":
                         player_damage = round(
-                            ((player_attributes.get("Strength") * (dice_roll(20) / 10)) * attack_multiplier),
+                            ((player_attributes.get("Strength") *
+                             (dice_roll(20) / 10)) * attack_multiplier),
                             0
                         )
                     case "ranged":
                         player_damage = round(
-                            ((player_attributes.get("Dexterity") * (dice_roll(20) / 10)) * attack_multiplier),
+                            ((player_attributes.get("Dexterity") *
+                             (dice_roll(20) / 10)) * attack_multiplier),
                             0
                         )
                     case "spell":
                         player_damage = round(
-                            ((player_attributes.get("Intelligence") * (dice_roll(20) / 10)) * attack_multiplier),
+                            ((player_attributes.get("Intelligence") *
+                             (dice_roll(20) / 10)) * attack_multiplier),
                             0
                         )
 
                         # EFFECT: DARKNESS
                         # Darkness can cause player to whiff attack
-                        if player_state["darkness_turns"] > 0:
-                            if random.random() < player_state["accuracy_reduction"] / 100:
+                        if state["darkness_turns"] > 0:
+                            if random.random() < state["accuracy_reduction"] / 100:
                                 player_damage = 0
                                 print("The darkness caused your attack to miss!")
 
@@ -307,7 +316,8 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
 
             case "defence":
                 types = ("block", "dodge", "ward")
-                available_types = [skill for skill in types if skill in player_skills]
+                available_types = [
+                    skill for skill in types if skill in player_skills]
 
                 defend_type = validate(
                     available_types,
@@ -320,19 +330,22 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
                     case "block":
                         # Double defence_multiplier if strength * roll > 10
                         defence_multiplier *= 2 if (
-                            player_attributes.get("Strength") * (dice_roll_result / 10)
+                            player_attributes.get(
+                                "Strength") * (dice_roll_result / 10)
                         ) > 10 else 1
 
                     case "dodge":
                         # Double defence_multiplier if dexterity * roll > 10
                         defence_multiplier *= 2 if (
-                            player_attributes.get("Dexterity") * (dice_roll_result / 10)
+                            player_attributes.get(
+                                "Dexterity") * (dice_roll_result / 10)
                         ) > 10 else 1
 
                     case "ward":
                         # Double defence_multiplier if intelligence * roll > 10
                         defence_multiplier *= 2 if (
-                            player_attributes.get("Intelligence") * (dice_roll_result / 10)
+                            player_attributes.get(
+                                "Intelligence") * (dice_roll_result / 10)
                         ) > 10 else 1
 
                 print(
@@ -342,8 +355,10 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
                 )
 
             case "support":
-                types = ("buff", "heal")  # add warcry, focus, concentrate instead of general buff
-                available_types = [skill for skill in types if skill in player_skills]
+                # add warcry, focus, concentrate instead of general buff
+                types = ("buff", "heal")
+                available_types = [
+                    skill for skill in types if skill in player_skills]
 
                 support_type = validate(
                     available_types,
@@ -352,7 +367,7 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
 
                 match support_type:
                     case "buff":
-                        player_state["Buffs"]["buff_turns"] = 3
+                        state["buff_turns"] = 3
                         print(
                             f"{player_name} applied buff, weapon damage and damage negation * 1.2!"
                         )

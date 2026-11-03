@@ -301,7 +301,7 @@
                         "Name": "Pickpocket",
                         "Effect": "steal_coins",
                         "Description": "Steals 10 coins from the player.",
-                        "Chance": 0.1,
+                        "Chance": 1,
                         "Amount": 10,
                         "Damage": 0
                     }
@@ -314,7 +314,7 @@
                         "Name": "Ground Slam",
                         "Effect": "stun",
                         "Description": "Slams the ground, and stuns the player for a turn and deals 12 damage.",
-                        "Chance": 0.2,
+                        "Chance": 1,
                         "Damage": 12,
                         "Turns": 1
                     }
