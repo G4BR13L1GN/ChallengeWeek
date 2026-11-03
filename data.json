@@ -7,24 +7,25 @@
         "PlayerAttributes": {
             "Strength": 8,
             "Dexterity": 14,
-            "Intelligence": 16
+            "Intelligence": 1600
         },
         "PlayerCondition": {
             "Health": 100,
             "MaxHealth": 100,
-            "Stamina": 100,
+            "Stamina": 60,
             "MaxStamina": 100
         },
         "PlayerProgress": {
-            "Experience": 0,
+            "Experience": 20,
+            "Level": 5,
             "MapZone": 0,
             "MapDimension": "Overworld",
-            "DaysPassed": 0
+            "DaysPassed": 7.0
         },
         "PlayerInventory": {
             "coins": {
-                "Amount": 0,
-                "Price": 1
+                "Amount": 60,
+                "Price": 10
             }
         },
         "PlayerEquipment": {},
@@ -298,7 +299,7 @@
     "MonsterData": {
         "Overworld": {
             "Monsters": {
-                "Goblin": {
+                "goblin": {
                     "Health": 50,
                     "Damage": 10,
                     "Experience": 20,
@@ -311,7 +312,7 @@
                         "damage": 5
                     }
                 },
-                "Troll": {
+                "troll": {
                     "Health": 60,
                     "Damage": 8,
                     "Experience": 20,
@@ -324,7 +325,7 @@
                         "turns": 1
                     }
                 },
-                "Spider": {
+                "spider": {
                     "Health": 30,
                     "Damage": 10,
                     "Experience": 20,
@@ -338,7 +339,7 @@
                         "poison_turns": 3
                     }
                 },
-                "Bandit": {
+                "bandit": {
                     "Health": 40,
                     "Damage": 15,
                     "Experience": 20,
@@ -352,7 +353,7 @@
                         "bleed_turns": 2
                     }
                 },
-                "Orc": {
+                "orc": {
                     "Health": 80,
                     "Damage": 20,
                     "Experience": 50,
@@ -365,7 +366,7 @@
                         "damage_increase": 10
                     }
                 },
-                "Ghost": {
+                "ghost": {
                     "Health": 30,
                     "Damage": 10,
                     "Experience": 20,
@@ -377,7 +378,7 @@
                         "turns": 2
                     }
                 },
-                "Skeleton": {
+                "skeleton": {
                     "Health": 40,
                     "Damage": 15,
                     "Experience": 20,
@@ -391,9 +392,9 @@
                         "once": true
                     }
                 },
-                "Blue Bloopy": {
+                "blue bloopy": {
                     "Health": 50,
-                    "Damage": 10,   
+                    "Damage": 10,
                     "Experience": 20,
                     "SpecialEffect": {
                         "Name": "Split",
@@ -407,7 +408,7 @@
                 }
             },
             "Bosses": {
-                "Minotaur": {
+                "minotaur": {
                     "Health": 100,
                     "Damage": 40,
                     "Experience": 100,
@@ -420,7 +421,7 @@
                         "turns": 1
                     }
                 },
-                "Dragon": {
+                "dragon": {
                     "Health": 200,
                     "Damage": 50,
                     "Experience": 200,
@@ -434,7 +435,7 @@
                         "turns": 3
                     }
                 },
-                "Lich": {
+                "lich": {
                     "Health": 150,
                     "Damage": 30,
                     "Experience": 150,
@@ -447,7 +448,7 @@
                         "turns": 3
                     }
                 },
-                "Warden": {
+                "warden": {
                     "Health": 250,
                     "Damage": 60,
                     "Experience": 300,
@@ -456,11 +457,11 @@
                         "Description": "Summons a mini warden that fights along him",
                         "chance": 0.25,
                         "effect": "summon",
-                        "summon": "Mini Warden",
+                        "summon": "mini warden",
                         "count": 1
                     }
                 },
-                "Monk Leader": {
+                "monk leader": {
                     "Health": 200,
                     "Damage": 30,
                     "Experience": 400,
@@ -473,7 +474,8 @@
                         "heal_percentage": 0.3,
                         "damage_taken_reduction": 0.1,
                         "player_damage_taken_increase": 0.1,
-                        "buff_turns": 3}
+                        "buff_turns": 3
+                    }
                 }
             }
         },
@@ -483,7 +485,7 @@
         },
         "Sift": {
             "Monsters": {
-                "Castle Guard": {
+                "castle guard": {
                     "Health": 100,
                     "Damage": 20,
                     "Experience": 50,
@@ -498,7 +500,7 @@
                 }
             },
             "Bosses": {
-                "King": {
+                "king": {
                     "Health": 300,
                     "Damage": 70,
                     "Experience": 300,
@@ -507,11 +509,11 @@
                         "Description": "Summons 2 castle guards to fight alongside him.",
                         "chance": 0.2,
                         "effect": "summon",
-                        "summon": "Castle Guard",
+                        "summon": "castle guard",
                         "count": 2
                     }
                 },
-                "Arch duke": {
+                "arch duke": {
                     "Health": 500,
                     "Damage": 50,
                     "Experience": 999999999999,
@@ -524,7 +526,7 @@
                         "turns": 10
                     }
                 },
-                "Mini Warden": {
+                "mini warden": {
                     "Health": 30,
                     "Damage": 10,
                     "Experience": 20,
@@ -537,7 +539,7 @@
                         "turns": 2
                     }
                 },
-                "Good luck🐷": {
+                "good luck🐷": {
                     "Health": 99999999,
                     "Damage": 99999999,
                     "Experience": 1,
@@ -546,7 +548,8 @@
                         "Description": "Good luck🐷",
                         "chance": 1,
                         "effect": "goodbye",
-                        "damage": 99999999}
+                        "damage": 99999999
+                    }
                 }
             }
         }

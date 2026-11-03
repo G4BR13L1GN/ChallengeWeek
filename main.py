@@ -14,11 +14,12 @@ def main():
     player_data = game_data.get("PlayerData")
     player_profile = player_data.get("PlayerProfile")
 
+    # Setup character if no class is chosen (due to empty json file)
     if player_profile.get("Class") == "":
         character_setup(game_data)
 
     while True:
-        # Reassign game_data after each action
+        # Reassign game_data after each action to get new updated version
         with open("data.json", "r", encoding="utf-8") as f:
             game_data = json.load(f)
 
@@ -34,6 +35,7 @@ def main():
             "restart": restart
         }
 
+        # Validate actions with options being possible actions
         action = validate(
             possible_actions,
             f"\nWhat would {game_data.get("PlayerData").get("PlayerProfile").get("Name")} "
@@ -43,10 +45,7 @@ def main():
         # Empty line after player action
         print()
 
-        if action in possible_actions:
-            possible_actions[action](game_data)
-        else:
-            print("Invalid action")
+        possible_actions[action](game_data)
 
 
 # Call main

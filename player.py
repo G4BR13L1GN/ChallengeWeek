@@ -26,6 +26,8 @@ def reset_data(game_data):
     for part in ("Experience", "MapZone", "DaysPassed"):
         player_progress[part] = 0
 
+    player_progress["Level"] = 1
+
     player_progress["MapDimension"] = "Overworld"
 
     # Add "coins" to inventory since it is a currency
