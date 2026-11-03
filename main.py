@@ -76,6 +76,7 @@ def reset_data(game_data):
     save_to_json(game_data)
 
 
+# Ask for confirmation to reset
 def restart(game_data):
     # Only continue if player has agreed twice
     if str(input("Do you really want to restart? (Y/N)\n> ").upper()) == "Y" and \
@@ -85,6 +86,7 @@ def restart(game_data):
 
 
 # Gameplay Functions
+# Create character for player by choices from player
 def character_setup(game_data):
     # Reset data so there is no save conflict
     reset_data(game_data)
@@ -139,6 +141,7 @@ def character_setup(game_data):
     save_to_json(game_data)
 
 
+# Save and quit the game
 def quit_game(game_data):
     # Update game_data json file
     save_to_json(game_data)
@@ -147,6 +150,7 @@ def quit_game(game_data):
     quit()
 
 
+# Combat vs 1 (will add 1vX later) monster(s)
 def combat(game_data, enemy_class, map_dimension, monster_name):
     # Define enemy statistics based off of arguments
     enemy_data = game_data.get("MonsterData")[map_dimension][enemy_class][monster_name]
@@ -367,6 +371,7 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
     save_to_json(game_data)
 
 
+# Adventure where character can spot monster
 def adventure(game_data):
     # Assign player data
     player_data = game_data.get("PlayerData")
@@ -418,6 +423,7 @@ def adventure(game_data):
     save_to_json(game_data)
 
 
+# Function to add item to player based on spawn chances
 def aquire(game_data, item_name, spawn_percentage=20, max_spawn_amount=5, spawn_all=False, item_price=10):
     # Aquire item with game_data to add item onto, name of item, spawn chance, max spawn amount, and price
     player_data = game_data.get("PlayerData")
@@ -445,6 +451,7 @@ def aquire(game_data, item_name, spawn_percentage=20, max_spawn_amount=5, spawn_
     save_to_json(game_data)
 
 
+# Mine to aquire gemstones
 def mine(game_data):
     player_data = game_data.get("PlayerData")
     player_attributes = player_data.get("PlayerAttributes")
@@ -492,6 +499,7 @@ def mine(game_data):
     save_to_json(game_data)
 
 
+# Forage to find loot
 def gather(game_data):
     player_data = game_data.get("PlayerData")
     player_attributes = player_data.get("PlayerAttributes")
@@ -539,6 +547,7 @@ def gather(game_data):
     save_to_json(game_data)
 
 
+# Rest to regain stamina and health
 def rest(game_data):
     # Define player statistics
     player_data = game_data.get("PlayerData")
@@ -593,6 +602,7 @@ def rest(game_data):
     save_to_json(game_data)
 
 
+# Buy item from shop
 def buy(game_data):
     # Define player data
     player_data = game_data.get("PlayerData")
@@ -657,6 +667,7 @@ def buy(game_data):
     save_to_json(game_data)
 
 
+# Sell item to shop
 def sell(game_data):
     # Define player data
     player_data = game_data.get("PlayerData")
@@ -724,6 +735,7 @@ def sell(game_data):
     save_to_json(game_data)
 
 
+# Shop to buy or sell item
 def shop(game_data):
     action = validate(
         ("buy", "sell", "leave"),
@@ -749,6 +761,7 @@ def shop(game_data):
     save_to_json(game_data)
 
 
+# Get status of player (heath, stamina, day count)
 def status(game_data):
     # Assign player data
     player_data = game_data.get("PlayerData")
