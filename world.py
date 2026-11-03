@@ -17,6 +17,14 @@ def adventure(game_data):
     # Stamina cost for adventuring
     stamina_cost = 10
 
+    # Prevent adventuring if player is dead
+    if player_condition["Health"] <= 0:
+        print(
+            f"{player_name} doesn't have enough health to adventure, "
+            f"{player_name} should rest!"
+        )
+        return
+
     # Prevent stamina going below 0
     if (player_condition["Stamina"] - stamina_cost) < 0:
         print(
@@ -34,17 +42,27 @@ def adventure(game_data):
     if player_attributes.get("Intelligence") > dice_roll(20):
         monster_data = game_data.get("MonsterData")
 
-        monster_name = random.choice(
-            list(monster_data[player_progress.get("MapDimension")]["Monsters"].keys())
+        # Encounter as many monsters as players level is
+        monster_amount = player_progress.get("Level")
+
+        # Chose monster_amount random monster names
+        monsters = [random.choice(list(monster_data[player_progress.get("MapDimension")]
+                                  ["Monsters"].keys())) for _ in range(monster_amount)]
+
+        # Print what player found, grammatically correct
+        print(
+            f"{player_name} encountered "
+            f"{", ".join([f"a {monster_name}" for monster_name in monsters[:-1]]) +
+               f" and " if len(monsters) > 1 else ""}"
+            f"a {monsters[-1]}!"
         )
 
-        print(f"{player_name} encountered a {monster_name}")
-
+        # Start combat with multiple monsters
         combat(
             game_data,
             "Monsters",
             player_progress.get("MapDimension"),
-            monster_name
+            monsters
         )
     else:
         print(f"{player_name} encountered nothing.")
@@ -143,7 +161,7 @@ def rest(game_data):
 
     print(
         f"\n{player_name} regenerated {regenerated_health} health.\n"
-        f"{player_name} now has {current_health} HP."
+        f"{player_name} now has {current_health} HP.\n"
         f"{player_name} regained {regenerated_stamina} stamina.\n"
         f"{player_name} now has {current_stamina} stamina."
     )

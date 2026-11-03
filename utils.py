@@ -11,12 +11,12 @@ def save_to_json(game_data):
 
 
 # Ask input until user input in valid options
-def validate(options, message, data_type=str):
+def validate(options: tuple, message, data_type=str):
     user_input = ""
 
     # Loop until valid
     while user_input not in options:
-        user_input = input(message).lower()
+        user_input = input(message).strip().lower()
 
         # Try to convert value, give error if not able to
         try:
