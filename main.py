@@ -1,5 +1,5 @@
 import json
-from combat import combat
+from combat import combat, special_attacks
 from player import restart, character_setup, quit_game, status
 from economy import shop
 from world import adventure, mine, gather, rest

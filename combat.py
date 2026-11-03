@@ -3,7 +3,6 @@ from utils import validate, save_to_json, dice_roll
 from economy import aquire
 
 
-<<<<<<< HEAD
 def special_attacks(game_data, trigger, state):
     player_data = game_data["PlayerData"]
     player_condition = player_data["PlayerCondition"]
@@ -152,29 +151,6 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
         map_dimension][enemy_class][monster_name]
     enemy_health = enemy_data.get("Health")
     enemy_damage = enemy_data.get("Damage")
-=======
-class Enemy:
-    def __init__(self, name, data):
-        self.data = data
-        self.name = name
-        self.health = data.get("Health")
-        self.damage = data.get("Damage")
-
-    def __repr__(self):
-        return f"Enemy: ('{self.name}', {self.health}, {self.damage})"
-
-
-# Combat vs 1 (will add 1vX later) enemy(s)
-def combat(game_data, enemy_class, map_dimension, enemy_names):
-    # Define enemy statistics based off of arguments
-    enemies = []
-
-    # Make enemy using class for each enemy name in enemy_names
-    for enemy in enemy_names:
-        monster_data = game_data.get("MonsterData")[map_dimension][enemy_class][enemy]
-        new_monster = Enemy(enemy, monster_data)
-        enemies.append(new_monster)
->>>>>>> da2016de8cd477ed3e4b4e9c3c4c185d024e457a
 
     # Define player statistics
     player_data = game_data.get("PlayerData")
@@ -191,7 +167,6 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
     # Set buff counter
     buff_turns = 0
 
-<<<<<<< HEAD
     state = {
         "current_health": current_health,
         "enemy_health": enemy_health,
@@ -236,10 +211,6 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
         else:
             state["player_damage_increase"] = 1
 
-=======
-    # Loop combat until either player or all enemies dead
-    while current_health > 0 and [enemy.health > 0 for enemy in enemies]:
->>>>>>> da2016de8cd477ed3e4b4e9c3c4c185d024e457a
         # Repeat loop if action is not in player_skills
         action = validate(
             ("attack", "defence", "support"),
@@ -273,25 +244,13 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
         # Different functions based on action
         match action:
             case "attack":
-                # Ask which enemy player would like to attack
-                enemy_to_attack = validate(
-                    [enemy.name for enemy in enemies],
-                    f"\nWhich enemy would {player_name} like to attack?\n"
-                    f"{", ".join([enemy.name for enemy in enemies])}\n> "
-                )
-
-                # Get first iteration of enemy where name is same as enemy_to_attack
-                # (If there are 2 bandits, this will choose first one)
-                enemy = next(e for e in enemies if e.name == enemy_to_attack)
-
-                # Player can choose attack type if in player_skills
                 types = ("melee", "ranged", "spell")
                 available_types = [
                     skill for skill in types if skill in player_skills]
 
                 attack_type = validate(
                     available_types,
-                    f"\nHow would {player_name} like to attack?\n{", ".join(available_types)}\n> "
+                    f"How would {player_name} like to attack?\n{", ".join(available_types)}\n> "
                 )
 
                 player_damage = 0
@@ -317,7 +276,6 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
                             0
                         )
 
-<<<<<<< HEAD
                 # Darkness can cause the player to miss
                 if state["darkness_turns"] > 0:
                     if random.random() < state["accuracy_reduction"] / 100:
@@ -348,17 +306,10 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
                 # Limit enemy_health to 0, not -4 for example
                 if enemy_health < 0:
                     enemy_health = 0
-=======
-                enemy.health -= player_damage
-
-                # Limit enemy.health to 0, not -4 for example
-                if enemy.health < 0:
-                    enemy.health = 0
->>>>>>> da2016de8cd477ed3e4b4e9c3c4c185d024e457a
 
                 print(
-                    f"\n{player_name} did {player_damage} damage!\n"
-                    f"The {enemy.name} has {enemy.health} HP left."
+                    f"{player_name} did {player_damage} damage!\n"
+                    f"The {monster_name} has {enemy_health} HP left."
                 )
 
             case "defence":
@@ -438,7 +389,6 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
         # Empty line after player action
         print()
 
-<<<<<<< HEAD
         # Continue fight if enemy still alive
         if enemy_health > 0:
 
@@ -464,46 +414,34 @@ def combat(game_data, enemy_class, map_dimension, enemy_names):
             damage_dealt += state["extra_damage"]
             state["extra_damage"] = 0
             current_health -= damage_dealt
-=======
-        for enemy in enemies:
-            # Continue fight if enemy still alive
-            if enemy.health > 0:
-                # Calculate damage dealt by enemy
-                damage_dealt = round(
-                    ((enemy.damage / defence_multiplier) * (dice_roll(20) / 10)),
-                    0
-                )
-                current_health -= damage_dealt
->>>>>>> da2016de8cd477ed3e4b4e9c3c4c185d024e457a
 
-                # Return if player died
-                if current_health <= 0:
-                    print(f"{player_name} has died!")
+            print(
+                f"The {monster_name} did {damage_dealt} damage!\n"
+                f"{player_name} has {current_health} HP left."
+            )
 
-                    # Update game_data json file
-                    save_to_json(game_data)
+        else:
+            # Reward player with experience and coins with maximum of monster XP
+            experience_gained = enemy_data.get("Experience", 0)
 
-                    return
+            print(
+                f"{player_name} defeated the {monster_name} "
+                f"and gained {experience_gained} XP!\n"
+            )
 
-                print(
-                    f"\nThe {enemy.name} did {damage_dealt} damage!\n"
-                    f"{player_name} has {current_health} HP left."
-                )
+            aquire(game_data, "coins", 100, experience_gained, 1)
 
-            else:
-                # Reward player with experience and coins with maximum of enemy XP
-                experience_gained = enemy.data.get("Experience", 0)
+            player_progress = player_data.get("PlayerProgress")
+            player_progress["Experience"] += experience_gained
+            break
 
-                print(
-                    f"\n{player_name} defeated the {enemy.name} "
-                    f"and gained {experience_gained} XP!\n"
-                )
+    if current_health <= 0:
+        print(f"{player_name} has died!")
 
-                aquire(game_data, "coins", 100, experience_gained, 1)
+        # Update game_data json file
+        save_to_json(game_data)
 
-                player_progress = player_data.get("PlayerProgress")
-                player_progress["Experience"] += experience_gained
-                break
+        return
 
     # Save player health after battle
     player_condition["Health"] = current_health
