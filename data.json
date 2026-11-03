@@ -122,7 +122,13 @@
             "Price": 300,
             "Type": "Weapon",
             "DamageIncrease": 2.5,
-            "SpecialEffect": "Life Steal"
+            "SpecialEffect": {
+                "name": "Life steal",
+                "description": "Regenerate 20% of the damage you deal as health.",
+                "trigger": "On hit",
+                "effect": "life_steal",
+                "percentage": 0.2
+            }
         },
         "linked sword": {
             "Price": 500,
@@ -296,49 +302,108 @@
                     "Health": 50,
                     "Damage": 10,
                     "Experience": 20,
-                    "SpecialEffect": "Stealing"
+                    "SpecialAttack": {
+                        "Name": "Pickpocket",
+                        "Description": "Steals 10 coins from the player.",
+                        "chance": 0.1,
+                        "effect": "steal_coins",
+                        "amount": 10,
+                        "damage": 5
+                    }
                 },
                 "Troll": {
                     "Health": 60,
                     "Damage": 8,
                     "Experience": 20,
-                    "SpecialEffect": "Stun"
+                    "SpecialEffect": {
+                        "Name": "Ground Slam",
+                        "Description": "Slams the ground, and stuns the player for a turn and deals 12 damage.",
+                        "chance": 0.2,
+                        "effect": "stun",
+                        "damage": 12,
+                        "turns": 1
+                    }
                 },
                 "Spider": {
                     "Health": 30,
                     "Damage": 10,
                     "Experience": 20,
-                    "SpecialEffect": "Poison"
+                    "SpecialEffect": {
+                        "Name": "Poison Bite",
+                        "Description": "Bites the player, and poisons them for 3 turns, dealing 5 damage per turn.",
+                        "chance": 0.3,
+                        "effect": "poison",
+                        "damage": 10,
+                        "poison_damage": 5,
+                        "poison_turns": 3
+                    }
                 },
                 "Bandit": {
                     "Health": 40,
                     "Damage": 15,
                     "Experience": 20,
-                    "SpecialEffect": "Bleed"
+                    "SpecialEffect": {
+                        "Name": "Bleed",
+                        "Description": "Causes the player to bleed for 3 turns, dealing 10 damage per turn.",
+                        "chance": 0.1,
+                        "effect": "bleed",
+                        "damage": 5,
+                        "bleed_damage": 10,
+                        "bleed_turns": 2
+                    }
                 },
                 "Orc": {
                     "Health": 80,
                     "Damage": 20,
                     "Experience": 50,
-                    "SpecialEffect": "Rage Increases the damage dealt."
+                    "SpecialEffect": {
+                        "Name": "Rage",
+                        "Description": "Increases the damage dealt.",
+                        "chance": 0.2,
+                        "effect": "rage",
+                        "target": "self",
+                        "damage_increase": 10
+                    }
                 },
                 "Ghost": {
                     "Health": 30,
                     "Damage": 10,
                     "Experience": 20,
-                    "SpecialEffect": "Invisibility dodges the next 1-2 attacks"
+                    "SpecialEffect": {
+                        "Name": "Invisibility",
+                        "Description": "Becomes invisible for 2 turns, making it untargetable.",
+                        "chance": 0.1,
+                        "effect": "invisibility",
+                        "turns": 2
+                    }
                 },
                 "Skeleton": {
                     "Health": 40,
                     "Damage": 15,
                     "Experience": 20,
-                    "SpecialEffect": "Resurrects after death with 50% health"
+                    "SpecialEffect": {
+                        "Name": "2nd chance",
+                        "Description": "When killed, has a 50% chance to revive with 20 health.",
+                        "trigger": "On death",
+                        "chance": 0.5,
+                        "effect": "revive",
+                        "health": 20,
+                        "once": true
+                    }
                 },
-                "Blue Slime": {
+                "Blue Bloopy": {
                     "Health": 50,
-                    "Damage": 10,
+                    "Damage": 10,   
                     "Experience": 20,
-                    "SpecialEffect": "Splits into two smaller blobs with 25 health each when killed and those 2 smaller blobs can also split into 2 smaller blobs with 12 health."
+                    "SpecialEffect": {
+                        "Name": "Split",
+                        "Description": "When killed, splits into 2 smaller bloops with 25 health each.",
+                        "trigger": "Ondeath",
+                        "chance": 1,
+                        "effect": "split",
+                        "health": 25,
+                        "amount": 2
+                    }
                 }
             },
             "Bosses": {
@@ -346,31 +411,69 @@
                     "Health": 100,
                     "Damage": 40,
                     "Experience": 100,
-                    "SpecialEffect": "Charge attack for a turn that deals double damage"
+                    "SpecialEffect": {
+                        "Name": "Charge",
+                        "Description": "Charges at the player, dealing 20 damage and knocking them back, causing them to be stunned for their next turn.",
+                        "chance": 0.2,
+                        "effect": "stun",
+                        "damage": 20,
+                        "turns": 1
+                    }
                 },
                 "Dragon": {
                     "Health": 200,
                     "Damage": 50,
                     "Experience": 200,
-                    "SpecialEffect": "Breathes fire that deals 30 damage to all players and applies burn that does 2 damage every turn"
+                    "SpecialEffect": {
+                        "Name": "Fire Breath",
+                        "Description": "Breathes fire that deals 30 damage to all players and applies burn that does 2 damage every turn.",
+                        "chance": 0.1,
+                        "effect": "burn",
+                        "damage": 30,
+                        "burn_damage": 10,
+                        "turns": 3
+                    }
                 },
                 "Lich": {
                     "Health": 150,
                     "Damage": 30,
                     "Experience": 150,
-                    "SpecialEffect": "Casts a spell that reduces the player's health by 20% and applies a curse that reduces the player's damage by 10% for the next 3 turns"
+                    "SpecialEffect": {
+                        "Name": "Curse of the Lich",
+                        "Description": "Casts a spell that reduces the player's health by 20% and applies a curse that reduces the player's damage by 10% for the next 3 turns.",
+                        "chance": 0.3,
+                        "effect": "curse",
+                        "damage_reduction": 10,
+                        "turns": 3
+                    }
                 },
                 "Warden": {
                     "Health": 250,
                     "Damage": 60,
                     "Experience": 300,
-                    "SpecialEffect": "Summons a mini warden that has 30 health and 10 damage and attacks the player until it also applies darkness which reduces the players accuracy by 40% for the next 2 turns"
+                    "SpecialEffect": {
+                        "Name": "Summon Mini Warden",
+                        "Description": "Summons a mini warden that fights along him",
+                        "chance": 0.25,
+                        "effect": "summon",
+                        "summon": "Mini Warden",
+                        "count": 1
+                    }
                 },
                 "Monk Leader": {
                     "Health": 200,
                     "Damage": 30,
                     "Experience": 400,
-                    "SpecialEffect": "When meditating, the monk heals 30% of his health and decreases his damage taken by 10% while also applying a a debuff to the player that increases their damage taken by 10% for the next 2 turns"
+                    "SpecialEffect": {
+                        "Name": "Meditate",
+                        "Description": "Meditates to heal 30% health and take 10% less damage, while the player takes 10% more damage for 2 turns.",
+                        "chance": 0.1,
+                        "effect": "meditate",
+                        "target": "self",
+                        "heal_percentage": 0.3,
+                        "damage_taken_reduction": 0.1,
+                        "player_damage_taken_increase": 0.1,
+                        "buff_turns": 3}
                 }
             }
         },
@@ -384,7 +487,14 @@
                     "Health": 100,
                     "Damage": 20,
                     "Experience": 50,
-                    "SpecialEffect": "Shield reduces damage by 30% for the next 2 turns"
+                    "SpecialEffect": {
+                        "Name": "Shield Wall",
+                        "Description": "Raises a shield wall reducing damage taken by 30% for 2 turns.",
+                        "chance": 0.2,
+                        "effect": "shield_wall",
+                        "damage_reduction": 0.3,
+                        "turns": 2
+                    }
                 }
             },
             "Bosses": {
@@ -392,25 +502,51 @@
                     "Health": 300,
                     "Damage": 70,
                     "Experience": 300,
-                    "SpecialEffect": "Summons castle guards and becomes invulnerable until castle guards are defeated after which he returns to the field and does a big aoe attack"
+                    "SpecialEffect": {
+                        "Name": "Royal Summon",
+                        "Description": "Summons 2 castle guards to fight alongside him.",
+                        "chance": 0.2,
+                        "effefct": "summon",
+                        "summon": "Castle Guard",
+                        "count": 2
+                    }
                 },
                 "Arch duke": {
                     "Health": 500,
                     "Damage": 50,
                     "Experience": 999999999999,
-                    "SpecialEffect": "Casts a spell that that applies a curse that will do 50% of the players health in 10 turns."
+                    "SpecialEffect": {
+                        "Name": "DOOM",
+                        "Description": "Applies a curse that will do 50% of the players health after 10 turns.",
+                        "chance": 0.1,
+                        "effect": "doom",
+                        "damage_percentage": 0.5,
+                        "turns": 10
+                    }
                 },
                 "Mini Warden": {
                     "Health": 30,
                     "Damage": 10,
                     "Experience": 20,
-                    "SpecialEffect": "Darkness reduces the players accuracy by 10% for the next 2 turns"
+                    "SpecialEffect": {
+                        "Name": "Darkness",
+                        "Description": "Casts darkness that reduces the players accuracy by 50% for 2 turns.",
+                        "chance": 0.25,
+                        "effect": "darkness",
+                        "accuracy_reduction": 0.5,
+                        "turns": 2
+                    }
                 },
                 "Good luck🐷": {
                     "Health": 99999999,
                     "Damage": 99999999,
                     "Experience": 1,
-                    "SpecialEffect": "This is a joke monster that is impossible to kill and will one shot you and delete ur save."
+                    "SpecialEffect": {
+                        "Name": "Goodbye",
+                        "Description": "Good luck🐷",
+                        "chance": 1,
+                        "effect": "goodbye",
+                        "damage": 99999999}
                 }
             }
         }
