@@ -1,46 +1,44 @@
 import random
 import json
 
-# add:
 
-# crafting
-# - met sets (player inventory materials in crafting materials)
-
-# map
-
-# fight multiple enemies
-# - met classes
-
-
-# Utility Functions
+# = UTILITY FUNCTIONS
+# Save data to json
 def save_to_json(game_data):
+    # Open json file and dump game_data into the file
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(game_data, f, indent=4, ensure_ascii=False)
 
 
+# Ask input until user input in valid options
 def validate(options, message, data_type=str):
-    value = ""
+    user_input = ""
 
-    while value not in options:
-        value = input(f"{message}").lower()
+    # Loop until valid
+    while user_input not in options:
+        user_input = input(message).lower()
 
+        # Try to convert value, give error if not able to
         try:
-            value = data_type(value)
+            user_input = data_type(user_input)
         except (ValueError, TypeError):
-            print("Invalid input\n")
+            print("Invalid input, wrong data type\n")
             continue
 
-        if value not in options:
-            print("Invalid input\n")
+        # user input not in available options
+        if user_input not in options:
+            print("Invalid input, not in available options\n")
 
-    return value
+    # Return valid user input
+    return user_input
 
 
+# Roll dice from 1 to max roll, 20 if no amount is given
 def dice_roll(max_roll=20):
-    # Roll a random int from 1 to max_roll, 20 if no amount is given
     return random.randint(1, max_roll)
 
 
+# Reset all player data
 def reset_data(game_data):
     # Assign player data variables
     player_data = game_data.get("PlayerData")
@@ -129,9 +127,8 @@ def character_setup(game_data):
     player_skills.extend(class_data[player_class]["Skills"])
 
     # Welcome player and display stats
-    print(f"\nWelcome {player_name} the {player_class}!\n")
-
     print(
+        f"\nWelcome {player_name} the {player_class}!\n"
         f"Your stats are:\n"
         f"Attributes: {", ".join([f"{key}: {value}" for key, value in player_attributes.items()])}\n"
         f"Condition: {", ".join([f"{key}: {value}" for key, value in list(player_condition.items())[::2]])}\n"
@@ -146,6 +143,7 @@ def quit_game(game_data):
     # Update game_data json file
     save_to_json(game_data)
 
+    # Quit game
     quit()
 
 
