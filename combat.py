@@ -1,11 +1,154 @@
+import random
 from utils import validate, save_to_json, dice_roll
 from economy import aquire
+
+
+def special_attacks(game_data, trigger, state):
+    player_data = game_data["PlayerData"]
+    player_condition = player_data["PlayerCondition"]
+    player_inventory = player_data["PlayerInventory"]
+
+    enemy_data = state["enemy_data"]
+    effect_data = enemy_data.get(
+        "SpecialEffect", enemy_data.get("SpecialAttack", {})
+    )
+
+    # Reaper Scythe: Life Steal
+    if trigger == "player_hit":
+        for equipment in player_data["PlayerEquipment"].values():
+            special = equipment.get("SpecialEffect", {})
+
+            if special.get("effect") == "life_steal":
+                healing = round(
+                    state["damage"] * special.get("percentage", 0)
+                )
+                old_health = state["current_health"]
+
+                state["current_health"] = min(
+                    player_condition["MaxHealth"],
+                    old_health + healing
+                )
+
+                print(
+                    f"Life Steal healed "
+                    f"{state['current_health'] - old_health} HP!"
+                )
+
+    # Monster special attacks
+    if trigger == "enemy_turn":
+        if random.random() > effect_data.get("chance", 0):
+            return
+
+        effect = effect_data.get("effect")
+
+        match effect:
+            case "steal_coins":
+                coins = player_inventory["coins"]["Amount"]
+                stolen = min(coins, effect_data.get("amount", 0))
+                player_inventory["coins"]["Amount"] -= stolen
+
+                print(
+                    f"The {state['monster_name']} stole {stolen} coins!"
+                )
+
+            case "stun":
+                state["stunned"] = effect_data.get("turns", 1)
+                state["extra_damage"] += effect_data.get("damage", 0)
+
+            case "poison" | "bleed" | "burn":
+                state["damage_over_time"] = effect_data.get(
+                    f"{effect}_damage", 0
+                )
+                state["damage_over_time_turns"] = effect_data.get(
+                    f"{effect}_turns",
+                    effect_data.get("turns", 0)
+                )
+
+            case "rage":
+                state["enemy_damage"] += effect_data.get(
+                    "damage_increase", 0
+                )
+
+            case "invisibility":
+                state["invisible"] = effect_data.get("turns", 0)
+
+            case "curse":
+                state["curse_turns"] = effect_data.get("turns", 0)
+                state["curse_reduction"] = (
+                    effect_data.get("damage_reduction", 0) / 100
+                )
+
+            case "meditate":
+                healing = round(
+                    state["enemy_health"] *
+                    effect_data.get("heal_percentage", 0)
+                )
+
+                state["enemy_health"] = min(
+                    enemy_data["Health"],
+                    state["enemy_health"] + healing
+                )
+
+                state["enemy_defence"] = 1 + effect_data.get(
+                    "damage_taken_reduction", 0
+                )
+
+                state["player_damage_increase"] = effect_data.get(
+                    "player_damage_taken_increase", 0
+                )
+
+                state["buff_turns"] = effect_data.get("buff_turns", 0)
+
+            case "shield_wall":
+                state["enemy_defence"] = 1 + effect_data.get(
+                    "damage_reduction", 0
+                )
+                state["buff_turns"] = effect_data.get("turns", 0)
+
+            case "darkness":
+                state["darkness_turns"] = effect_data.get("turns", 0)
+                state["accuracy_reduction"] = effect_data.get(
+                    "accuracy_reduction", 50
+                )
+
+            case "doom":
+                state["doom_turns"] = effect_data.get("turns", 0)
+                state["doom_percentage"] = effect_data.get(
+                    "damage_percentage", 0
+                )
+
+            case "goodbye":
+                state["current_health"] = 0
+
+    # Damage over time
+    if trigger == "player_turn_start":
+        if state["damage_over_time_turns"] > 0:
+            damage = state["damage_over_time"]
+            state["current_health"] -= damage
+            state["damage_over_time_turns"] -= 1
+
+            print(
+                f"You received {damage} damage from a status effect!"
+            )
+
+        if state["doom_turns"] > 0:
+            state["doom_turns"] -= 1
+
+            if state["doom_turns"] == 0:
+                damage = round(
+                    player_condition["MaxHealth"] *
+                    state["doom_percentage"]
+                )
+
+                state["current_health"] -= damage
+                print(f"DOOM dealt {damage} damage!")
 
 
 # Combat vs 1 (will add 1vX later) monster(s)
 def combat(game_data, enemy_class, map_dimension, monster_name):
     # Define enemy statistics based off of arguments
-    enemy_data = game_data.get("MonsterData")[map_dimension][enemy_class][monster_name]
+    enemy_data = game_data.get("MonsterData")[
+        map_dimension][enemy_class][monster_name]
     enemy_health = enemy_data.get("Health")
     enemy_damage = enemy_data.get("Damage")
 
@@ -24,8 +167,50 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
     # Set buff counter
     buff_turns = 0
 
+    state = {
+        "current_health": current_health,
+        "enemy_health": enemy_health,
+        "enemy_data": enemy_data,
+        "monster_name": monster_name,
+        "enemy_damage": enemy_damage,
+        "enemy_defence": 1,
+        "player_damage_increase": 1,
+        "darkness_turns": 0,
+        "accuracy_reduction": 50,
+        "damage": 0,
+        "damage_over_time": 0,
+        "damage_over_time_turns": 0,
+        "doom_turns": 0,
+        "doom_percentage": 0,
+        "stunned": 0,
+        "extra_damage": 0,
+        "invisible": 0,
+        "curse_turns": 0,
+        "curse_reduction": 0,
+        "buff_turns": 0
+    }
+
     # Loop combat until either player or enemy dies
     while current_health > 0 and enemy_health > 0:
+        # Apply status effects at the start of the player's turn
+        state["current_health"] = current_health
+        state["enemy_health"] = enemy_health
+
+        special_attacks(game_data, "player_turn_start", state)
+
+        current_health = state["current_health"]
+        enemy_health = state["enemy_health"]
+
+        if current_health <= 0:
+            break
+
+        # Apply curse damage reduction
+        if state["curse_turns"] > 0:
+            state["player_damage_increase"] = 1 - state["curse_reduction"]
+            state["curse_turns"] -= 1
+        else:
+            state["player_damage_increase"] = 1
+
         # Repeat loop if action is not in player_skills
         action = validate(
             ("attack", "defence", "support"),
@@ -60,7 +245,8 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
         match action:
             case "attack":
                 types = ("melee", "ranged", "spell")
-                available_types = [skill for skill in types if skill in player_skills]
+                available_types = [
+                    skill for skill in types if skill in player_skills]
 
                 attack_type = validate(
                     available_types,
@@ -73,21 +259,49 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
                     # Deal damage based on attributes, from 0.1 to 2.0x damage
                     case "melee":
                         player_damage = round(
-                            ((player_attributes.get("Strength") * (dice_roll(20) / 10)) * attack_multiplier),
+                            ((player_attributes.get("Strength") *
+                             (dice_roll(20) / 10)) * attack_multiplier),
                             0
                         )
                     case "ranged":
                         player_damage = round(
-                            ((player_attributes.get("Dexterity") * (dice_roll(20) / 10)) * attack_multiplier),
+                            ((player_attributes.get("Dexterity") *
+                             (dice_roll(20) / 10)) * attack_multiplier),
                             0
                         )
                     case "spell":
                         player_damage = round(
-                            ((player_attributes.get("Intelligence") * (dice_roll(20) / 10)) * attack_multiplier),
+                            ((player_attributes.get("Intelligence") *
+                             (dice_roll(20) / 10)) * attack_multiplier),
                             0
                         )
 
+                # Darkness can cause the player to miss
+                if state["darkness_turns"] > 0:
+                    if random.random() < state["accuracy_reduction"] / 100:
+                        player_damage = 0
+                        print("The darkness caused your attack to miss!")
+
+                    state["darkness_turns"] -= 1
+
+                # Apply enemy defence and player damage modifiers
+                player_damage = round(
+                    player_damage / state["enemy_defence"] *
+                    state["player_damage_increase"]
+                )
+
                 enemy_health -= player_damage
+
+                # Trigger equipment effects such as Life Steal
+                if player_damage > 0:
+                    state["damage"] = player_damage
+                    state["current_health"] = current_health
+                    state["enemy_health"] = enemy_health
+
+                    special_attacks(game_data, "player_hit", state)
+
+                    current_health = state["current_health"]
+                    enemy_health = state["enemy_health"]
 
                 # Limit enemy_health to 0, not -4 for example
                 if enemy_health < 0:
@@ -100,7 +314,8 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
 
             case "defence":
                 types = ("block", "dodge", "ward")
-                available_types = [skill for skill in types if skill in player_skills]
+                available_types = [
+                    skill for skill in types if skill in player_skills]
 
                 defend_type = validate(
                     available_types,
@@ -113,19 +328,22 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
                     case "block":
                         # Double defence_multiplier if strength * roll > 10
                         defence_multiplier *= 2 if (
-                            player_attributes.get("Strength") * (dice_roll_result / 10)
+                            player_attributes.get(
+                                "Strength") * (dice_roll_result / 10)
                         ) > 10 else 1
 
                     case "dodge":
                         # Double defence_multiplier if dexterity * roll > 10
                         defence_multiplier *= 2 if (
-                            player_attributes.get("Dexterity") * (dice_roll_result / 10)
+                            player_attributes.get(
+                                "Dexterity") * (dice_roll_result / 10)
                         ) > 10 else 1
 
                     case "ward":
                         # Double defence_multiplier if intelligence * roll > 10
                         defence_multiplier *= 2 if (
-                            player_attributes.get("Intelligence") * (dice_roll_result / 10)
+                            player_attributes.get(
+                                "Intelligence") * (dice_roll_result / 10)
                         ) > 10 else 1
 
                 print(
@@ -135,8 +353,10 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
                 )
 
             case "support":
-                types = ("buff", "heal")  # add warcry, focus, concentrate instead of general buff
-                available_types = [skill for skill in types if skill in player_skills]
+                # add warcry, focus, concentrate instead of general buff
+                types = ("buff", "heal")
+                available_types = [
+                    skill for skill in types if skill in player_skills]
 
                 support_type = validate(
                     available_types,
@@ -171,11 +391,28 @@ def combat(game_data, enemy_class, map_dimension, monster_name):
 
         # Continue fight if enemy still alive
         if enemy_health > 0:
+
+            # Trigger monster special attack
+            state["current_health"] = current_health
+            state["enemy_health"] = enemy_health
+
+            special_attacks(game_data, "enemy_turn", state)
+
+            current_health = state["current_health"]
+            enemy_health = state["enemy_health"]
+            enemy_damage = state["enemy_damage"]
+
+            if current_health <= 0:
+                break
+
             # Calculate damage dealt by enemy
             damage_dealt = round(
                 ((enemy_damage / defence_multiplier) * (dice_roll(20) / 10)),
                 0
             )
+            # Add extra damage from special attacks
+            damage_dealt += state["extra_damage"]
+            state["extra_damage"] = 0
             current_health -= damage_dealt
 
             print(

@@ -82,9 +82,15 @@ def buy(game_data):
                 }
 
                 if shop_data.get(item).get("Type") == "Weapon":
-                    player_equipment[item]["DamageIncrease"] = shop_data.get(item).get("DamageIncrease")
+                    player_equipment[item]["DamageIncrease"] = shop_data.get(
+                        item).get("DamageIncrease")
+
+                    if "SpecialEffect" in shop_data[item]:
+                        player_equipment[item]["SpecialEffect"] = shop_data[item]["SpecialEffect"]
+
                 elif shop_data.get(item).get("Type") == "Armour":
-                    player_equipment[item]["DamageNegation"] = shop_data.get(item).get("DamageNegation")
+                    player_equipment[item]["DamageNegation"] = shop_data.get(
+                        item).get("DamageNegation")
         else:
             print(f"{player_name} doesn't have enough coin.")
 
