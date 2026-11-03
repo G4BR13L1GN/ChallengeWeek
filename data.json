@@ -500,7 +500,7 @@
                         "Name": "Royal Summon",
                         "Description": "Summons 2 castle guards to fight alongside him.",
                         "chance": 0.2,
-                        "effefct": "summon",
+                        "effect": "summon",
                         "summon": "Castle Guard",
                         "count": 2
                     }
