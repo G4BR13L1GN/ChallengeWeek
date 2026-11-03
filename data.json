@@ -1,41 +1,35 @@
 {
     "PlayerData": {
         "PlayerProfile": {
-            "Name": "Steven",
-            "Class": "bard"
+            "Name": "",
+            "Class": ""
         },
         "PlayerAttributes": {
-            "Strength": 8,
-            "Dexterity": 14,
-            "Intelligence": 1600
+            "Strength": 0,
+            "Dexterity": 0,
+            "Intelligence": 0
         },
         "PlayerCondition": {
-            "Health": 100,
-            "MaxHealth": 100,
-            "Stamina": 60,
-            "MaxStamina": 100
+            "Health": 0,
+            "MaxHealth": 0,
+            "Stamina": 0,
+            "MaxStamina": 0
         },
         "PlayerProgress": {
-            "Experience": 20,
-            "Level": 5,
+            "Experience": 0,
+            "Level": 1,
             "MapZone": 0,
             "MapDimension": "Overworld",
-            "DaysPassed": 7.0
+            "DaysPassed": 0
         },
         "PlayerInventory": {
             "coins": {
-                "Amount": 60,
-                "Price": 10
+                "Amount": 0,
+                "Price": 1
             }
         },
         "PlayerEquipment": {},
-        "PlayerSkills": [
-            "ranged",
-            "spell",
-            "dodge",
-            "heal",
-            "buff"
-        ]
+        "PlayerSkills": []
     },
     "LootData": {
         "Mine": {
