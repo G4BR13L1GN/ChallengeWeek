@@ -1,3 +1,7 @@
+from utils import validate, save_to_json, dice_roll
+from economy import aquire
+
+
 # Combat vs 1 (will add 1vX later) monster(s)
 def combat(game_data, enemy_class, map_dimension, monster_name):
     # Define enemy statistics based off of arguments
