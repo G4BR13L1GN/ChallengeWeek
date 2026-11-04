@@ -170,7 +170,7 @@ def status(game_data, game_content):
 
 def check_for_level_up(game_data):
     # Assign player data
-    player_data = game_data.get("PlayerData")
+    player_data = get_player_data(game_data)
     player_progress = player_data.get("PlayerProgress")
     player_stats = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
