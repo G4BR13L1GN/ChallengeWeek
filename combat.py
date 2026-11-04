@@ -248,8 +248,8 @@ def combat(game_data, game_content, enemy_class, map_dimension, enemy_names):
     # Increase days_passed
     player_progress["DaysPassed"] += 0.5
 
-    # zones = ["Overworld", "Caverns", "Sift"]
-    # player_progress["MapDimension"] = zones[(player_progress.get("MapZone") - 1) // 6]
+    zones = ("Overworld", "Caverns", "Sift")
+    player_progress["MapDimension"] = zones[(player_progress.get("MapZone") - 1) // 6]
 
     # Update game_data json file
     save_to_json(game_data)

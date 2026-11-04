@@ -50,4 +50,6 @@ def get_player_data(game_data):
     # Assign player_data and class_data
     player_data = players_data.get(selected_id)
 
+    print(player_data)
+
     return player_data
