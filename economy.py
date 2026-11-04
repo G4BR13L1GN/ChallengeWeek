@@ -3,7 +3,7 @@ from utils import validate, save_to_json
 
 
 # Function to add item to player based on spawn chances
-def aquire(game_data, item_name, spawn_percentage=20, max_spawn_amount=5, spawn_all=False, item_price=10):
+def aquire(game_data, game_content, item_name, spawn_percentage=20, max_spawn_amount=5, spawn_all=False, item_price=10):
     # Aquire item with game_data to add item onto, name of item, spawn chance, max spawn amount, and price
     player_data = game_data.get("PlayerData")
     player_inventory = player_data.get("PlayerInventory")
@@ -31,7 +31,7 @@ def aquire(game_data, item_name, spawn_percentage=20, max_spawn_amount=5, spawn_
 
 
 # Buy item from shop
-def buy(game_data):
+def buy(game_data, game_content):
     # Define player data
     player_data = game_data.get("PlayerData")
     player_inventory = player_data.get("PlayerInventory")
@@ -40,7 +40,7 @@ def buy(game_data):
     player_name = player_data.get("PlayerProfile").get("Name")
 
     # Define shop items
-    shop_data = game_data.get("ShopData")
+    shop_data = game_content.get("ShopData")
 
     # Get input for which item player wants to buy
     item = validate(
@@ -61,32 +61,36 @@ def buy(game_data):
         int
     )
 
+    # Confirmation to buy
     buy_confirmation = validate(
         ("y", "n"),
         f"Would {player_name} like to buy the {item}{"s" if buy_amount > 1 else ""}? (Y/N)\n> "
     )
 
+    # Check if confirmation is yes
     if buy_confirmation == "y":
+        # Check if player has enough coin
         if player_inventory.get("coins", {}).get("Amount") >= item_price * buy_amount:
-            aquire(game_data, item, 100, buy_amount, True, item_price)
+            # Add item to inventory, remove coins
+            aquire(game_data, game_content, item, 100, buy_amount, True, item_price)
             player_inventory["coins"]["Amount"] -= item_price * buy_amount
 
+            # Print what player bought
             print(f"{player_name} bought {buy_amount} "
                   f"{item}{"s" if buy_amount > 1 else ""} "
                   f"for {buy_amount * item_price} coins!")
 
             # Add item to player_equipment for specific types
             if shop_data.get(item).get("Type") in ["Weapon", "Armour"]:
+                # Get item type
                 player_equipment[item] = {
                     "Type": shop_data.get(item).get("Type")
                 }
 
+                # Add item to player equipment based on if it is weapon or armor
                 if shop_data.get(item).get("Type") == "Weapon":
                     player_equipment[item]["DamageIncrease"] = shop_data.get(
                         item).get("DamageIncrease")
-
-                    if "SpecialEffect" in shop_data[item]:
-                        player_equipment[item]["SpecialEffect"] = shop_data[item]["SpecialEffect"]
 
                 elif shop_data.get(item).get("Type") == "Armour":
                     player_equipment[item]["DamageNegation"] = shop_data.get(
@@ -94,6 +98,7 @@ def buy(game_data):
         else:
             print(f"{player_name} doesn't have enough coin.")
 
+    # Return if player does not want to buy
     elif buy_confirmation == "n":
         return
 
@@ -102,7 +107,7 @@ def buy(game_data):
 
 
 # Sell item to shop
-def sell(game_data):
+def sell(game_data, game_content):
     # Define player data
     player_data = game_data.get("PlayerData")
     player_inventory = player_data.get("PlayerInventory")
@@ -145,6 +150,7 @@ def sell(game_data):
         f"\nWould {player_name} like to sell the {item}{"s" if sell_amount > 1 else ""}? (Y/N)\n> "
     )
 
+    # Check if sell confirmation is yes
     if sell_confirmation == "y":
         if player_inventory.get(item).get("Amount") > 0:
             # Not aquire for coins since coins already exists in json at character creation
@@ -170,7 +176,7 @@ def sell(game_data):
 
 
 # Shop to buy or sell item
-def shop(game_data):
+def shop(game_data, game_content):
     action = validate(
         ("buy", "sell", "leave"),
         f"What would {game_data.get("PlayerData").get("PlayerProfile").get("Name")} "
@@ -182,9 +188,9 @@ def shop(game_data):
 
     match action:
         case "buy":
-            buy(game_data)
+            buy(game_data, game_content)
         case "sell":
-            sell(game_data)
+            sell(game_data, game_content)
         case "leave":
             return
 

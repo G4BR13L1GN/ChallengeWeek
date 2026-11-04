@@ -5,7 +5,7 @@ from combat import combat
 
 
 # Adventure where character can spot monster
-def adventure(game_data):
+def adventure(game_data, game_content):
     # Assign player data
     player_data = game_data.get("PlayerData")
     player_attributes = player_data.get("PlayerAttributes")
@@ -40,7 +40,7 @@ def adventure(game_data):
 
     # Encounter if player intelligence passes sight check
     if player_attributes.get("Intelligence") > dice_roll(20):
-        monster_data = game_data.get("MonsterData")
+        monster_data = game_content.get("MonsterData")
 
         # Encounter as many monsters as players level is
         monster_amount = player_progress.get("Level")
@@ -60,6 +60,7 @@ def adventure(game_data):
         # Start combat with multiple monsters
         combat(
             game_data,
+            game_content,
             "Monsters",
             player_progress.get("MapDimension"),
             monsters
@@ -75,14 +76,14 @@ def adventure(game_data):
 
 
 # Mine to aquire gemstones
-def mine(game_data):
+def mine(game_data, game_content):
     player_data = game_data.get("PlayerData")
     player_attributes = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
 
     player_name = player_data.get("PlayerProfile").get("Name")
 
-    loot_data = game_data.get("LootData").get("Mine")
+    loot_data = game_content.get("LootData").get("Mine")
 
     # Stamina cost for mining
     stamina_cost = 10
@@ -109,6 +110,7 @@ def mine(game_data):
     for key in loot_data.keys():
         aquire(
             game_data,
+            game_content,
             key,
             loot_data[key].get("chance") / mine_factor,
             loot_data[key].get("maxAmount"),
@@ -123,7 +125,7 @@ def mine(game_data):
 
 
 # Rest to regain stamina and health
-def rest(game_data):
+def rest(game_data, game_content):
     # Define player statistics
     player_data = game_data.get("PlayerData")
     player_condition = player_data.get("PlayerCondition")
@@ -178,14 +180,14 @@ def rest(game_data):
 
 
 # Forage to find loot
-def gather(game_data):
+def gather(game_data, game_content):
     player_data = game_data.get("PlayerData")
     player_attributes = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
 
     player_name = player_data.get("PlayerProfile").get("Name")
 
-    loot_data = game_data.get("LootData").get("Forest")
+    loot_data = game_content.get("LootData").get("Forest")
 
     # Stamina cost for gathering
     stamina_cost = 10
@@ -212,6 +214,7 @@ def gather(game_data):
     for key in loot_data.keys():
         aquire(
             game_data,
+            game_content,
             key,
             loot_data[key].get("chance") / gather_factor,
             loot_data[key].get("maxAmount"),

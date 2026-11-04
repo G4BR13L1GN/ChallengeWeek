@@ -2,7 +2,7 @@ from utils import validate, save_to_json
 
 
 # Reset all player data
-def reset_data(game_data):
+def reset_data(game_data, game_content):
     # Assign player data variables
     player_data = game_data.get("PlayerData")
     player_progress = player_data.get("PlayerProgress")
@@ -42,18 +42,18 @@ def reset_data(game_data):
 
 
 # Ask for confirmation to reset
-def restart(game_data):
+def restart(game_data, game_content):
     # Only continue if player has agreed twice
     if str(input("Do you really want to restart? (Y/N)\n> ").upper()) == "Y" and \
        str(input("\nAre you sure? (Y/N)\n> ").upper()) == "Y":
         # Set up new character
-        character_setup(game_data)
+        character_setup(game_data, game_content)
 
 
 # Create character for player by choices from player
-def character_setup(game_data):
+def character_setup(game_data, game_content):
     # Reset data so there is no save conflict
-    reset_data(game_data)
+    reset_data(game_data, game_content)
 
     # Assign player_data and class_data
     player_data = game_data.get("PlayerData")
@@ -62,7 +62,7 @@ def character_setup(game_data):
     player_condition = player_data.get("PlayerCondition")
     player_skills = player_data.get("PlayerSkills")
 
-    class_data = game_data.get("ClassData")
+    class_data = game_content.get("ClassData")
 
     # Assign name
     player_name = str(input("\nWhat is your characters name?\n> "))
@@ -106,7 +106,7 @@ def character_setup(game_data):
 
 
 # Save and quit the game
-def quit_game(game_data):
+def quit_game(game_data, game_content):
     # Update game_data json file
     save_to_json(game_data)
 
@@ -115,7 +115,7 @@ def quit_game(game_data):
 
 
 # Get status of player (heath, stamina, day count)
-def status(game_data):
+def status(game_data, game_content):
     # Assign player data
     player_data = game_data.get("PlayerData")
     player_condition = player_data.get("PlayerCondition")

@@ -1,5 +1,4 @@
 import json
-from combat import combat, special_attacks
 from player import restart, character_setup, quit_game, status
 from economy import shop
 from world import adventure, mine, gather, rest
@@ -11,17 +10,23 @@ def main():
     with open("data.json", "r", encoding="utf-8") as f:
         game_data = json.load(f)
 
+    with open("content.json", "r", encoding="utf-8") as f:
+        game_content = json.load(f)
+
     player_data = game_data.get("PlayerData")
     player_profile = player_data.get("PlayerProfile")
 
     # Setup character if no class is chosen (due to empty json file)
     if player_profile.get("Class") == "":
-        character_setup(game_data)
+        character_setup(game_data, game_content)
 
     while True:
         # Reassign game_data after each action to get new updated version
         with open("data.json", "r", encoding="utf-8") as f:
             game_data = json.load(f)
+
+        with open("content.json", "r", encoding="utf-8") as f:
+            game_content = json.load(f)
 
         # Possible actions with game_data as argument
         possible_actions = {
@@ -45,7 +50,7 @@ def main():
         # Empty line after player action
         print()
 
-        possible_actions[action](game_data)
+        possible_actions[action](game_data, game_content)
 
 
 # Call main
