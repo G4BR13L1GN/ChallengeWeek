@@ -175,19 +175,26 @@ def check_for_level_up(game_data):
     player_stats = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
 
-    # Checks if character leveled up
-    if player_progress["Experience"] >= 100 * player_progress["Level"]:
-        # Reset experience and add level
-        player_progress["Experience"] = 0
-        player_progress["Level"] += 1
+    while True:
+        xp_needed = 100 * player_progress["Level"]
 
-        # Increase player condition stats
-        player_condition["MaxHealth"] += 10
+        # Checks if character leveled up
+        if player_progress["Experience"] >= xp_needed:
+            # Reset experience and add level
+            player_progress["Experience"] -= xp_needed
+            player_progress["Level"] += 1
 
-        # Increase player attributes
-        player_stats["Strength"] += 1
-        player_stats["Dexterity"] += 1
-        player_stats["Intelligence"] += 1
+            # Increase player condition stats
+            player_condition["MaxHealth"] += 10
 
-        # Congratulate player
-        print(f"Congratulations! You have leveled up to level {player_progress["Level"]}!")
+            # Increase player attributes
+            player_stats["Strength"] += 1
+            player_stats["Dexterity"] += 1
+            player_stats["Intelligence"] += 1
+
+            # Congratulate player
+            print(f"Congratulations! You have leveled up to level {player_progress["Level"]}!")
+        else:
+            break
+
+    save_to_json(game_data)
