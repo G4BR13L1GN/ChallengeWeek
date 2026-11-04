@@ -1,5 +1,5 @@
 import json
-from player import restart, character_setup, quit_game, status
+from player import restart, character_setup, quit_game, status, get_player_data, switch_character
 from economy import shop
 from world import adventure, mine, gather, rest
 from utils import validate
@@ -13,12 +13,15 @@ def main():
     with open("content.json", "r", encoding="utf-8") as f:
         game_content = json.load(f)
 
-    player_data = game_data.get("PlayerData")
+    selected_id = game_data.get("PlayerData").get("SelectedSave")
+
+    player_data = get_player_data(game_data)
+
     player_profile = player_data.get("PlayerProfile")
 
     # Setup character if no class is chosen (due to empty json file)
     if player_profile.get("Class") == "":
-        character_setup(game_data, game_content)
+        character_setup(game_data, game_content, selected_id)
 
     while True:
         # Reassign game_data after each action to get new updated version
@@ -37,7 +40,8 @@ def main():
             "rest": rest,
             "status": status,
             "shop": shop,
-            "restart": restart
+            "restart": restart,
+            "switch character": switch_character
         }
 
         # Validate actions with options being possible actions

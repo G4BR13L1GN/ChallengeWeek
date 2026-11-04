@@ -36,3 +36,18 @@ def validate(options: tuple, message, data_type=str):
 # Roll dice from 1 to max roll, 20 if no amount is given
 def dice_roll(max_roll=20):
     return random.randint(1, max_roll)
+
+
+# Return player data based on selected save
+def get_player_data(game_data):
+    # Assign player data
+    players_data = game_data.get("PlayerData")
+
+    # Get selected save, set to 1 if not chosen
+    selected_id = players_data.get("SelectedSave", "P01")
+    print(selected_id)
+
+    # Assign player_data and class_data
+    player_data = players_data.get(selected_id)
+
+    return player_data

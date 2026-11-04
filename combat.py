@@ -1,8 +1,9 @@
 import random
-from utils import validate, save_to_json, dice_roll
+from utils import validate, save_to_json, dice_roll, get_player_data
 from economy import aquire
 
 
+# = COMBAT FUNCTIONS
 class Enemy:
     def __init__(self, name, data):
         self.data = data
@@ -25,7 +26,7 @@ def combat(game_data, game_content, enemy_class, map_dimension, enemy_names):
         enemies.append(new_monster)
 
     # Define player statistics
-    player_data = game_data.get("PlayerData")
+    player_data = get_player_data(game_data)
     player_condition = player_data.get("PlayerCondition")
     player_attributes = player_data.get("PlayerAttributes")
     player_equipment = player_data.get("PlayerEquipment")

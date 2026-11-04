@@ -1,13 +1,14 @@
 import random
-from utils import validate, save_to_json, dice_roll
+from utils import validate, save_to_json, dice_roll, get_player_data
 from economy import aquire
 from combat import combat
 
 
+# = WORLD FUNCTIONS
 # Adventure where character can spot monster
 def adventure(game_data, game_content):
     # Assign player data
-    player_data = game_data.get("PlayerData")
+    player_data = get_player_data(game_data)
     player_attributes = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
     player_progress = player_data.get("PlayerProgress")
@@ -77,7 +78,7 @@ def adventure(game_data, game_content):
 
 # Mine to aquire gemstones
 def mine(game_data, game_content):
-    player_data = game_data.get("PlayerData")
+    player_data = get_player_data(game_data)
     player_attributes = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
 
@@ -127,7 +128,7 @@ def mine(game_data, game_content):
 # Rest to regain stamina and health
 def rest(game_data, game_content):
     # Define player statistics
-    player_data = game_data.get("PlayerData")
+    player_data = get_player_data(game_data)
     player_condition = player_data.get("PlayerCondition")
 
     player_name = player_data.get("PlayerProfile").get("Name")
@@ -181,7 +182,7 @@ def rest(game_data, game_content):
 
 # Forage to find loot
 def gather(game_data, game_content):
-    player_data = game_data.get("PlayerData")
+    player_data = get_player_data(game_data)
     player_attributes = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
 

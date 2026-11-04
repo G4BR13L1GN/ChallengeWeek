@@ -1,34 +1,37 @@
 {
     "PlayerData": {
-        "PlayerProfile": {
-            "Name": "",
-            "Class": ""
-        },
-        "PlayerAttributes": {
-            "Strength": 0,
-            "Dexterity": 0,
-            "Intelligence": 0
-        },
-        "PlayerCondition": {
-            "Health": 0,
-            "MaxHealth": 0,
-            "Stamina": 0,
-            "MaxStamina": 0
-        },
-        "PlayerProgress": {
-            "Experience": 0,
-            "Level": 1,
-            "MapZone": 0,
-            "MapDimension": "Overworld",
-            "DaysPassed": 0
-        },
-        "PlayerInventory": {
-            "coins": {
-                "Amount": 0,
-                "Price": 1
-            }
-        },
-        "PlayerEquipment": {},
-        "PlayerSkills": []
+        "SelectedSave:": "P01",
+        "P01": {
+            "PlayerProfile": {
+                "Name": "",
+                "Class": ""
+            },
+            "PlayerAttributes": {
+                "Strength": 0,
+                "Dexterity": 0,
+                "Intelligence": 0
+            },
+            "PlayerCondition": {
+                "Health": 0,
+                "MaxHealth": 0,
+                "Stamina": 0,
+                "MaxStamina": 0
+            },
+            "PlayerProgress": {
+                "Experience": 0,
+                "Level": 1,
+                "MapZone": 0,
+                "MapDimension": "Overworld",
+                "DaysPassed": 0
+            },
+            "PlayerInventory": {
+                "coins": {
+                    "Amount": 0,
+                    "Price": 1
+                }
+            },
+            "PlayerEquipment": {},
+            "PlayerSkills": []
+        }
     }
 }

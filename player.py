@@ -1,10 +1,17 @@
-from utils import validate, save_to_json
+from utils import validate, save_to_json, get_player_data
 
 
+# = PLAYER FUNCTIONS
 # Reset all player data
 def reset_data(game_data, game_content):
     # Assign player data variables
-    player_data = game_data.get("PlayerData")
+    player_data = get_player_data(game_data)
+
+    # Get selected save, set to 1 if not chosen
+    selected_id = player_data.get("SelectedSave", "P01")
+
+    player_data = player_data.get(selected_id)
+
     player_progress = player_data.get("PlayerProgress")
 
     # Reset player data
@@ -43,20 +50,23 @@ def reset_data(game_data, game_content):
 
 # Ask for confirmation to reset
 def restart(game_data, game_content):
+    selected_id = game_data.get("PlayerData").get("SelectedSave")
+
     # Only continue if player has agreed twice
     if str(input("Do you really want to restart? (Y/N)\n> ").upper()) == "Y" and \
        str(input("\nAre you sure? (Y/N)\n> ").upper()) == "Y":
         # Set up new character
-        character_setup(game_data, game_content)
+        character_setup(game_data, game_content, selected_id)
 
 
 # Create character for player by choices from player
-def character_setup(game_data, game_content):
+def character_setup(game_data, game_content, selected_id):
     # Reset data so there is no save conflict
     reset_data(game_data, game_content)
 
     # Assign player_data and class_data
-    player_data = game_data.get("PlayerData")
+    player_data = get_player_data(game_data)
+
     player_profile = player_data.get("PlayerProfile")
     player_attributes = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
@@ -114,10 +124,29 @@ def quit_game(game_data, game_content):
     quit()
 
 
+# Switch character saves
+def switch_character(game_data, game_content):
+    # Get player data
+    player_data = get_player_data(game_data)
+
+    # Change selected save based on tuple with 3 player ids
+    selected_id = validate(
+        ("P01", "P02", "P03"),
+        str,
+        f"What character would you like to switch to?\n{list([char.get("PlayerProfile").get("Name") for char in player_data])}"
+    )
+
+    game_data["PlayerData"]["SelectedSave"] = selected_id
+
+    # Check if selected id already exists in player data keys list (1:) because first one is "SelectedCharacter": id
+    if selected_id not in list(player_data.keys())[1:]:
+        character_setup(game_data, game_content, selected_id)
+
+
 # Get status of player (heath, stamina, day count)
 def status(game_data, game_content):
     # Assign player data
-    player_data = game_data.get("PlayerData")
+    player_data = get_player_data(game_data)
     player_condition = player_data.get("PlayerCondition")
     player_progress = player_data.get("PlayerProgress")
     player_name = player_data.get("PlayerProfile").get("Name")

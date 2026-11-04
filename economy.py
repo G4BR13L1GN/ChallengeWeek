@@ -1,11 +1,12 @@
 import random
-from utils import validate, save_to_json
+from utils import validate, save_to_json, get_player_data
 
 
+# = ECONOMY FUNCTIONS
 # Function to add item to player based on spawn chances
 def aquire(game_data, game_content, item_name, spawn_percentage=20, max_spawn_amount=5, spawn_all=False, item_price=10):
     # Aquire item with game_data to add item onto, name of item, spawn chance, max spawn amount, and price
-    player_data = game_data.get("PlayerData")
+    player_data = get_player_data(game_data)
     player_inventory = player_data.get("PlayerInventory")
 
     # Random chance from 1 to spawn_percentage, which accepts that is or is under 1
@@ -33,7 +34,7 @@ def aquire(game_data, game_content, item_name, spawn_percentage=20, max_spawn_am
 # Buy item from shop
 def buy(game_data, game_content):
     # Define player data
-    player_data = game_data.get("PlayerData")
+    player_data = get_player_data(game_data)
     player_inventory = player_data.get("PlayerInventory")
     player_equipment = player_data.get("PlayerEquipment")
 
@@ -109,7 +110,7 @@ def buy(game_data, game_content):
 # Sell item to shop
 def sell(game_data, game_content):
     # Define player data
-    player_data = game_data.get("PlayerData")
+    player_data = get_player_data(game_data)
     player_inventory = player_data.get("PlayerInventory")
 
     player_name = player_data.get("PlayerProfile").get("Name")
