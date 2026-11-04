@@ -39,14 +39,27 @@ def dice_roll(max_roll=20):
 
 
 # Return player data based on selected save
-def get_player_data(game_data):
+def get_player_data(game_data, set_id="P00"):
     # Assign player data
     players_data = game_data.get("PlayerData")
 
-    # Get selected save, set to 1 if not chosen
-    selected_id = players_data.get("SelectedSave", "P01")
+    # Get id from function argument, else "SelectedSave", and 1 if not found
+    selected_id = players_data.get("SelectedSave", "P00") if set_id == "P00" else set_id
 
     # Assign player_data and class_data
     player_data = players_data.get(selected_id, {"Message": "Emtpy :("})
 
+    if player_data == {"Message": "Emtpy :("}:
+        print("PLAYER NOT FOUND, QUITTING")
+        quit()
+
     return player_data
+
+
+# Save and quit the game
+def quit_game(game_data):
+    # Update game_data json file
+    save_to_json(game_data)
+
+    # Quit game
+    quit()

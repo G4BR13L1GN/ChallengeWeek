@@ -113,9 +113,58 @@ def mine(game_data, game_content):
             game_data,
             game_content,
             key,
-            loot_data[key].get("chance") / mine_factor,
-            loot_data[key].get("maxAmount"),
-            loot_data[key].get("price")
+            loot_data[key].get("Spawn Chance") / mine_factor,
+            loot_data[key].get("Max Spawn Amount"),
+            game_content.get("ItemData").get(key).get("Price")
+        )
+
+    # Increase days_passed
+    player_data.get("PlayerProgress")["DaysPassed"] += 0.5
+
+    # Update game_data json file
+    save_to_json(game_data)
+
+
+# Forage to find loot
+def gather(game_data, game_content):
+    player_data = get_player_data(game_data)
+    player_attributes = player_data.get("PlayerAttributes")
+    player_condition = player_data.get("PlayerCondition")
+
+    player_name = player_data.get("PlayerProfile").get("Name")
+
+    loot_data = game_content.get("LootData").get("Forest")
+
+    # Stamina cost for gathering
+    stamina_cost = 10
+
+    # Prevent stamina going below 0
+    if (player_condition["Stamina"] - stamina_cost) < 0:
+        print(
+            f"{player_name} doesn't have enough stamina to adventure, "
+            f"{player_name} should rest!"
+        )
+        return
+
+    player_condition["Stamina"] -= stamina_cost
+
+    print(
+        f"{player_name} has used {stamina_cost} stamina points to gather, "
+        f"and now has {player_condition.get("Stamina")} stamina left."
+    )
+
+    # Higher chance on materials if dexterity is high
+    gather_factor = player_attributes.get("Dexterity") / 10
+
+    # Forest materials which can be found
+    for key in loot_data.keys():
+        aquire(
+            game_data,
+            game_content,
+            key,
+            loot_data[key].get("Spawn Chance") / gather_factor,
+            loot_data[key].get("Max Spawn Amount"),
+            game_content.get("ItemData").get(key).get("Price")
         )
 
     # Increase days_passed
@@ -126,7 +175,7 @@ def mine(game_data, game_content):
 
 
 # Rest to regain stamina and health
-def rest(game_data, game_content):
+def rest(game_data):
     # Define player statistics
     player_data = get_player_data(game_data)
     player_condition = player_data.get("PlayerCondition")
@@ -175,55 +224,6 @@ def rest(game_data, game_content):
 
     # Increase days_passed based on rest length
     player_data.get("PlayerProgress")["DaysPassed"] += 1 if action == "long" else 0.5
-
-    # Update game_data json file
-    save_to_json(game_data)
-
-
-# Forage to find loot
-def gather(game_data, game_content):
-    player_data = get_player_data(game_data)
-    player_attributes = player_data.get("PlayerAttributes")
-    player_condition = player_data.get("PlayerCondition")
-
-    player_name = player_data.get("PlayerProfile").get("Name")
-
-    loot_data = game_content.get("LootData").get("Forest")
-
-    # Stamina cost for gathering
-    stamina_cost = 10
-
-    # Prevent stamina going below 0
-    if (player_condition["Stamina"] - stamina_cost) < 0:
-        print(
-            f"{player_name} doesn't have enough stamina to adventure, "
-            f"{player_name} should rest!"
-        )
-        return
-
-    player_condition["Stamina"] -= stamina_cost
-
-    print(
-        f"{player_name} has used {stamina_cost} stamina points to gather, "
-        f"and now has {player_condition.get("Stamina")} stamina left."
-    )
-
-    # Higher chance on materials if dexterity is high
-    gather_factor = player_attributes.get("Dexterity") / 10
-
-    # Forest materials which can be found
-    for key in loot_data.keys():
-        aquire(
-            game_data,
-            game_content,
-            key,
-            loot_data[key].get("chance") / gather_factor,
-            loot_data[key].get("maxAmount"),
-            loot_data[key].get("price")
-        )
-
-    # Increase days_passed
-    player_data.get("PlayerProgress")["DaysPassed"] += 0.5
 
     # Update game_data json file
     save_to_json(game_data)

@@ -1,6 +1,6 @@
 import random
 from utils import validate, save_to_json, dice_roll, get_player_data
-from economy import aquire
+from economy import add_item
 
 
 # = COMBAT FUNCTIONS
@@ -232,7 +232,8 @@ def combat(game_data, game_content, enemy_class, map_dimension, enemy_names):
                     f"and gained {experience_gained} XP!\n"
                 )
 
-                aquire(game_data, game_content, "coins", 100, experience_gained, 1)
+                # Reward player with coins
+                add_item(game_data, "coins", experience_gained, 1)
 
                 player_progress = player_data.get("PlayerProgress")
                 player_progress["Experience"] += experience_gained
