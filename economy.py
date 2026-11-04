@@ -4,7 +4,7 @@ from utils import validate, save_to_json, get_player_data
 
 # = ECONOMY FUNCTIONS
 # Function to add item to player based on spawn chances
-def add_item(game_data, item_name, amount, price, message=False):
+def add_item(game_data, item_name, amount, price, message=True):
     # Add item to game inventory
     player_data = get_player_data(game_data)
     player_inventory = player_data.get("PlayerInventory")
