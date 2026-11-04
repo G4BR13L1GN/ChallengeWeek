@@ -106,8 +106,10 @@ def character_setup(game_data, game_content, selected_id):
     print(
         f"\nWelcome {player_name} the {player_class}!\n"
         f"Your stats are:\n"
-        f"Attributes: {", ".join([f"{key}: {value}" for key, value in player_attributes.items()])}\n"
-        f"Condition: {", ".join([f"{key}: {value}" for key, value in list(player_condition.items())[::2]])}\n"
+        f"Attributes: {", ".join([f"{key}: {value}" for key,
+                                 value in player_attributes.items()])}\n"
+        f"Condition: {", ".join([f"{key}: {value}" for key, value in list(
+            player_condition.items())[::2]])}\n"
         f"Skills: {", ".join([skill.capitalize() for skill in player_skills])}"
     )
 
@@ -151,7 +153,8 @@ def status(game_data, game_content):
     player_progress = player_data.get("PlayerProgress")
     player_name = player_data.get("PlayerProfile").get("Name")
 
-    print(f"It is currently day {round(player_progress.get("DaysPassed"), 0)}.")
+    print(
+        f"It is currently day {round(player_progress.get("DaysPassed"), 0)}.")
 
     print(
         f"{player_name} currently has {player_condition.get("Health")} HP "
@@ -163,3 +166,20 @@ def status(game_data, game_content):
         f"and is located in map zone {player_progress.get("MapZone")} "
         f"in the \"{player_progress.get("MapDimension")}.\""
     )
+
+
+def level_up(game_data):
+    # Assign player data
+    player_data = game_data.get("PlayerData")
+    player_progress = player_data.get("PlayerProgress")
+    player_stats = player_data.get("PlayerAttributes")
+    player_condition = player_data.get("PlayerCondition")
+    if player_progress["Experience"] >= 100 * player_progress["Level"]:
+        player_progress["Experience"] = 0
+        player_progress["Level"] += 1
+        player_condition["MaxHealth"] += 10
+        player_stats["Strength"] += 1
+        player_stats["Dexterity"] += 1
+        player_stats["Intelligence"] += 1
+        print(
+            f"Congratulations! You have leveled up to level {player_progress['Level']}!")
