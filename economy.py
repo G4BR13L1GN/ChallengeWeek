@@ -178,9 +178,11 @@ def sell(game_data, game_content):
 
 # Shop to buy or sell item
 def shop(game_data, game_content):
+    player_data = get_player_data(game_data)
+
     action = validate(
         ("buy", "sell", "leave"),
-        f"What would {game_data.get("PlayerData").get("PlayerProfile").get("Name")} "
+        f"What would {player_data.get("PlayerProfile").get("Name")} "
         f"like to do in the shop?\nbuy, sell, leave\n> "
     )
 
@@ -196,7 +198,7 @@ def shop(game_data, game_content):
             return
 
     # Increase days_passed
-    game_data.get("PlayerData").get("PlayerProgress")["DaysPassed"] += 0.5
+    player_data.get("PlayerProgress")["DaysPassed"] += 0.5
 
     # Update game_data json file
     save_to_json(game_data)

@@ -31,8 +31,10 @@ def main():
         with open("content.json", "r", encoding="utf-8") as f:
             game_content = json.load(f)
 
-        # Checks if u leveled up
+        # Reassign player_data, might have changed after "switch character"
+        player_data = get_player_data(game_data)
 
+        # Checks if u leveled up
         if player_data.get("PlayerProgress").get("Experience") >= 100 * player_data.get("PlayerProgress").get("Level"):
             level_up(game_data)
 
@@ -52,7 +54,7 @@ def main():
         # Validate actions with options being possible actions
         action = validate(
             possible_actions,
-            f"\nWhat would {game_data.get("PlayerData").get("PlayerProfile").get("Name")} "
+            f"\nWhat would {player_data.get("PlayerProfile").get("Name")} "
             f"like to do?\n{", ".join(list(possible_actions))}\n> "
         )
 

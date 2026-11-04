@@ -45,11 +45,8 @@ def get_player_data(game_data):
 
     # Get selected save, set to 1 if not chosen
     selected_id = players_data.get("SelectedSave", "P01")
-    print(selected_id)
 
     # Assign player_data and class_data
-    player_data = players_data.get(selected_id)
-
-    print(player_data)
+    player_data = players_data.get(selected_id, {"Message": "Emtpy :("})
 
     return player_data

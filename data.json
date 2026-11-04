@@ -1,21 +1,21 @@
 {
     "PlayerData": {
-        "SelectedSave:": "P01",
+        "SelectedSave": "P02",
         "P01": {
             "PlayerProfile": {
-                "Name": "",
-                "Class": ""
+                "Name": "Bob",
+                "Class": "cleric"
             },
             "PlayerAttributes": {
-                "Strength": 0,
-                "Dexterity": 0,
-                "Intelligence": 0
+                "Strength": 12,
+                "Dexterity": 10,
+                "Intelligence": 16
             },
             "PlayerCondition": {
-                "Health": 0,
-                "MaxHealth": 0,
-                "Stamina": 0,
-                "MaxStamina": 0
+                "Health": 110,
+                "MaxHealth": 110,
+                "Stamina": 110,
+                "MaxStamina": 110
             },
             "PlayerProgress": {
                 "Experience": 0,
@@ -31,7 +31,88 @@
                 }
             },
             "PlayerEquipment": {},
-            "PlayerSkills": []
+            "PlayerSkills": [
+                "melee",
+                "spell",
+                "ward",
+                "heal",
+                "buff"
+            ]
+        },
+        "P02": {
+            "PlayerProfile": {
+                "Name": "Stojan",
+                "Class": "druid"
+            },
+            "PlayerAttributes": {
+                "Strength": 8,
+                "Dexterity": 12,
+                "Intelligence": 18
+            },
+            "PlayerCondition": {
+                "Health": 100,
+                "MaxHealth": 100,
+                "Stamina": 110,
+                "MaxStamina": 110
+            },
+            "PlayerProgress": {
+                "Experience": 0,
+                "Level": 1,
+                "MapZone": 0,
+                "MapDimension": "Overworld",
+                "DaysPassed": 0
+            },
+            "PlayerInventory": {
+                "coins": {
+                    "Amount": 0,
+                    "Price": 1
+                }
+            },
+            "PlayerEquipment": {},
+            "PlayerSkills": [
+                "spell",
+                "dodge",
+                "ward",
+                "heal"
+            ]
+        },
+        "P03": {
+            "PlayerProfile": {
+                "Name": "Gregory",
+                "Class": "fighter"
+            },
+            "PlayerAttributes": {
+                "Strength": 18,
+                "Dexterity": 14,
+                "Intelligence": 8
+            },
+            "PlayerCondition": {
+                "Health": 130,
+                "MaxHealth": 130,
+                "Stamina": 120,
+                "MaxStamina": 120
+            },
+            "PlayerProgress": {
+                "Experience": 0,
+                "Level": 1,
+                "MapZone": 0,
+                "MapDimension": "Overworld",
+                "DaysPassed": 0
+            },
+            "PlayerInventory": {
+                "coins": {
+                    "Amount": 0,
+                    "Price": 1
+                }
+            },
+            "PlayerEquipment": {},
+            "PlayerSkills": [
+                "melee",
+                "ranged",
+                "block",
+                "dodge",
+                "buff"
+            ]
         }
     }
 }

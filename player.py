@@ -7,11 +7,6 @@ def reset_data(game_data, game_content):
     # Assign player data variables
     player_data = get_player_data(game_data)
 
-    # Get selected save, set to 1 if not chosen
-    selected_id = player_data.get("SelectedSave", "P01")
-
-    player_data = player_data.get(selected_id)
-
     player_progress = player_data.get("PlayerProgress")
 
     # Reset player data
@@ -128,21 +123,26 @@ def quit_game(game_data, game_content):
 
 # Switch character saves
 def switch_character(game_data, game_content):
-    # Get player data
-    player_data = get_player_data(game_data)
+    # List of dictionaries for each character
+    character_dicts = list(game_data.get("PlayerData").items())[1:]
+
+    # List of all names from characters dict, to lower case
+    names_list = map(lambda name: name.lower(), list([list(char[1].values())[0]["Name"] for char in character_dicts]))
+
+    # Dict with names linked to id ({"p01": name, ...})
+    id_names = list(zip(("p01", "p02", "p03"), names_list))
 
     # Change selected save based on tuple with 3 player ids
-    selected_id = validate(
-        ("P01", "P02", "P03"),
-        str,
-        f"What character would you like to switch to?\n{list([char.get("PlayerProfile").get("Name") for char in player_data])}"
+    selected_name = validate(
+        tuple([part[1] for part in id_names]),
+        f"What character would you like to switch to?\n{", ".join([part[1].title() for part in id_names])}\n> ",
+        str
     )
 
-    game_data["PlayerData"]["SelectedSave"] = selected_id
+    # Update selected save id
+    game_data["PlayerData"]["SelectedSave"] = next(id for id, name in id_names if name == selected_name).title()
 
-    # Check if selected id already exists in player data keys list (1:) because first one is "SelectedCharacter": id
-    if selected_id not in list(player_data.keys())[1:]:
-        character_setup(game_data, game_content, selected_id)
+    save_to_json(game_data)
 
 
 # Get status of player (heath, stamina, day count)
