@@ -168,18 +168,26 @@ def status(game_data, game_content):
     )
 
 
-def level_up(game_data):
+def check_for_level_up(game_data):
     # Assign player data
     player_data = game_data.get("PlayerData")
     player_progress = player_data.get("PlayerProgress")
     player_stats = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
+
+    # Checks if character leveled up
     if player_progress["Experience"] >= 100 * player_progress["Level"]:
+        # Reset experience and add level
         player_progress["Experience"] = 0
         player_progress["Level"] += 1
+
+        # Increase player condition stats
         player_condition["MaxHealth"] += 10
+
+        # Increase player attributes
         player_stats["Strength"] += 1
         player_stats["Dexterity"] += 1
         player_stats["Intelligence"] += 1
-        print(
-            f"Congratulations! You have leveled up to level {player_progress['Level']}!")
+
+        # Congratulate player
+        print(f"Congratulations! You have leveled up to level {player_progress["Level"]}!")

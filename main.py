@@ -1,5 +1,5 @@
 import json
-from player import restart, character_setup, quit_game, status, level_up, get_player_data, switch_character
+from player import restart, character_setup, quit_game, status, check_for_level_up, get_player_data, switch_character
 from economy import shop
 from world import adventure, mine, gather, rest
 from utils import validate
@@ -34,9 +34,8 @@ def main():
         # Reassign player_data, might have changed after "switch character"
         player_data = get_player_data(game_data)
 
-        # Checks if u leveled up
-        if player_data.get("PlayerProgress").get("Experience") >= 100 * player_data.get("PlayerProgress").get("Level"):
-            level_up(game_data)
+        # Checks if character leveled up
+        check_for_level_up(game_data)
 
         # Possible actions with game_data as argument
         possible_actions = {
