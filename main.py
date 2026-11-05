@@ -1,5 +1,5 @@
 import json
-from player import restart, reset_data, character_setup, status, check_for_level_up, get_player_data, switch_character
+import player
 from economy import shop, crafting
 from world import adventure, mine, gather, rest
 from utils import validate, quit_game
@@ -16,22 +16,22 @@ def main():
             game_content = json.load(f)
 
         # Check if player class not empty (character not set up yet)
-        player_data = get_player_data(game_data)
+        player_data = player.get_player_data(game_data)
 
         player_profile = player_data.get("PlayerProfile")
 
         if player_profile.get("Class") == "":
             # Fully reset all data to make sure character is blank
-            reset_data(game_data)
+            player.reset_data(game_data)
 
             # Set up new character
-            character_setup(game_data, game_content)
+            player.character_setup(game_data, game_content)
 
         # Reassign player_data, might have changed if character was not set up
-        player_data = get_player_data(game_data)
+        player_data = player.get_player_data(game_data)
 
         # Checks if character leveled up
-        check_for_level_up(game_data)
+        player.check_for_level_up(game_data)
 
         # Possible actions with game_data as argument
         possible_actions = {
@@ -40,11 +40,11 @@ def main():
             "mine": lambda: mine(game_data, game_content),
             "gather": lambda: gather(game_data, game_content),
             "rest": lambda: rest(game_data),
-            "status": lambda: status(game_data),
+            "status": lambda: player.status(game_data),
             "shop": lambda: shop(game_data, game_content),
             "crafting": lambda: crafting(game_data, game_content),
-            "restart": lambda: restart(game_data, game_content),
-            "switch character": lambda: switch_character(game_data)
+            "restart": lambda: player.restart(game_data, game_content),
+            "switch character": lambda: player.switch_character(game_data)
         }
 
         # Validate actions with options being possible actions

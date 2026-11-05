@@ -92,14 +92,14 @@ def character_setup(game_data, game_content):
 
     class_data = game_content.get("ClassData")
 
-    # Assign name, atleast 4 chars
+    # Assign name, atleast 2 chars
     player_name = ""
 
     while True:
         player_name = str(input("\nWhat is your characters name?\n> "))
 
-        if len(player_name) < 4:
-            print("Name must be atleast 4 characters long.")
+        if len(player_name) < 2:
+            print("Name must be atleast 2 characters long.")
             continue
 
         break
@@ -156,7 +156,7 @@ def switch_character(game_data, char_name="NONE CHOSEN"):
 
     # Set ids for names shorter than 2 characters (nonexistent characters because names are atleast 2 chars)
     for name in names_list:
-        if len(name) < 4:
+        if len(name) < 2:
             name_index = names_list.index(name)
             names_list[name_index] = f"p0{name_index + 1} (character save empty)"
 
