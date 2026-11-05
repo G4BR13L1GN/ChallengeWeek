@@ -1,11 +1,11 @@
-from utils import validate, save_to_json, get_player_data
+from utils import validate, save_to_json, get_save_data
 
 
 # = PLAYER FUNCTIONS
 # Reset all player data
 def reset_data(save_data):
     # Assign player data variables
-    player_data = get_player_data(save_data)
+    player_data = get_save_data(save_data)
 
     player_progress = player_data.get("PlayerProgress")
 
@@ -83,7 +83,7 @@ def restart(save_data, game_data):
 # Create character for player by choices from player
 def character_setup(save_data, game_data):
     # Assign player_data and class_data
-    player_data = get_player_data(save_data)
+    player_data = get_save_data(save_data)
 
     player_profile = player_data.get("PlayerProfile")
     player_attributes = player_data.get("PlayerAttributes")
@@ -182,7 +182,7 @@ def switch_character(save_data, char_name="NONE CHOSEN"):
 # Get status of player (heath, stamina, day count)
 def status(save_data):
     # Assign player data
-    player_data = get_player_data(save_data)
+    player_data = get_save_data(save_data)
     player_condition = player_data.get("PlayerCondition")
     player_progress = player_data.get("PlayerProgress")
     player_name = player_data.get("PlayerProfile").get("Name")
@@ -204,7 +204,7 @@ def status(save_data):
 
 def check_for_level_up(save_data):
     # Assign player data
-    player_data = get_player_data(save_data)
+    player_data = get_save_data(save_data)
     player_progress = player_data.get("PlayerProgress")
     player_stats = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")

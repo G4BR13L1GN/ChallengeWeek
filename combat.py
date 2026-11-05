@@ -1,5 +1,5 @@
 import random
-from utils import validate, save_to_json, dice_roll, get_player_data
+from utils import validate, save_to_json, load_from_json, dice_roll, get_save_data
 from economy import add_item
 
 
@@ -26,7 +26,7 @@ def combat(save_data, game_data, enemy_class, map_dimension, enemy_names):
         enemies.append(new_monster)
 
     # Define player statistics
-    player_data = get_player_data(save_data)
+    player_data = get_save_data(save_data)
     player_condition = player_data.get("PlayerCondition")
     player_attributes = player_data.get("PlayerAttributes")
     player_equipment = player_data.get("PlayerEquipment")

@@ -2,21 +2,17 @@ import json
 import player
 from economy import shop, crafting
 from world import adventure, mine, gather, rest
-from utils import validate, quit_game
+from utils import validate, quit_game, load_from_json, get_save_data
 
 
 # Main Function
 def main():
     while True:
         # Reassign save_data after each action to get new updated version
-        with open("data.json", "r", encoding="utf-8") as f:
-            save_data = json.load(f)
-
-        with open("content.json", "r", encoding="utf-8") as f:
-            game_data = json.load(f)
+        save_data, game_data = load_from_json("save_data", "game_data")
 
         # Check if player class not empty (character not set up yet)
-        player_data = player.get_player_data(save_data)
+        player_data = player.get_save_data(save_data)
 
         player_profile = player_data.get("PlayerProfile")
 
@@ -28,7 +24,7 @@ def main():
             player.character_setup(save_data, game_data)
 
         # Reassign player_data, might have changed if character was not set up
-        player_data = player.get_player_data(save_data)
+        player_data = player.get_save_data(save_data)
 
         # Checks if character leveled up
         player.check_for_level_up(save_data)

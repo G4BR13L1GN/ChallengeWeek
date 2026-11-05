@@ -1,12 +1,12 @@
 import random
-from utils import validate, save_to_json, get_player_data
+from utils import validate, save_to_json, get_save_data
 
 
 # = ECONOMY FUNCTIONS
 # Function to add item to player based on spawn chances
 def add_item(save_data, item_name, amount, price, message=True):
     # Add item to game inventory
-    player_data = get_player_data(save_data)
+    player_data = get_save_data(save_data)
     player_inventory = player_data.get("PlayerInventory")
 
     if message:
@@ -43,7 +43,7 @@ def aquire(save_data, item_name, spawn_percentage=20, max_spawn_amount=5, spawn_
 # Buy item from shop
 def buy(save_data, game_data):
     # Define player data
-    player_data = get_player_data(save_data)
+    player_data = get_save_data(save_data)
     player_inventory = player_data.get("PlayerInventory")
     player_equipment = player_data.get("PlayerEquipment")
 
@@ -120,7 +120,7 @@ def buy(save_data, game_data):
 # Sell item to shop
 def sell(save_data):
     # Define player data
-    player_data = get_player_data(save_data)
+    player_data = get_save_data(save_data)
     player_inventory = player_data.get("PlayerInventory")
 
     player_name = player_data.get("PlayerProfile").get("Name")
@@ -188,7 +188,7 @@ def sell(save_data):
 
 # Shop to buy or sell item
 def shop(save_data, game_data):
-    player_data = get_player_data(save_data)
+    player_data = get_save_data(save_data)
 
     action = validate(
         ("buy", "sell", "leave"),
@@ -216,7 +216,7 @@ def shop(save_data, game_data):
 
 def crafting(save_data, game_data):
     # Assign player data and item data
-    player_data = get_player_data(save_data)
+    player_data = get_save_data(save_data)
     player_name = player_data.get("PlayerProfile").get("Name")
     player_inventory = player_data.get("PlayerInventory")
 
