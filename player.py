@@ -202,6 +202,7 @@ def status(save_data):
     )
 
 
+# Check if player is able to level up and level up if able to
 def check_for_level_up(save_data):
     # Assign player data
     player_data = get_save_data(save_data)
@@ -209,6 +210,7 @@ def check_for_level_up(save_data):
     player_stats = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
 
+    # Keep looping to check if able to level up
     while True:
         xp_needed = 100 * player_progress["Level"]
 
@@ -229,6 +231,7 @@ def check_for_level_up(save_data):
             # Congratulate player
             print(f"Congratulations! You have leveled up to level {player_progress["Level"]}!")
         else:
+            # Break loop, player is not able to level up anymore
             break
 
     # Update save_data json file

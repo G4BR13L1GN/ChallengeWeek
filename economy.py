@@ -9,12 +9,14 @@ def add_item(save_data, item_name, amount, price, message=True):
     player_data = get_save_data(save_data)
     player_inventory = player_data.get("PlayerInventory")
 
+    # Only print message that item was added to inventory if message argument is True
     if message:
         print(
             f"\n{player_data.get("PlayerProfile").get("Name")} "
             f"got {amount} {item_name}{"s" if amount > 1 else ""}!"
         )
 
+    # Add item to player inventory
     player_inventory[item_name] = {
         "Amount": player_inventory.get(item_name, {}).get("Amount", 0) + amount,
         "Price": price

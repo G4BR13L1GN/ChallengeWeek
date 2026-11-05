@@ -199,7 +199,7 @@ def combat(save_data, game_data, enemy_class, map_dimension, enemy_names):
 
         # Action for each enemy in enemies
         for enemy in enemies:
-            # Continue fight if enemy still alive
+            # Enemy continues fight if still alive
             if enemy.health > 0:
                 # Calculate damage dealt by enemy
                 damage_dealt = round(
@@ -222,7 +222,7 @@ def combat(save_data, game_data, enemy_class, map_dimension, enemy_names):
                     f"{player_name} has {current_health} HP left."
                 )
 
-            #
+            # Enemy dies and player gets rewarded
             else:
                 # Reward player with experience and coins with maximum of enemy XP
                 experience_gained = enemy.data.get("Experience", 0)

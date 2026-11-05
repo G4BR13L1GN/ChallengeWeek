@@ -13,9 +13,9 @@ def main():
 
         # Check if player class not empty (character not set up yet)
         player_data = player.get_save_data(save_data)
-
         player_profile = player_data.get("PlayerProfile")
 
+        # Check if character save is empty
         if player_profile.get("Class") == "":
             # Fully reset all data to make sure character is blank
             player.reset_data(save_data)
@@ -45,7 +45,7 @@ def main():
 
         # Validate actions with options being possible actions
         action = validate(
-            possible_actions,
+            (possible_actions.keys()),
             f"\nWhat would {player_data.get("PlayerProfile").get("Name")} "
             f"like to do?\n"
             f"adventure, mine, gather\n"
