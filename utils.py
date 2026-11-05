@@ -4,10 +4,22 @@ import json
 
 # = UTILITY FUNCTIONS
 # Save data to json
-def save_to_json(game_data):
+def save_to_json(save_data):
     # Open json file and dump game_data into the file
-    with open("data.json", "w", encoding="utf-8") as f:
-        json.dump(game_data, f, indent=4, ensure_ascii=False)
+    with open("save_data.json", "w", encoding="utf-8") as f:
+        json.dump(save_data, f, indent=4, ensure_ascii=False)
+
+
+def load_from_json(files):
+    data_list = []
+
+    for file in files:
+        with open(f"{file}.json", "r", encoding="utf-8") as f:
+            loaded_data = json.load(f)
+
+            data_list.append(loaded_data)
+
+    return data_list
 
 
 # Ask input until user input in valid options
@@ -16,6 +28,7 @@ def validate(options: tuple, message, data_type=str):
 
     # Loop until valid
     while user_input not in options:
+        # Strip and lower player input
         user_input = input(message).strip().lower()
 
         # Try to convert value, give error if not able to
@@ -39,9 +52,9 @@ def dice_roll(max_roll=20):
 
 
 # Return player data based on selected save
-def get_player_data(game_data, set_id="P00"):
+def get_save_data(save_data, set_id="P00"):
     # Assign player data
-    players_data = game_data.get("PlayerData")
+    players_data = save_data.get("PlayerData")
 
     # Get id from function argument, else "SelectedSave", and 1 if not found
     selected_id = players_data.get("SelectedSave", "P00") if set_id == "P00" else set_id
@@ -57,9 +70,9 @@ def get_player_data(game_data, set_id="P00"):
 
 
 # Save and quit the game
-def quit_game(game_data):
-    # Update game_data json file
-    save_to_json(game_data)
+def quit_game(save_data):
+    # Update save_data json file
+    save_to_json(save_data)
 
     # Quit game
     quit()

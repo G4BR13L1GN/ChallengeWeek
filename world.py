@@ -1,14 +1,14 @@
 import random
-from utils import validate, save_to_json, dice_roll, get_player_data
+from utils import validate, save_to_json, dice_roll, get_save_data
 from economy import aquire
 from combat import combat
 
 
 # = WORLD FUNCTIONS
 # Adventure where character can spot monster
-def adventure(game_data, game_content):
+def adventure(save_data, game_data):
     # Assign player data
-    player_data = get_player_data(game_data)
+    player_data = get_save_data(save_data)
     player_attributes = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
     player_progress = player_data.get("PlayerProgress")
@@ -41,7 +41,7 @@ def adventure(game_data, game_content):
 
     # Encounter if player intelligence passes sight check
     if player_attributes.get("Intelligence") > dice_roll(20):
-        monster_data = game_content.get("MonsterData")
+        monster_data = game_data.get("MonsterData")
 
         # Encounter as many monsters as players level is
         monster_amount = player_progress.get("Level")
@@ -60,8 +60,8 @@ def adventure(game_data, game_content):
 
         # Start combat with multiple monsters
         combat(
+            save_data,
             game_data,
-            game_content,
             "Monsters",
             player_progress.get("MapDimension"),
             monsters
@@ -72,19 +72,19 @@ def adventure(game_data, game_content):
     # Increase days_passed
     player_progress["DaysPassed"] += 0.5
 
-    # Update game_data json file
-    save_to_json(game_data)
+    # Update save_data json file
+    save_to_json(save_data)
 
 
 # Mine to aquire gemstones
-def mine(game_data, game_content):
-    player_data = get_player_data(game_data)
+def mine(save_data, game_data):
+    player_data = get_save_data(save_data)
     player_attributes = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
 
     player_name = player_data.get("PlayerProfile").get("Name")
 
-    loot_data = game_content.get("LootData").get("Mine")
+    loot_data = game_data.get("LootData").get("Mine")
 
     # Stamina cost for mining
     stamina_cost = 10
@@ -110,29 +110,29 @@ def mine(game_data, game_content):
     # Mining materials which can be found
     for key in loot_data.keys():
         aquire(
-            game_data,
+            save_data,
             key,
             loot_data[key].get("Spawn Chance") / mine_factor,
             loot_data[key].get("Max Spawn Amount"),
-            game_content.get("ItemData").get(key).get("Price")
+            game_data.get("ItemData").get(key).get("Price")
         )
 
     # Increase days_passed
     player_data.get("PlayerProgress")["DaysPassed"] += 0.5
 
-    # Update game_data json file
-    save_to_json(game_data)
+    # Update save_data json file
+    save_to_json(save_data)
 
 
 # Forage to find loot
-def gather(game_data, game_content):
-    player_data = get_player_data(game_data)
+def gather(save_data, game_data):
+    player_data = get_save_data(save_data)
     player_attributes = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
 
     player_name = player_data.get("PlayerProfile").get("Name")
 
-    loot_data = game_content.get("LootData").get("Forest")
+    loot_data = game_data.get("LootData").get("Forest")
 
     # Stamina cost for gathering
     stamina_cost = 10
@@ -158,24 +158,24 @@ def gather(game_data, game_content):
     # Forest materials which can be found
     for key in loot_data.keys():
         aquire(
-            game_data,
+            save_data,
             key,
             loot_data[key].get("Spawn Chance") / gather_factor,
             loot_data[key].get("Max Spawn Amount"),
-            game_content.get("ItemData").get(key).get("Price")
+            game_data.get("ItemData").get(key).get("Price")
         )
 
     # Increase days_passed
     player_data.get("PlayerProgress")["DaysPassed"] += 0.5
 
-    # Update game_data json file
-    save_to_json(game_data)
+    # Update save_data json file
+    save_to_json(save_data)
 
 
 # Rest to regain stamina and health
-def rest(game_data):
+def rest(save_data):
     # Define player statistics
-    player_data = get_player_data(game_data)
+    player_data = get_save_data(save_data)
     player_condition = player_data.get("PlayerCondition")
 
     player_name = player_data.get("PlayerProfile").get("Name")
@@ -223,5 +223,5 @@ def rest(game_data):
     # Increase days_passed based on rest length
     player_data.get("PlayerProgress")["DaysPassed"] += 1 if action == "long" else 0.5
 
-    # Update game_data json file
-    save_to_json(game_data)
+    # Update save_data json file
+    save_to_json(save_data)

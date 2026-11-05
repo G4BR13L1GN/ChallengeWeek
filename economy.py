@@ -4,9 +4,9 @@ from utils import validate, save_to_json, get_player_data
 
 # = ECONOMY FUNCTIONS
 # Function to add item to player based on spawn chances
-def add_item(game_data, item_name, amount, price, message=True):
+def add_item(save_data, item_name, amount, price, message=True):
     # Add item to game inventory
-    player_data = get_player_data(game_data)
+    player_data = get_player_data(save_data)
     player_inventory = player_data.get("PlayerInventory")
 
     if message:
@@ -20,12 +20,12 @@ def add_item(game_data, item_name, amount, price, message=True):
         "Price": price
     }
 
-    # Update game_data json file
-    save_to_json(game_data)
+    # Update save_data json file
+    save_to_json(save_data)
 
 
-# Aquire item with game_data to add item onto, name of item, spawn chance, max spawn amount, and price
-def aquire(game_data, item_name, spawn_percentage=20, max_spawn_amount=5, spawn_all=False, item_price=10):
+# Aquire item with save_data to add item onto, name of item, spawn chance, max spawn amount, and price
+def aquire(save_data, item_name, spawn_percentage=20, max_spawn_amount=5, spawn_all=False, item_price=10):
     # Random chance from 1 to spawn_percentage, which accepts that is or is under 1
     if random.uniform(0, 100 / spawn_percentage) <= 1:
         if spawn_all:
@@ -34,24 +34,24 @@ def aquire(game_data, item_name, spawn_percentage=20, max_spawn_amount=5, spawn_
             spawn_amount = random.randint(1, max_spawn_amount)
 
         # Add item to inventory
-        add_item(game_data, item_name, spawn_amount, item_price)
+        add_item(save_data, item_name, spawn_amount, item_price)
 
-    # Update game_data json file
-    save_to_json(game_data)
+    # Update save_data json file
+    save_to_json(save_data)
 
 
 # Buy item from shop
-def buy(game_data, game_content):
+def buy(save_data, game_data):
     # Define player data
-    player_data = get_player_data(game_data)
+    player_data = get_player_data(save_data)
     player_inventory = player_data.get("PlayerInventory")
     player_equipment = player_data.get("PlayerEquipment")
 
     player_name = player_data.get("PlayerProfile").get("Name")
 
     # Define shop items
-    shop_data = game_content.get("ShopData")
-    item_data = game_content.get("ItemData")
+    shop_data = game_data.get("ShopData")
+    item_data = game_data.get("ItemData")
 
     # Get input for which item player wants to buy
     item = validate(
@@ -83,7 +83,7 @@ def buy(game_data, game_content):
         # Check if player has enough coin
         if player_inventory.get("coins", {}).get("Amount") >= item_price * buy_amount:
             # Add item to inventory, remove coins
-            add_item(game_data, item, buy_amount, item_price, False)
+            add_item(save_data, item, buy_amount, item_price, False)
             player_inventory["coins"]["Amount"] -= item_price * buy_amount
 
             # Print what player bought
@@ -113,14 +113,14 @@ def buy(game_data, game_content):
     elif buy_confirmation == "n":
         return
 
-    # Update game_data json file
-    save_to_json(game_data)
+    # Update save_data json file
+    save_to_json(save_data)
 
 
 # Sell item to shop
-def sell(game_data):
+def sell(save_data):
     # Define player data
-    player_data = get_player_data(game_data)
+    player_data = get_player_data(save_data)
     player_inventory = player_data.get("PlayerInventory")
 
     player_name = player_data.get("PlayerProfile").get("Name")
@@ -164,7 +164,7 @@ def sell(game_data):
     # Check if sell confirmation is yes
     if sell_confirmation == "y":
         if player_inventory.get(item).get("Amount") > 0:
-            add_item(game_data, "coins", item_price * sell_amount, item_price, False)
+            add_item(save_data, "coins", item_price * sell_amount, item_price, False)
             player_inventory[item]["Amount"] -= sell_amount
 
             print(
@@ -182,13 +182,13 @@ def sell(game_data):
     elif sell_confirmation == "n":
         return
 
-    # Update game_data json file
-    save_to_json(game_data)
+    # Update save_data json file
+    save_to_json(save_data)
 
 
 # Shop to buy or sell item
-def shop(game_data, game_content):
-    player_data = get_player_data(game_data)
+def shop(save_data, game_data):
+    player_data = get_player_data(save_data)
 
     action = validate(
         ("buy", "sell", "leave"),
@@ -201,26 +201,26 @@ def shop(game_data, game_content):
 
     match action:
         case "buy":
-            buy(game_data, game_content)
+            buy(save_data, game_data)
         case "sell":
-            sell(game_data)
+            sell(save_data)
         case "leave":
             return
 
     # Increase days_passed
     player_data.get("PlayerProgress")["DaysPassed"] += 0.5
 
-    # Update game_data json file
-    save_to_json(game_data)
+    # Update save_data json file
+    save_to_json(save_data)
 
 
-def crafting(game_data, game_content):
+def crafting(save_data, game_data):
     # Assign player data and item data
-    player_data = get_player_data(game_data)
+    player_data = get_player_data(save_data)
     player_name = player_data.get("PlayerProfile").get("Name")
     player_inventory = player_data.get("PlayerInventory")
 
-    item_data = game_content.get("ItemData")
+    item_data = game_data.get("ItemData")
 
     # Get all craftable items by filtering through items that have a recipe
     craftable_items = tuple(key for key, value in item_data.items() if value.get("Recipe", {}) != {})
@@ -290,11 +290,11 @@ def crafting(game_data, game_content):
                 player_inventory.pop(key)
 
         # Add crafted item to inventory
-        add_item(game_data, item_name, craft_amount, item_data.get(item_name).get("Price"), False)
+        add_item(save_data, item_name, craft_amount, item_data.get(item_name).get("Price"), False)
         print(f"\n{item_name} crafted!")
 
     elif craft_confirmation == "n":
         return
 
-    # Update game_data json file
-    save_to_json(game_data)
+    # Update save_data json file
+    save_to_json(save_data)

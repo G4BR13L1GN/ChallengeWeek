@@ -3,9 +3,9 @@ from utils import validate, save_to_json, get_player_data
 
 # = PLAYER FUNCTIONS
 # Reset all player data
-def reset_data(game_data):
+def reset_data(save_data):
     # Assign player data variables
-    player_data = get_player_data(game_data)
+    player_data = get_player_data(save_data)
 
     player_progress = player_data.get("PlayerProgress")
 
@@ -40,12 +40,12 @@ def reset_data(game_data):
     }
 
     # Save cleared player inventory
-    save_to_json(game_data)
+    save_to_json(save_data)
 
 
 # Ask for confirmation to reset
-def restart(game_data, game_content):
-    player_data = game_data.get("PlayerData")
+def restart(save_data, game_data):
+    player_data = save_data.get("PlayerData")
 
     # Ask if player wants to restart current or all characters
     restart_all = validate(
@@ -66,31 +66,31 @@ def restart(game_data, game_content):
                 char_name = player_data.get(f"P0{char_id}").get("PlayerProfile").get("Name")
 
                 # Switch to character
-                switch_character(game_data, char_name)
+                switch_character(save_data, char_name)
 
                 # Restart character
-                reset_data(game_data)
+                reset_data(save_data)
 
             # Switch back to first character and setup new character
-            switch_character(game_data, "")
-            character_setup(game_data, game_content)
+            switch_character(save_data, "")
+            character_setup(save_data, game_data)
         else:
             # Reset current character
-            reset_data(game_data)
-            character_setup(game_data, game_content)
+            reset_data(save_data)
+            character_setup(save_data, game_data)
 
 
 # Create character for player by choices from player
-def character_setup(game_data, game_content):
+def character_setup(save_data, game_data):
     # Assign player_data and class_data
-    player_data = get_player_data(game_data)
+    player_data = get_player_data(save_data)
 
     player_profile = player_data.get("PlayerProfile")
     player_attributes = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
     player_skills = player_data.get("PlayerSkills")
 
-    class_data = game_content.get("ClassData")
+    class_data = game_data.get("ClassData")
 
     # Assign name, atleast 2 chars
     player_name = ""
@@ -141,14 +141,14 @@ def character_setup(game_data, game_content):
         f"Skills: {", ".join([skill.capitalize() for skill in player_skills])}"
     )
 
-    # Update game_data json file
-    save_to_json(game_data)
+    # Update save_data json file
+    save_to_json(save_data)
 
 
 # Switch character saves
-def switch_character(game_data, char_name="NONE CHOSEN"):
+def switch_character(save_data, char_name="NONE CHOSEN"):
     # List of dictionaries for each character
-    character_dicts = list(game_data.get("PlayerData").items())[1:]
+    character_dicts = list(save_data.get("PlayerData").items())[1:]
 
     # List of all names from characters dict, to lower case
     names_list = list(map(lambda name: name.lower(), list(
@@ -172,17 +172,17 @@ def switch_character(game_data, char_name="NONE CHOSEN"):
     )
 
     # Update selected save id
-    game_data["PlayerData"]["SelectedSave"] = next(
+    save_data["PlayerData"]["SelectedSave"] = next(
         (id for id, name in id_names if (name == selected_name) or id in name), "P01").title()
 
-    # Update game_data json file
-    save_to_json(game_data)
+    # Update save_data json file
+    save_to_json(save_data)
 
 
 # Get status of player (heath, stamina, day count)
-def status(game_data):
+def status(save_data):
     # Assign player data
-    player_data = get_player_data(game_data)
+    player_data = get_player_data(save_data)
     player_condition = player_data.get("PlayerCondition")
     player_progress = player_data.get("PlayerProgress")
     player_name = player_data.get("PlayerProfile").get("Name")
@@ -202,9 +202,9 @@ def status(game_data):
     )
 
 
-def check_for_level_up(game_data):
+def check_for_level_up(save_data):
     # Assign player data
-    player_data = get_player_data(game_data)
+    player_data = get_player_data(save_data)
     player_progress = player_data.get("PlayerProgress")
     player_stats = player_data.get("PlayerAttributes")
     player_condition = player_data.get("PlayerCondition")
@@ -231,5 +231,5 @@ def check_for_level_up(game_data):
         else:
             break
 
-    # Update game_data json file
-    save_to_json(game_data)
+    # Update save_data json file
+    save_to_json(save_data)

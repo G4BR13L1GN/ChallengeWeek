@@ -8,43 +8,43 @@ from utils import validate, quit_game
 # Main Function
 def main():
     while True:
-        # Reassign game_data after each action to get new updated version
+        # Reassign save_data after each action to get new updated version
         with open("data.json", "r", encoding="utf-8") as f:
-            game_data = json.load(f)
+            save_data = json.load(f)
 
         with open("content.json", "r", encoding="utf-8") as f:
-            game_content = json.load(f)
+            game_data = json.load(f)
 
         # Check if player class not empty (character not set up yet)
-        player_data = player.get_player_data(game_data)
+        player_data = player.get_player_data(save_data)
 
         player_profile = player_data.get("PlayerProfile")
 
         if player_profile.get("Class") == "":
             # Fully reset all data to make sure character is blank
-            player.reset_data(game_data)
+            player.reset_data(save_data)
 
             # Set up new character
-            player.character_setup(game_data, game_content)
+            player.character_setup(save_data, game_data)
 
         # Reassign player_data, might have changed if character was not set up
-        player_data = player.get_player_data(game_data)
+        player_data = player.get_player_data(save_data)
 
         # Checks if character leveled up
-        player.check_for_level_up(game_data)
+        player.check_for_level_up(save_data)
 
-        # Possible actions with game_data as argument
+        # Possible actions with save_data as argument
         possible_actions = {
-            "quit": lambda: quit_game(game_data),
-            "adventure": lambda: adventure(game_data, game_content),
-            "mine": lambda: mine(game_data, game_content),
-            "gather": lambda: gather(game_data, game_content),
-            "rest": lambda: rest(game_data),
-            "status": lambda: player.status(game_data),
-            "shop": lambda: shop(game_data, game_content),
-            "crafting": lambda: crafting(game_data, game_content),
-            "restart": lambda: player.restart(game_data, game_content),
-            "switch character": lambda: player.switch_character(game_data)
+            "quit": lambda: quit_game(save_data),
+            "adventure": lambda: adventure(save_data, game_data),
+            "mine": lambda: mine(save_data, game_data),
+            "gather": lambda: gather(save_data, game_data),
+            "rest": lambda: rest(save_data),
+            "status": lambda: player.status(save_data),
+            "shop": lambda: shop(save_data, game_data),
+            "crafting": lambda: crafting(save_data, game_data),
+            "restart": lambda: player.restart(save_data, game_data),
+            "switch character": lambda: player.switch_character(save_data)
         }
 
         # Validate actions with options being possible actions

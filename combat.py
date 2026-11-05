@@ -15,18 +15,18 @@ class Enemy:
         return f"Enemy: ('{self.name}', {self.health}, {self.damage})"
 
 
-def combat(game_data, game_content, enemy_class, map_dimension, enemy_names):
+def combat(save_data, game_data, enemy_class, map_dimension, enemy_names):
     # Define enemy statistics based off of arguments
     enemies = []
 
     # Make enemy using class for each enemy name in enemy_names
     for enemy in enemy_names:
-        monster_data = game_content.get("MonsterData")[map_dimension][enemy_class][enemy]
+        monster_data = game_data.get("MonsterData")[map_dimension][enemy_class][enemy]
         new_monster = Enemy(enemy, monster_data)
         enemies.append(new_monster)
 
     # Define player statistics
-    player_data = get_player_data(game_data)
+    player_data = get_player_data(save_data)
     player_condition = player_data.get("PlayerCondition")
     player_attributes = player_data.get("PlayerAttributes")
     player_equipment = player_data.get("PlayerEquipment")
@@ -212,8 +212,8 @@ def combat(game_data, game_content, enemy_class, map_dimension, enemy_names):
                 if current_health <= 0:
                     print(f"{player_name} has died!")
 
-                    # Update game_data json file
-                    save_to_json(game_data)
+                    # Update save_data json file
+                    save_to_json(save_data)
 
                     return
 
@@ -233,7 +233,7 @@ def combat(game_data, game_content, enemy_class, map_dimension, enemy_names):
                 )
 
                 # Reward player with coins
-                add_item(game_data, "coins", experience_gained, 1)
+                add_item(save_data, "coins", experience_gained, 1)
 
                 player_progress = player_data.get("PlayerProgress")
                 player_progress["Experience"] += experience_gained
@@ -252,5 +252,5 @@ def combat(game_data, game_content, enemy_class, map_dimension, enemy_names):
     zones = ("Overworld", "Caverns", "Sift")
     player_progress["MapDimension"] = zones[(player_progress.get("MapZone") - 1) // 6]
 
-    # Update game_data json file
-    save_to_json(game_data)
+    # Update save_data json file
+    save_to_json(save_data)
