@@ -78,7 +78,7 @@ def combat(save_data, game_data, enemy_class, map_dimension, enemy_names):
                 # Ask which enemy player would like to attack
                 enemy_to_attack = validate(
                     [enemy.name for enemy in enemies],
-                    f"\nWhich enemy would {player_name} like to attack?\n"
+                    f"Which enemy would {player_name} like to attack?\n"
                     f"{", ".join([enemy.name for enemy in enemies])}\n> "
                 )
 
@@ -122,8 +122,8 @@ def combat(save_data, game_data, enemy_class, map_dimension, enemy_names):
                     enemy.health = 0
 
                 print(
-                    f"\n{player_name} did {player_damage} damage!\n"
-                    f"The {enemy.name} has {enemy.health} HP left."
+                    f"\n{player_name} did {player_damage} damage!"
+                    f"\nThe {enemy.name} has {enemy.health} HP left."
                 )
 
             case "defence":
@@ -199,6 +199,15 @@ def combat(save_data, game_data, enemy_class, map_dimension, enemy_names):
 
         # Action for each enemy in enemies
         for enemy in enemies:
+            # Return if player died
+            if current_health <= 0:
+                print(f"{player_name} has died!")
+
+                # Update save_data json file
+                save_to_json(save_data)
+
+                return
+
             # Enemy continues fight if still alive
             if enemy.health > 0:
                 # Calculate damage dealt by enemy
@@ -206,19 +215,11 @@ def combat(save_data, game_data, enemy_class, map_dimension, enemy_names):
                     ((enemy.damage / defence_multiplier) * (dice_roll(20) / 10)),
                     0
                 )
+
                 current_health -= damage_dealt
 
-                # Return if player died
-                if current_health <= 0:
-                    print(f"{player_name} has died!")
-
-                    # Update save_data json file
-                    save_to_json(save_data)
-
-                    return
-
                 print(
-                    f"\nThe {enemy.name} did {damage_dealt} damage!\n"
+                    f"The {enemy.name} did {damage_dealt} damage!\n"
                     f"{player_name} has {current_health} HP left."
                 )
 
@@ -228,12 +229,18 @@ def combat(save_data, game_data, enemy_class, map_dimension, enemy_names):
                 experience_gained = enemy.data.get("Experience", 0)
 
                 print(
-                    f"\n{player_name} defeated the {enemy.name} "
-                    f"and gained {experience_gained} XP!\n"
+                    f"{player_name} defeated the {enemy.name} "
+                    f"and gained {experience_gained} XP!"
                 )
 
                 # Reward player with coins
-                add_item(save_data, "coins", experience_gained, 1)
+                add_item(save_data, game_data, "coins", experience_gained, 1)
+
+                # Remove monster from enemies_list so it doesn't come up again
+                enemies.remove(enemy)
+
+                # Empty line
+                print()
 
                 player_progress = player_data.get("PlayerProgress")
                 player_progress["Experience"] += experience_gained

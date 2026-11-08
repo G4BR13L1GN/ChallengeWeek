@@ -10,7 +10,7 @@ def save_to_json(save_data):
         json.dump(save_data, f, indent=4, ensure_ascii=False)
 
 
-def load_from_json(files):
+def load_from_json(*files):
     data_list = []
 
     for file in files:

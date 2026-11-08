@@ -4,16 +4,21 @@ from utils import validate, save_to_json, get_save_data
 
 # = ECONOMY FUNCTIONS
 # Function to add item to player based on spawn chances
-def add_item(save_data, item_name, amount, price, message=True):
+def add_item(save_data, game_data, item_name, amount, price, message=True):
     # Add item to game inventory
     player_data = get_save_data(save_data)
     player_inventory = player_data.get("PlayerInventory")
+    player_equipment = player_data.get("PlayerEquipment")
+
+    item_data = game_data.get("ItemData")
 
     # Only print message that item was added to inventory if message argument is True
     if message:
         print(
-            f"\n{player_data.get("PlayerProfile").get("Name")} "
-            f"got {amount} {item_name}{"s" if amount > 1 else ""}!"
+            f"{player_data.get("PlayerProfile").get("Name")} "
+
+            # if item_name != "coins" so it doesn't print "coinss" if you get 2+ coins
+            f"got {amount} {item_name}{"s" if item_name != "coins" and amount > 1 else ""}!"
         )
 
     # Add item to player inventory
@@ -22,12 +27,27 @@ def add_item(save_data, item_name, amount, price, message=True):
         "Price": price
     }
 
+    # Add item to player_equipment for specific types
+    if item_data.get(item_name).get("Type") in ["Weapon", "Armour"]:
+        # Get item type
+        player_equipment[item_name] = {
+            "Type": item_data.get(item_name).get("Type")
+        }
+
+        # Add item to player equipment based on if it is weapon or armor
+        if item_data.get(item_name).get("Type") == "Weapon":
+            player_equipment[item_name]["DamageIncrease"] = item_data.get(
+                item_name).get("DamageIncrease")
+
+        elif item_data.get(item_name).get("Type") == "Armour":
+            player_equipment[item_name]["DamageNegation"] = item_data.get(item_name).get("DamageNegation")
+
     # Update save_data json file
     save_to_json(save_data)
 
 
 # Aquire item with save_data to add item onto, name of item, spawn chance, max spawn amount, and price
-def aquire(save_data, item_name, spawn_percentage=20, max_spawn_amount=5, spawn_all=False, item_price=10):
+def aquire(save_data, game_data, item_name, spawn_percentage=20, max_spawn_amount=5, spawn_all=False, item_price=10):
     # Random chance from 1 to spawn_percentage, which accepts that is or is under 1
     if random.uniform(0, 100 / spawn_percentage) <= 1:
         if spawn_all:
@@ -36,7 +56,7 @@ def aquire(save_data, item_name, spawn_percentage=20, max_spawn_amount=5, spawn_
             spawn_amount = random.randint(1, max_spawn_amount)
 
         # Add item to inventory
-        add_item(save_data, item_name, spawn_amount, item_price)
+        add_item(save_data, game_data, item_name, spawn_amount, item_price)
 
     # Update save_data json file
     save_to_json(save_data)
@@ -47,7 +67,6 @@ def buy(save_data, game_data):
     # Define player data
     player_data = get_save_data(save_data)
     player_inventory = player_data.get("PlayerInventory")
-    player_equipment = player_data.get("PlayerEquipment")
 
     player_name = player_data.get("PlayerProfile").get("Name")
 
@@ -67,49 +86,41 @@ def buy(save_data, game_data):
 
     print(f"\nEach {item} costs {item_price} coins.")
 
+    # Set max buy amount to lesser of what player can afford and 99
+    max_buy_amount = min(99, (player_inventory.get("coins").get("Amount") // item_price))
+
+    print()
+
+    # Check if player has for atleast 1 item
+    if max_buy_amount < 1:
+        print(f"{player_name} doesn't have enough coin.")
+        return
+
     # Ask how many player wants to buy, max amount is either 99 or how much player can buy
     buy_amount = validate(
-        range(1, min(100, (player_inventory.get("coins").get("Amount") // item_price))),
-        f"\nHow much of {item} would you like to buy?\n1 - 99\n> ",
+        range(1, max_buy_amount + 1),
+        f"How much of {item} would you like to buy?\n1 - {max_buy_amount}\n> ",
         int
     )
+
+    print()
 
     # Confirmation to buy
     buy_confirmation = validate(
         ("y", "n"),
-        f"\nWould {player_name} like to buy the {item}{"s" if buy_amount > 1 else ""}? (Y/N)\n> "
+        f"Would {player_name} like to buy the {item}{"s" if buy_amount > 1 else ""}? (Y/N)\n> "
     )
 
     # Check if confirmation is yes
     if buy_confirmation == "y":
-        # Check if player has enough coin
-        if player_inventory.get("coins", {}).get("Amount") >= item_price * buy_amount:
-            # Add item to inventory, remove coins
-            add_item(save_data, item, buy_amount, item_price, False)
-            player_inventory["coins"]["Amount"] -= item_price * buy_amount
+        # Add item to inventory, remove coins
+        add_item(save_data, game_data, item, buy_amount, item_price, False)
+        player_inventory["coins"]["Amount"] -= item_price * buy_amount
 
-            # Print what player bought
-            print(f"{player_name} bought {buy_amount} "
-                  f"{item}{"s" if buy_amount > 1 else ""} "
-                  f"for {buy_amount * item_price} coins!")
-
-            # Add item to player_equipment for specific types
-            if item_data.get(item).get("Type") in ["Weapon", "Armour"]:
-                # Get item type
-                player_equipment[item] = {
-                    "Type": item_data.get(item).get("Type")
-                }
-
-                # Add item to player equipment based on if it is weapon or armor
-                if item_data.get(item).get("Type") == "Weapon":
-                    player_equipment[item]["DamageIncrease"] = item_data.get(
-                        item).get("DamageIncrease")
-
-                elif item_data.get(item).get("Type") == "Armour":
-                    player_equipment[item]["DamageNegation"] = item_data.get(
-                        item).get("DamageNegation")
-        else:
-            print(f"{player_name} doesn't have enough coin.")
+        # Print what player bought
+        print(f"{player_name} bought {buy_amount} "
+              f"{item}{"s" if buy_amount > 1 else ""} "
+              f"for {buy_amount * item_price} coins!")
 
     # Return if player does not want to buy
     elif buy_confirmation == "n":
@@ -120,7 +131,7 @@ def buy(save_data, game_data):
 
 
 # Sell item to shop
-def sell(save_data):
+def sell(save_data, game_data):
     # Define player data
     player_data = get_save_data(save_data)
     player_inventory = player_data.get("PlayerInventory")
@@ -144,7 +155,7 @@ def sell(save_data):
 
     print(
         f"Each {item} sells for "
-        f"{item_price} coins."
+        f"{item_price} coins.\n"
     )
 
     # Ask how many player wants to sell
@@ -152,21 +163,23 @@ def sell(save_data):
 
     sell_amount = validate(
         range(1, max_sell_amount + 1),
-        f"\nHow much of {item} would you like to sell?\n"
+        f"How much of {item} would you like to sell?\n"
         f"1 - {max_sell_amount}\n> ",
         int
     )
 
+    print()
+
     # Ask for confirmation to sell item
     sell_confirmation = validate(
         ("y", "n"),
-        f"\nWould {player_name} like to sell the {item}{"s" if sell_amount > 1 else ""}? (Y/N)\n> "
+        f"Would {player_name} like to sell the {item}{"s" if sell_amount > 1 else ""}? (Y/N)\n> "
     )
 
     # Check if sell confirmation is yes
     if sell_confirmation == "y":
         if player_inventory.get(item).get("Amount") > 0:
-            add_item(save_data, "coins", item_price * sell_amount, item_price, False)
+            add_item(save_data, game_data, "coins", item_price * sell_amount, item_price, False)
             player_inventory[item]["Amount"] -= sell_amount
 
             print(
@@ -205,7 +218,7 @@ def shop(save_data, game_data):
         case "buy":
             buy(save_data, game_data)
         case "sell":
-            sell(save_data)
+            sell(save_data, game_data)
         case "leave":
             return
 
@@ -292,7 +305,7 @@ def crafting(save_data, game_data):
                 player_inventory.pop(key)
 
         # Add crafted item to inventory
-        add_item(save_data, item_name, craft_amount, item_data.get(item_name).get("Price"), False)
+        add_item(save_data, game_data, item_name, craft_amount, item_data.get(item_name).get("Price"), False)
         print(f"\n{item_name} crafted!")
 
     elif craft_confirmation == "n":
