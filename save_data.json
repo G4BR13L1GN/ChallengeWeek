@@ -1,21 +1,21 @@
 {
     "PlayerData": {
-        "SelectedSave": "P01",
+        "SelectedSave": "P03",
         "P01": {
             "PlayerProfile": {
-                "Name": "",
-                "Class": ""
+                "Name": "George the bard",
+                "Class": "bard"
             },
             "PlayerAttributes": {
-                "Strength": 0,
-                "Dexterity": 0,
-                "Intelligence": 0
+                "Strength": 8,
+                "Dexterity": 14,
+                "Intelligence": 16
             },
             "PlayerCondition": {
-                "Health": 0,
-                "MaxHealth": 0,
-                "Stamina": 0,
-                "MaxStamina": 0
+                "Health": 100,
+                "MaxHealth": 100,
+                "Stamina": 100,
+                "MaxStamina": 100
             },
             "PlayerProgress": {
                 "Experience": 0,
@@ -31,23 +31,29 @@
                 }
             },
             "PlayerEquipment": {},
-            "PlayerSkills": []
+            "PlayerSkills": [
+                "ranged",
+                "spell",
+                "dodge",
+                "heal",
+                "buff"
+            ]
         },
         "P02": {
             "PlayerProfile": {
-                "Name": "",
-                "Class": ""
+                "Name": "Steven the rogue",
+                "Class": "rogue"
             },
             "PlayerAttributes": {
-                "Strength": 0,
-                "Dexterity": 0,
-                "Intelligence": 0
+                "Strength": 8,
+                "Dexterity": 18,
+                "Intelligence": 14
             },
             "PlayerCondition": {
-                "Health": 0,
-                "MaxHealth": 0,
-                "Stamina": 0,
-                "MaxStamina": 0
+                "Health": 100,
+                "MaxHealth": 100,
+                "Stamina": 120,
+                "MaxStamina": 120
             },
             "PlayerProgress": {
                 "Experience": 0,
@@ -63,23 +69,28 @@
                 }
             },
             "PlayerEquipment": {},
-            "PlayerSkills": []
+            "PlayerSkills": [
+                "melee",
+                "ranged",
+                "dodge",
+                "buff"
+            ]
         },
         "P03": {
             "PlayerProfile": {
-                "Name": "",
-                "Class": ""
+                "Name": "Bob the warlock",
+                "Class": "warlock"
             },
             "PlayerAttributes": {
-                "Strength": 0,
-                "Dexterity": 0,
-                "Intelligence": 0
+                "Strength": 6,
+                "Dexterity": 12,
+                "Intelligence": 18
             },
             "PlayerCondition": {
-                "Health": 0,
-                "MaxHealth": 0,
-                "Stamina": 0,
-                "MaxStamina": 0
+                "Health": 100,
+                "MaxHealth": 100,
+                "Stamina": 110,
+                "MaxStamina": 110
             },
             "PlayerProgress": {
                 "Experience": 0,
@@ -95,7 +106,12 @@
                 }
             },
             "PlayerEquipment": {},
-            "PlayerSkills": []
+            "PlayerSkills": [
+                "spell",
+                "ward",
+                "heal",
+                "buff"
+            ]
         }
     }
 }

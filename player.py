@@ -69,7 +69,6 @@ def restart(save_data, game_data):
             for char_id in range(1, 4):
                 # Get name of character
                 char_name = player_data.get(f"P0{char_id}").get("PlayerProfile").get("Name").lower()
-                print(char_name)
 
                 # Switch to character
                 switch_character(save_data, char_name)
