@@ -58,12 +58,18 @@ def restart(save_data, game_data):
     # Only continue if player has agreed twice
     if str(input("\nDo you really want to restart? (Y/N)\n> ").upper()) == "Y" and \
        str(input("\nAre you sure? (Y/N)\n> ").upper()) == "Y":
+
         # Set up new character
-        if (restart_all):
+        if restart_all == "current":
+            # Reset current character
+            reset_data(save_data)
+            character_setup(save_data, game_data)
+        else:
             # Reset all character
             for char_id in range(1, 4):
                 # Get name of character
-                char_name = player_data.get(f"P0{char_id}").get("PlayerProfile").get("Name")
+                char_name = player_data.get(f"P0{char_id}").get("PlayerProfile").get("Name").lower()
+                print(char_name)
 
                 # Switch to character
                 switch_character(save_data, char_name)
@@ -73,10 +79,6 @@ def restart(save_data, game_data):
 
             # Switch back to first character and setup new character
             switch_character(save_data, "")
-            character_setup(save_data, game_data)
-        else:
-            # Reset current character
-            reset_data(save_data)
             character_setup(save_data, game_data)
 
 
@@ -172,8 +174,10 @@ def switch_character(save_data, char_name="NONE CHOSEN"):
     )
 
     # Update selected save id
+    # Prefer exact name match, then fall back to empty-slot placeholder match
     save_data["PlayerData"]["SelectedSave"] = next(
-        (id for id, name in id_names if (name == selected_name) or id in name), "P01").title()
+        (id for id, name in id_names if name == selected_name),
+        next((id for id, name in id_names if id in name), "P01")).title()
 
     # Update save_data json file
     save_to_json(save_data)

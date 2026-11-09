@@ -4,6 +4,18 @@ from world import adventure, mine, gather, rest
 from utils import validate, quit_game, load_from_json, get_save_data
 
 
+# Things to add:
+# 1. Improve choice system:
+
+#   Choice 1
+# > Choice 2
+#   Choice 3
+
+# 2. Text revealing on screen letter per letter
+
+# 3. Game tutorial (maybe questions and answers)
+
+
 # Main Function
 def main():
     while True:
