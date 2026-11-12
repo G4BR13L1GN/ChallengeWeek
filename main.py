@@ -15,6 +15,8 @@ from utils import validate, quit_game, load_from_json, get_save_data
 
 # 3. Game tutorial (maybe questions and answers)
 
+# 4. Character log (with write mode to new file, maybe TXT)
+
 
 # Main Function
 def main():
