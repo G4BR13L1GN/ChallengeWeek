@@ -111,6 +111,7 @@ def mine(save_data, game_data):
     for key in loot_data.keys():
         aquire(
             save_data,
+            game_data,
             key,
             loot_data[key].get("Spawn Chance") / mine_factor,
             loot_data[key].get("Max Spawn Amount"),
@@ -159,6 +160,7 @@ def gather(save_data, game_data):
     for key in loot_data.keys():
         aquire(
             save_data,
+            game_data,
             key,
             loot_data[key].get("Spawn Chance") / gather_factor,
             loot_data[key].get("Max Spawn Amount"),
